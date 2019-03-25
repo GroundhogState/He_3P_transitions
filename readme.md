@@ -1,3 +1,11 @@
+# TO DO BEFORE GIT
+
+	* Fix Core_BEC submodule
+	* Fix .gitignore inc. cache blindness
+	* This readme
+
+
+
 # Project Title
 
 ## Getting Started
