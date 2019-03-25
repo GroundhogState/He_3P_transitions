@@ -1,4 +1,7 @@
-function ai_log_out=ai_log_import(opts_ai,data)
+
+function out_ai=ai_log_import(opts_ai)
+
+fwtext('IMPORTING DATA')
 
 if opts_ai.verbose > 0
     header({0,'Importing analog logs...'})
@@ -8,7 +11,8 @@ cache_opts=opts_ai.cache_import;
 
 %limit the scope but retain the structure
 data_sub = [];
-ai_log_out=simple_function_cache(cache_opts,@ai_log_import_core,{opts_ai,data_sub});
+
+out_ai=simple_function_cache(cache_opts,@ai_log_import_core,{opts_ai,data_sub});
 
 
 % Kind of violates the concept of this being a 'pure' import script, so could compute this
@@ -16,40 +20,16 @@ ai_log_out=simple_function_cache(cache_opts,@ai_log_import_core,{opts_ai,data_su
 % later... But for the sake of component testing, this is here. 
 % Could be abstracted further  “¯\_(?)_/¯“
 
-header({2,'Post-processing...'})
-
-ai_data= cellfun(@(x) x.Data, ai_log_out.data,'UniformOutput',false);
-ai_log_out.pd_data= cell2mat(cellfun(@(x) x(3,:), ai_data,'UniformOutput',false)')';
-ai_log_out.pd_range = range(ai_log_out.pd_data);
-iso_to_posix = @(x) posixtime(datetime(x,'InputFormat','yyyyMMdd''T''HHmmss'));
-ai_log_out.timestamp = cell2mat(nucellf(@(x) iso_to_posix(x.ISO_time_start_aq),ai_log_out.data));
-ai_log_out.t0 = min(ai_log_out.timestamp);
-header({2,'Done'})
-
-
-
-
-% Can be slow to plot large imports, but a) not likely to be enabled often and b) only called once
-% per import
-if opts_ai.plots % Add clause so this automatically disabled if reloading from cache?
+if isfield(opts_ai,'post_fun')
+    header({2,'Post-processing...'})
+    out_ai = opts_ai.post_fun(opts_ai,out_ai);
+    header({2,'Done'})
     
-    ts_offset = ai_log_out.timestamp(1);
-
-    sfigure(100);
-    clf
-    
-    subplot(1,2,1)
-    plot(ai_log_out.timestamp-ts_offset,'.')
-    xlabel('File number')
-    ylabel('Time elapsed from start')
-    suptitle('Analog import diagnostics')
-    
-    subplot(1,2,2)
-    plot(ai_log_out.timestamp-ts_offset,ai_log_out.pd_range,'.')
-    title('PD data')
-    xlabel('Sample idx')
-    ylabel('Voltage range')
-    
+    % Can be slow to plot large imports, but a) not likely to be enabled often and b) only called once
+    % per import
+    if opts_ai.plots % Add clause so this automatically disabled if reloading from cache?        
+        ai_diagnostic_plots(out_ai)
+    end
 end
 
 if opts_ai.verbose > 0

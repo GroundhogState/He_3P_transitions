@@ -1,13 +1,21 @@
 function opts = transition_config()
 
-data_dir = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\20190325_long_fine_run\';
-opts.dir = data_dir;
+
+opts.dir = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\75MHz_around_412\';
 opts.probe_set_pt=0.4;
- 
+opts.ritz_wl = 412.19733341; % NIST Ritz wavelength, nm
+opts.ritz_freq = 299792458/opts.ritz_wl; %GHz
+opts.obs_wl = 412.1978; %NIST observed vacuum wl, nm
+opts.obs_freq = 299792458/opts.obs_wl; %GHz
+
+opts.pred_wl = opts.ritz_wl;
+opts.pred_freq = opts.ritz_freq;
+
 opts.global.fall_time=0.417;
 opts.global.qe=0.09;
 
-opts.wm.plot_all=false;
+opts.wm.plot_all=1;
+
 opts.wm.plot_failed=false;
 opts.trig_ai_in=20;
 opts.trig_dld=20.3;
@@ -18,12 +26,15 @@ opts.aquire_time=4;
 % data.mcp_tdc.probe.calibration = ones(34,1);
 % data.mcp_tdc.time_create_write=ones(2,2);
 %% Analog import
-opts.ai.num_files = nan; %this should be auto
+
+opts.ai.num_files = 150;
+
 opts.ai.dir=opts.dir;
 % opts.ai.force_recalc_import = true;
 opts.ai.log_name='log_analog_in_';
 opts.ai.verbose = 1;
 opts.ai.plots=1;
+opts.ai.post_fun = @transition_post_ai;
 % Options for global import
 opts.ai.cache_import.verbose=0;
 opts.ai.cache_import.force_cache_load=false;
@@ -86,9 +97,35 @@ opts.wm.red_range_thresh=50; %allowable range deviation in MHz
 opts.wm.rvb_thresh=20; %allowable value of abs(2*red-blue)
 
 %% LV import
+
+opts.lv.dir = opts.dir;
 opts.lv.plots = true;
+
+
+%% TDC import
+
+opts.tdc.dir = opts.dir;
+% opts.probe_set_pt=loop_config.set_pt(dir_idx);
+opts.tdc.file_name='d';
+opts.tdc.force_load_save=false;   %takes precidence over force_reimport
+opts.tdc.force_reimport=false;
+opts.tdc.force_forc=false;
+opts.tdc.dld_xy_rot=0.61;
+%Should probably try optimizing these
+tmp_xlim=[-30e-3, 30e-3];     %tight XY lims to eliminate hot spot from destroying pulse widths
+tmp_ylim=[-30e-3, 30e-3];
+tlim=[0,4];
+opts.tdc.txylim=[tlim;tmp_xlim;tmp_ylim];
+
+opts.max_runtime=inf;%inf%cut off the data run after some number of hours, should bin included as its own logic not applied to the atom number ok
+
+opts.aom_freq=0;%190*1e6;%Hz %set to zero for comparison with previous data runs
+
+
 %% Plotting
 opts.tr.plot = 1; 
+opts.tr.pred_freq = opts.pred_freq;
+opts.tr.pred_wl = opts.pred_wl;
 opts.tr.num_cal_bins = 50;
 opts.tr.wm_tolerance = 10; %MHz
 opts.rt.num_freq_bins = nan; %MHz

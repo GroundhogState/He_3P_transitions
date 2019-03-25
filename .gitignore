@@ -1,2 +1,17 @@
-# Ignore the cache
+# Windows default autosave extension
+
+*.asv
+
+# Data files
+
+*.mat
+
+# dropbox
+
+*.dropbox
+
+# windows files
+
+*.ini
+#The cache
 cache/

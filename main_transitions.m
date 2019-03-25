@@ -30,12 +30,16 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%% GETTING STARTED
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % add all subfolders to the path
+
+clear all
 this_folder = fileparts(which(mfilename));
+core_folder = fullfile(fileparts(this_folder),'Core_BEC_Analysis\');
 addpath(genpath(this_folder));
+addpath(genpath(core_folder));
 fwtext('')
 fwtext('STARTING ANALYSIS')
 fwtext('')
-data = [];
+
 %% Setting up
 header({0,'Setting up configs...'})
 % Declare useful constants
@@ -47,33 +51,23 @@ header({1,'Done.'})
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%% IMPORTING DATA
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-fwtext('IMPORTING DATA')
-% % IMPORT THE ANALOG INPUT
-data.ai=ai_log_import(opts.ai,data);
-
-
-%% PD data is in channel 3 
-% Code below will develop into a post-process fn to be called on data.ai_log
-
+%% Import the analog log files
+data.ai = ai_log_import(opts.ai);
 %% Import LabView log
-data.lv = import_lv_log(opts);
-%% IMPORT WM LOG FILES
-data.wm=wm_log_import(opts.wm);
-% data.wm
-% %% CHECK THE WM INPUTS ?
-% data.wm.proc=wm_log_process(opts,data);
-% clear('sub_data')
+data.lv = import_lv_log(opts.lv);
+%% Import wavemeter logs
+data.wm = wm_log_import(opts.wm);
+%% Import TDC files
+data.tdc=import_mcp_tdc(opts.tdc);
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%% PROCESSING DATA
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 fwtext('PROCESSING IMPORTS')
 header({1,'Processing...'})
-data.tr = transition_process(data,opts.tr);
-% transition_plots(data,opts.plt)
-
+% data.tr = transition_process(data,opts.tr);
+data.tr = bec_transition_process(data,opts.tr);
 fprintf('All done!\n')
-
 header({1,'Done.'})
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%% PRESENTING RESULTS

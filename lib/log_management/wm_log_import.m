@@ -17,7 +17,6 @@ if opts_wm.plots
     xlabel('Time elapsed')
     ylabel('WM blue setpt')
     title('WM blue freq')
-    
     suptitle('WM import diagnostics')
 end
 
