@@ -5,8 +5,7 @@ function tr = bec_transition_process(data,opts_tr)
     ai_time = data.ai.timestamp;
     lv_time = data.lv.time;
     wm_time = data.wm.blue_freq.posix_time;
-    
-    
+   
     
     %% FETCHING CALIBRATION
     % Can probably combine with preceding loop...
@@ -52,7 +51,11 @@ function tr = bec_transition_process(data,opts_tr)
            cal_vals.num_shots(ii)=length(this_data);           
            cal_vals.time(ii)=nanmean(this_time);
     end
-    
+    %% create a model of the underlying trap frequency from the calibrations
+%     anal_opts.cal_mdl.smooth_time=100;
+%     anal_opts.cal_mdl.plot=true;
+%     anal_opts.cal_mdl.global=anal_opts.global;
+%     data.cal=make_cal_model(anal_opts.cal_mdl,data);
     %% Matching timestamps
     sync_shots = [];
     sync_shots.num_atoms = zeros(num_files,1);
@@ -137,8 +140,8 @@ function tr = bec_transition_process(data,opts_tr)
            freq_stats.sig(ii) = nanmean(shots_temp.N_atoms);
            freq_stats.freq_err(ii) = nanstd(shots_temp.wm_set);
            freq_stats.num_shots(ii) = sum(fmask_temp);
-           freq_stats.sig_cal(ii) = nanmean(shots_temp.N_atoms - shots_temp.cal_mean');
-           freq_stats.sig_err(ii) = nanstd(shots_temp.N_atoms);
+           freq_stats.sig_cal(ii) = nanmean(shots_temp.N_atoms ./ shots_temp.cal_mean');
+           freq_stats.sig_err(ii) = nanstd(shots_temp.N_atoms./ shots_temp.cal_mean');
            freq_stat_mask(ii) = abs(freq_stats.freq(ii)) > 0;
        end
     end
@@ -202,32 +205,40 @@ if opts_tr.plot
     title(sprintf('Laser setpoint error, N=%u',length(wm_set_err(wm_set_mask))))
 
 
-    sfigure(600);
+    sfigure(601);
     clf;
     subplot(3,2,1)
     plot((freq_raw_X-mid_setpt),val_raw,'.')
     xlabel('Blue WM reading [MHz]')
-    ylabel('PD range')
+    ylabel('Atom Number')
     title('Raw responses')
     
     
     subplot(3,2,2)
     plot((freq_raw_X-mid_setpt),val_cal,'.')
     xlabel('Blue WM reading [MHz]')
-    ylabel('PD range')
+    ylabel('Atom Number Ratio')
     title('Calibrated responses')
     
+%     subplot(3,2,[3 4])
+%     plot(bin_freq_X,bin_freq_Y,'-')
+%     xlabel(sprintf('f-%3.5f [MHz]',mid_setpt))
+%     ylabel('PD range')
+%     title('Binned & calibrated response')
     subplot(3,2,[3 4])
-    plot(bin_freq_X,bin_freq_Y,'-')
+    plot(sync_cal.wm_set-mid_setpt,sync_cal.N_atoms,'.')
+    hold on
+    plot(sync_msr.wm_set-mid_setpt,sync_msr.N_atoms,'.')
     xlabel(sprintf('f-%3.5f [MHz]',mid_setpt))
-    ylabel('PD range')
-    title('Binned & calibrated response')
+    ylabel('Atom Number')
+    legend('Calibration','Interegation')
     
     subplot(3,2,[5 6])
     errorbar(bin_freq_X,bin_freq_Y,bin_freq_Y_err,'.')
     xlabel(sprintf('f-%3.5f [MHz]',mid_setpt))
-    ylabel('PD range')
+    ylabel('Atom Number Difference')
     title('Binned & calibrated response')
+    
     
     suptitle('Processing diagnostics')
     
