@@ -1,12 +1,13 @@
 function tr = transition_process(data,opts_tr)
 
+
     num_files = numel(data.ai.data);
     ai_time = data.ai.timestamp;
     lv_time = data.lv.time;
     wm_time = data.wm.blue_freq.posix_time;
     
     
-    
+
     %% FETCHING CALIBRATION
     % Can probably combine with preceding loop...
     % calibration changes sign UP when switching to calibration
@@ -15,10 +16,12 @@ function tr = transition_process(data,opts_tr)
     % Should guarantee correct partitioning
     first_cals = find(mode_swap > 0);
     last_cals = find(mode_swap < 0);
+
     if max(last_cals) > num_files
         last_cals = last_cals(last_cals<num_files);
         first_cals = first_cals(first_cals<num_files);
     end
+
     if max(last_cals) < max(first_cals)
         % Cal switches on, but the return not caught
         last_cals = [last_cals,num_files];
@@ -28,6 +31,7 @@ function tr = transition_process(data,opts_tr)
         first_cals = [1,first_cals];
         % all other cases should be fine?
     end
+
     num_cal_seg = length(first_cals);
     if length(last_cals) ~= length(first_cals)
         warning('Incomplete calibration segment!')
@@ -68,6 +72,7 @@ function tr = transition_process(data,opts_tr)
     for ii = 1:num_files
        % Fun job: Write fn/ mod closest_value so it can be vectorized
         this_ai_time = ai_time(ii);
+
         [this_wm_time,this_wm_idx] = closest_value(wm_time,this_ai_time);
         this_wm_set = data.wm.blue_freq.value(this_wm_idx);
         [this_lv_time,this_lv_idx] = closest_value(lv_time,this_ai_time);
@@ -114,6 +119,7 @@ function tr = transition_process(data,opts_tr)
 
     
     %% Grouping by wavelength
+
     num_freq_bins = length(all_setpts);
     freq_gap = mean(diff(sort_setpt));
     fbin_edges = linspace(min_set-freq_gap,max_set+freq_gap,num_freq_bins+1)/1e6; %MHz
@@ -142,7 +148,7 @@ function tr = transition_process(data,opts_tr)
     tr.stats = freq_stats;
     tr.calib = cal_vals;
 
-    
+
 if opts_tr.plot
     %% Compute things for plots
 
@@ -152,8 +158,7 @@ if opts_tr.plot
 
     [wm_hist,cal_wm_bin_edges] = histcounts(wm_set_err(wm_msr_mask),opts_tr.num_cal_bins);
     wm_bin_cents = 0.5*(cal_wm_bin_edges(1:end-1)+cal_wm_bin_edges(2:end));
-    
-    
+   
     mid_setpt = opts_tr.pred_freq*1e3; %MHz
     pd_val_raw = sync_msr.pd_range;
     pd_val_cal = sync_msr.pd_range - sync_msr.cal_mean;
@@ -163,7 +168,7 @@ if opts_tr.plot
     bin_freq_X = freq_stats.freq-mid_setpt; % MHz
     bin_freq_Y = freq_stats.pd_sig_cal;
     bin_freq_Y_err = freq_stats.pd_sig_err./freq_stats.num_shots';
-    
+ 
     %% Plotting
     sfigure(400);
     clf
@@ -176,6 +181,7 @@ if opts_tr.plot
     title(sprintf('Range calibration, N=%u',sum(cal_mask)))
 
     subplot(2,2,2)
+
     plot(sync_shots.wm_set,'x')
     xlabel('Shot number')
     ylabel('Measured WM freq')
@@ -186,7 +192,6 @@ if opts_tr.plot
     xlabel('Value [MHz]')
     ylabel('Counts')
     title(sprintf('Laser setpoint error, N=%u',length(wm_set_err(wm_set_mask))))
-
 
     sfigure(600);
     clf;

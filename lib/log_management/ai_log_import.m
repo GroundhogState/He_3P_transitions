@@ -1,3 +1,4 @@
+
 function out_ai=ai_log_import(opts_ai)
 
 fwtext('IMPORTING DATA')
@@ -10,7 +11,9 @@ cache_opts=opts_ai.cache_import;
 
 %limit the scope but retain the structure
 data_sub = [];
+
 out_ai=simple_function_cache(cache_opts,@ai_log_import_core,{opts_ai,data_sub});
+
 
 % Kind of violates the concept of this being a 'pure' import script, so could compute this
 % elsewhere. It's easy to start computing things in here as diagnostic which end up getting used

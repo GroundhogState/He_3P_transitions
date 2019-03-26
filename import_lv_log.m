@@ -1,7 +1,14 @@
+<<<<<<< HEAD
+function data = import_lv_log(opts)
+    fprintf('Importing LV log...\n')
+    lv_log=[];
+    lv_log.dir = strcat(opts.dir,'log_LabviewMatlab.txt');
+=======
 function data = import_lv_log(opts_lv)
     fprintf('Importing LV log...\n')
     lv_log=[];
     lv_log.dir = strcat(opts_lv.dir,'log_LabviewMatlab.txt');
+>>>>>>> 62714e562faafc235fb52867e17c9377e5b47c9f
     fid = fopen(lv_log.dir );
     lv_log.cell=textscan(fid,'%s','Delimiter','\n');
     fclose(fid);
@@ -34,7 +41,11 @@ function data = import_lv_log(opts_lv)
     data.calibration=lv_log.probe_calibration;
     fprintf('Done!\n')
     
+<<<<<<< HEAD
+    if opts.lv.plots
+=======
     if opts_lv.plots
+>>>>>>> 62714e562faafc235fb52867e17c9377e5b47c9f
         t0 = min(data.time);
         sfigure(200);
         clf;

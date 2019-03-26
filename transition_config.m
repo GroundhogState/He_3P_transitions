@@ -14,6 +14,7 @@ opts.global.fall_time=0.417;
 opts.global.qe=0.09;
 
 opts.wm.plot_all=1;
+
 opts.wm.plot_failed=false;
 opts.trig_ai_in=20;
 opts.trig_dld=20.3;
@@ -24,7 +25,9 @@ opts.aquire_time=4;
 % data.mcp_tdc.probe.calibration = ones(34,1);
 % data.mcp_tdc.time_create_write=ones(2,2);
 %% Analog import
+
 opts.ai.num_files = 150;
+
 opts.ai.dir=opts.dir;
 % opts.ai.force_recalc_import = true;
 opts.ai.log_name='log_analog_in_';
@@ -93,6 +96,7 @@ opts.wm.red_range_thresh=50; %allowable range deviation in MHz
 opts.wm.rvb_thresh=20; %allowable value of abs(2*red-blue)
 
 %% LV import
+
 opts.lv.dir = opts.dir;
 opts.lv.plots = true;
 

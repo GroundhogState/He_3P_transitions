@@ -30,6 +30,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%% GETTING STARTED
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % add all subfolders to the path
+
 clear all
 this_folder = fileparts(which(mfilename));
 core_folder = fullfile(fileparts(this_folder),'Core_BEC_Analysis\');
@@ -38,6 +39,7 @@ addpath(genpath(core_folder));
 fwtext('')
 fwtext('STARTING ANALYSIS')
 fwtext('')
+
 %% Setting up
 header({0,'Setting up configs...'})
 % Declare useful constants
@@ -45,6 +47,7 @@ hebec_constants
 % initialize variables
 opts = transition_config();
 header({1,'Done.'})
+
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%% IMPORTING DATA
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -56,7 +59,6 @@ data.lv = import_lv_log(opts.lv);
 data.wm = wm_log_import(opts.wm);
 %% Import TDC files
 data.tdc=import_mcp_tdc(opts.tdc);
-
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%% PROCESSING DATA
