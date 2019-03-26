@@ -1,6 +1,6 @@
 function opts = transition_config()
 
-opts.dir = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\75MHz_around_412\';
+opts.dir = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\20190325_50MHz_around_412\';
 opts.probe_set_pt=0.4;
 opts.ritz_wl = 412.19733341; % NIST Ritz wavelength, nm
 opts.ritz_freq = 299792458/opts.ritz_wl; %GHz
