@@ -8,7 +8,6 @@ function tr = bec_transition_process(data,opts_tr)
    
     
     %% FETCHING CALIBRATION
-    % Can probably combine with preceding loop...
     % calibration changes sign UP when switching to calibration
     % Changes sign DOWN when changing to measurement
     mode_swap = diff(data.lv.calibration);
@@ -51,11 +50,14 @@ function tr = bec_transition_process(data,opts_tr)
            cal_vals.num_shots(ii)=length(this_data);           
            cal_vals.time(ii)=nanmean(this_time);
     end
-    %% create a model of the underlying trap frequency from the calibrations
+    %% create a calibration model
 %     anal_opts.cal_mdl.smooth_time=100;
 %     anal_opts.cal_mdl.plot=true;
 %     anal_opts.cal_mdl.global=anal_opts.global;
 %     data.cal=make_cal_model(anal_opts.cal_mdl,data);
+
+
+
     %% Matching timestamps
     sync_shots = [];
     sync_shots.num_atoms = zeros(num_files,1);
@@ -74,7 +76,7 @@ function tr = bec_transition_process(data,opts_tr)
         [this_wm_time,this_wm_idx] = closest_value(wm_time,this_time);
         this_wm_set = data.wm.blue_freq.value(this_wm_idx);
         [~,this_lv_idx] = closest_value(lv_time,this_time);
-        this_lv_idx = this_lv_idx - 1;
+%         this_lv_idx = this_lv_idx - 1;
         this_lv_time = data.lv.time(this_lv_idx);
         this_lv_cal = data.lv.calibration(this_lv_idx);
         this_lv_set = data.lv.setpoint(this_lv_idx);
@@ -92,7 +94,6 @@ function tr = bec_transition_process(data,opts_tr)
     end
     
     %Separating test & cal shots
-%     ctrl_mask = data.lv.calibration;
     ctrl_mask = logical(sync_shots.lv_cal)';
     % Masking for laser setpt errors
     wm_set_err = sync_shots.wm_set - 2*sync_shots.lv_set/1e6; % Error in MHz
@@ -106,10 +107,9 @@ function tr = bec_transition_process(data,opts_tr)
     % Break out calibration % measurement blocks
     sync_cal = struct_mask(sync_shots,cal_mask);
     sync_msr = struct_mask(sync_shots,msr_mask);
-    sync_msr.calibrated = sync_msr.N_atoms-sync_msr.cal_mean; 
 
     
-    % These two lines are inefficient & could be replaced by a single imported item in the
+    % These lines are inefficient & could be replaced by a single imported item in the
     % interface, but that's a change for later
     all_setpts = unique(data.lv.setpoint);
     all_setpts = all_setpts(~isnan(all_setpts));
@@ -118,7 +118,7 @@ function tr = bec_transition_process(data,opts_tr)
     max_set = 2*max(all_setpts);
 
     
-    %% Grouping by wavelength
+    %% Grouping by wavelength (Independent variable)
     num_freq_bins = length(all_setpts);
     freq_gap = mean(diff(sort_setpt));
     fbin_edges = linspace(min_set-freq_gap,max_set+freq_gap,num_freq_bins+1)/1e6; %MHz
@@ -140,6 +140,9 @@ function tr = bec_transition_process(data,opts_tr)
            freq_stats.sig(ii) = nanmean(shots_temp.N_atoms);
            freq_stats.freq_err(ii) = nanstd(shots_temp.wm_set);
            freq_stats.num_shots(ii) = sum(fmask_temp);
+           if num_cal_seg ==0
+               shots_temp.cal_mean = 1;
+           end
            freq_stats.sig_cal(ii) = nanmean(shots_temp.N_atoms ./ shots_temp.cal_mean');
            freq_stats.sig_err(ii) = nanstd(shots_temp.N_atoms./ shots_temp.cal_mean');
            freq_stat_mask(ii) = abs(freq_stats.freq(ii)) > 0;
@@ -147,15 +150,15 @@ function tr = bec_transition_process(data,opts_tr)
     end
     freq_stats = struct_mask(freq_stats,logical(freq_stat_mask));
     
-    % Write output
+    %% Write output
     tr.shots = sync_shots;
     tr.stats = freq_stats;
     tr.calib = cal_vals;
 
-    
-if opts_tr.plot
-    %% Compute things for plots
 
+if opts_tr.plot
+    %% Plotting
+    % % Compute things
 
     [cal_hist,cal_bin_edges]= histcounts(sync_cal.N_atoms,opts_tr.num_cal_bins);
     cal_bin_cents = 0.5*(cal_bin_edges(1:end-1)+cal_bin_edges(2:end));
@@ -165,20 +168,18 @@ if opts_tr.plot
     
     
     mid_setpt = opts_tr.pred_freq*1e3; %MHz
-    val_raw = sync_msr.N_atoms;
-    val_cal = sync_msr.N_atoms' - sync_msr.cal_mean;
-    
-    freq_raw_X = sync_msr.wm_set; %MHz
-    
-    bin_freq_X = freq_stats.freq-mid_setpt; % MHz
-    bin_freq_Y = freq_stats.sig_cal;
-    bin_freq_Y_err = freq_stats.sig_err./freq_stats.num_shots';
-    bin_freq_Y_err = bin_freq_Y_err.*~isnan(bin_freq_Y_err);
+    plot_raw_X = sync_msr.wm_set-mid_setpt;
+    plot_raw_Y = sync_msr.N_atoms;
+    plot_cal_X = sync_cal.wm_set-mid_setpt;
+    plot_cal_Y = sync_cal.N_atoms;
+    plot_sig_X = freq_stats.freq-mid_setpt;
+    plot_sig_Y = freq_stats.sig_cal;
+    plot_sig_Y_err = freq_stats.sig_err;
+    plot_sig_Y_err = plot_sig_Y_err.*~isnan(plot_sig_Y_err);
+
     
     %% Fitting
-    
-%     f0_guess = 990; %MHz relative to 
-    
+       
     
     
     %% Plotting
@@ -207,38 +208,24 @@ if opts_tr.plot
 
     sfigure(601);
     clf;
-    subplot(3,2,1)
-    plot((freq_raw_X-mid_setpt),val_raw,'.')
-    xlabel('Blue WM reading [MHz]')
-    ylabel('Atom Number')
-    title('Raw responses')
-    
-    
-    subplot(3,2,2)
-    plot((freq_raw_X-mid_setpt),val_cal,'.')
-    xlabel('Blue WM reading [MHz]')
-    ylabel('Atom Number Ratio')
-    title('Calibrated responses')
-    
-%     subplot(3,2,[3 4])
-%     plot(bin_freq_X,bin_freq_Y,'-')
-%     xlabel(sprintf('f-%3.5f [MHz]',mid_setpt))
-%     ylabel('PD range')
-%     title('Binned & calibrated response')
-    subplot(3,2,[3 4])
-    plot(sync_cal.wm_set-mid_setpt,sync_cal.N_atoms,'.')
+    subplot(2,1,1)
+    plot(plot_raw_X,plot_raw_Y,'.')
     hold on
-    plot(sync_msr.wm_set-mid_setpt,sync_msr.N_atoms,'.')
+    plot(plot_cal_X,plot_cal_Y,'.')
     xlabel(sprintf('f-%3.5f [MHz]',mid_setpt))
     ylabel('Atom Number')
-    legend('Calibration','Interegation')
-    
-    subplot(3,2,[5 6])
-    errorbar(bin_freq_X,bin_freq_Y,bin_freq_Y_err,'.')
+    legend('Calibration','Interrogation')
+    title('Raw')
+       
+    subplot(2,1,2)
+    errorbar(plot_sig_X,plot_sig_Y,plot_sig_Y_err,'.')
     xlabel(sprintf('f-%3.5f [MHz]',mid_setpt))
-    ylabel('Atom Number Difference')
-    title('Binned & calibrated response')
-    
+    ylabel('Atom Number Ratio')
+    if num_cal_seg >0
+        title('Binned & Calibrated')
+    elseif num_cal_seg == 0
+        title('Binned, UNCALIBRATED')
+    end
     
     suptitle('Processing diagnostics')
     

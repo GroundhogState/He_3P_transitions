@@ -33,6 +33,6 @@ function header(args)
     msg_out = sprintf(msg,vals);
     blank = '                                                            ';
     marker = blank(1:3*lvl);
-    fprintf([marker,' - ',msg_out,'\n'])
+    disp([marker,' - ',msg_out])
 
 end

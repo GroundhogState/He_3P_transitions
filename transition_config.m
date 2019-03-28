@@ -1,6 +1,6 @@
 function opts = transition_config()
 
-opts.dir = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\20190325_75MHz_around_412\';
+opts.dir = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\20190326_overnight\';
 
 opts.probe_set_pt=0.4;
 opts.ritz_wl = 412.19733341; % NIST Ritz wavelength, nm
@@ -131,5 +131,15 @@ opts.tr.wm_tolerance = 10; %MHz
 opts.rt.num_freq_bins = nan; %MHz
 opts.tr.freq_bin_size = 0.25;
 
+%% Generate out directory
+%set up an output dir %https://gist.github.com/ferryzhou/2269380
+if (exist([opts.dir,'out'], 'dir') == 0), mkdir([opts.dir,'out']); end
+%make a subfolder with the ISO timestamp for that date
+out.dir=sprintf('%sout\\%s\\',...
+    opts.dir,datestr(datetime('now'),'yyyymmddTHHMMSS'));
+if (exist(out.dir, 'dir') == 0), mkdir(out.dir); end
+opts.wm.out_dir=out.dir;
+opts.ai.out_dir=out.dir;
+opts.tr.out_dir=out.dir;
 
 end
