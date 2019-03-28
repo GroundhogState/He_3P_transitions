@@ -70,9 +70,21 @@ data.tr = bec_transition_process(data,opts.tr);
 fprintf('All done!\n')
 header({1,'Done.'})
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%% PRESENTING RESULTS
+%%%%%%%%%%%%%%%%%%%%%%%%%% SAVE RESULTS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-fwtext('ALL DONE!!!')
+%% Commented out for now; eventually the fit parameters & uncerts can be written out also
+% header({0,'Saving output'})
+% out_struct.data = data;
+% out_struct.opts = opts;
+% 
+% % Trim the raw data
+% out_struct.data.tdc = rmfield(out_struct.data.tdc,'counts_txy');
+% % WM and AI logs would be huge
+% out_struct.data = rmfield(out_struct.data,'wm');
+% out_struct.data = rmfield(out_struct.data,'ai');
+% outfilename = fullfile(opts.out_dir,['results_',datestr(datetime('now'),'yyyymmddTHHMMSS'),'.mat']);
+% save(outfilename,'out_struct','-v7.3')
+% header({0,'Saved'})
+% fwtext('ALL DONE!!!')
 %% Settings
 

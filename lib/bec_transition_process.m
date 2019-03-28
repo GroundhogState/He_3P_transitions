@@ -2,7 +2,7 @@ function tr = bec_transition_process(data,opts_tr)
 
 %     num_files = numel(data.tdc.shot_num);
     tdc_time = data.tdc.time_create_write(:,2);
-    ai_time = data.ai.timestamp;
+%     ai_time = data.ai.timestamp;
     lv_time = data.lv.time;
     wm_time = data.wm.blue_freq.posix_time;
     
@@ -157,7 +157,7 @@ if opts_tr.plot
         
     f1=sfigure(5000);
     clf;
-    subplot(2,1,1)
+    subplot(3,1,1)
     plot(plot_raw_T,plot_raw_Y,'.')
     hold on
     plot(plot_cal_T,plot_cal_Y,'.')
@@ -167,7 +167,14 @@ if opts_tr.plot
     legend('Measurement shots','calibration shots','Model')
     title('Raw data')
 
-    subplot(2,1,2)
+    subplot(3,1,2)
+    plot(plot_raw_T,plot_mdl_Y,'.')
+    xlabel(sprintf('f-%3.5f [MHz]',mid_setpt))
+    ylabel('N ratio')
+    title('Model-calibrated signal')    
+    suptitle('Calibration model')
+    
+    subplot(3,1,3)
     plot(plot_raw_X,plot_mdl_Y,'.')
     xlabel(sprintf('f-%3.5f [MHz]',mid_setpt))
     ylabel('N ratio')
@@ -200,7 +207,7 @@ if opts_tr.plot
     hold on
     plot(tdc_time,'.')
     plot(lv_time,'.')
-    plot(ai_time,'.')
+%     plot(ai_time,'.')
     xlabel('Shot number')
     ylabel('Time')
     title('Recorded timestamps')

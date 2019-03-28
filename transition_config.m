@@ -1,6 +1,6 @@
 function opts = transition_config()
 
-opts.dir = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\20190326_overnight\';
+opts.dir = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\20190329_overnight_desaturated\';
 
 
 opts.probe_set_pt=0.4;
