@@ -1,63 +1,17 @@
 function tr = bec_transition_process(data,opts_tr)
 
-    num_files = numel(data.tdc.shot_num);
-    tdc_time = data.tdc.time_create_write;
+%     num_files = numel(data.tdc.shot_num);
+    tdc_time = data.tdc.time_create_write(:,2);
     ai_time = data.ai.timestamp;
     lv_time = data.lv.time;
     wm_time = data.wm.blue_freq.posix_time;
-   
     
-    %% FETCHING CALIBRATION
-    % calibration changes sign UP when switching to calibration
-    % Changes sign DOWN when changing to measurement
-    mode_swap = diff(data.lv.calibration);
-    % Should guarantee correct partitioning
-    first_cals = find(mode_swap > 0);
-    last_cals = find(mode_swap < 0);
-    if max(last_cals) > num_files
-        last_cals = last_cals(last_cals<num_files);
-        first_cals = first_cals(first_cals<num_files);
-    end
-    if max(last_cals) < max(first_cals)
-        % Cal switches on, but the return not caught
-        last_cals = [last_cals,num_files];
-    end
-    if min(first_cals) > min(last_cals)
-        % The first shots were calibrations but the switch not caught
-        first_cals = [1,first_cals];
-        % all other cases should be fine?
-    end
-    num_cal_seg = length(first_cals);
-    if length(last_cals) ~= length(first_cals)
-        warning('Incomplete calibration segment!')
-    end
-    if num_cal_seg == 0
-        warning('No calibration shots found!')
-    end
+    mid_setpt = opts_tr.pred_freq*1e3; %MHz
+    
+    start_time = min(lv_time);
+    num_files = length(lv_time);
     
     
-    cal_vals = [];
-    num_seg_init = max(num_cal_seg,1);
-    cal_vals.mean = zeros(num_seg_init,1);
-    cal_vals.std = zeros(num_seg_init,1);
-    cal_vals.num_shots = zeros(num_seg_init,1);
-    cal_vals.time = zeros(num_seg_init,1);
-    for ii=1:num_cal_seg
-           this_data = data.tdc.N_atoms(first_cals(ii):last_cals(ii));
-           this_time = tdc_time(first_cals(ii):last_cals(ii));
-           cal_vals.mean(ii) = nanmean(this_data);
-           cal_vals.std(ii)=nanstd(this_data);
-           cal_vals.num_shots(ii)=length(this_data);           
-           cal_vals.time(ii)=nanmean(this_time);
-    end
-    %% create a calibration model
-%     anal_opts.cal_mdl.smooth_time=100;
-%     anal_opts.cal_mdl.plot=true;
-%     anal_opts.cal_mdl.global=anal_opts.global;
-%     data.cal=make_cal_model(anal_opts.cal_mdl,data);
-
-
-
     %% Matching timestamps
     sync_shots = [];
     sync_shots.num_atoms = zeros(num_files,1);
@@ -70,30 +24,26 @@ function tr = bec_transition_process(data,opts_tr)
     sync_shots.cal_mean = zeros(num_files,1);
     sync_shots.cal_std = zeros(num_files,1);
     sync_shots.cal_N = zeros(num_files,1);
-    for ii = 1:num_files
+    sync_shots.cal_interp = zeros(num_files,1);
+    for this_lv_idx = 1:num_files
        % Fun job: Write fn/ mod closest_value so it can be vectorized
-        this_time = tdc_time(ii);
+        this_time = lv_time(this_lv_idx); %The LV log is the first thing written, so timestamp to that
+        sync_shots.lv_cal(this_lv_idx) = data.lv.calibration(this_lv_idx);
+        sync_shots.lv_set(this_lv_idx) = data.lv.setpoint(this_lv_idx);
+        sync_shots.lv_time(this_lv_idx) = this_time;
+        
         [this_wm_time,this_wm_idx] = closest_value(wm_time,this_time);
-        this_wm_set = data.wm.blue_freq.value(this_wm_idx);
-        [~,this_lv_idx] = closest_value(lv_time,this_time);
-%         this_lv_idx = this_lv_idx - 1;
-        this_lv_time = data.lv.time(this_lv_idx);
-        this_lv_cal = data.lv.calibration(this_lv_idx);
-        this_lv_set = data.lv.setpoint(this_lv_idx);
-        [~ ,this_cal_idx] = closest_value(cal_vals.time,this_time);
-        sync_shots.N_atoms(ii) = data.tdc.N_atoms(ii)';
-        sync_shots.wm_set(ii) = this_wm_set;
-        sync_shots.lv_cal(ii) = this_lv_cal;
-        sync_shots.lv_set(ii) = this_lv_set;
-        sync_shots.ai_time(ii) = this_time;
-        sync_shots.wm_time(ii) = this_wm_time;
-        sync_shots.lv_time(ii) = this_lv_time;
-        sync_shots.cal_mean(ii) = cal_vals.mean(this_cal_idx);
-        sync_shots.cal_std(ii) = cal_vals.std(this_cal_idx);
-        sync_shots.cal_N(ii) = cal_vals.num_shots(this_cal_idx);
+        sync_shots.wm_time(this_lv_idx) = this_wm_time;
+        sync_shots.wm_set(this_lv_idx) = data.wm.blue_freq.value(this_wm_idx);
+        
+        [~,this_tdc_idx] = closest_value(tdc_time,this_time);
+        this_tdc_idx = this_tdc_idx + 1;
+        sync_shots.tdc_time(this_lv_idx) = tdc_time(this_tdc_idx);
+        sync_shots.N_atoms(this_lv_idx) = data.tdc.N_atoms(this_tdc_idx)';
+        
     end
     
-    %Separating test & cal shots
+    %% Separating test & cal shots
     ctrl_mask = logical(sync_shots.lv_cal)';
     % Masking for laser setpt errors
     wm_set_err = sync_shots.wm_set - 2*sync_shots.lv_set/1e6; % Error in MHz
@@ -107,8 +57,14 @@ function tr = bec_transition_process(data,opts_tr)
     % Break out calibration % measurement blocks
     sync_cal = struct_mask(sync_shots,cal_mask);
     sync_msr = struct_mask(sync_shots,msr_mask);
-
     
+   
+    %% create a calibration model
+    % v1: Interpolation. Fast, rough.
+    interp_mdl = interp1(sync_cal.tdc_time,sync_cal.N_atoms,sync_msr.tdc_time);
+    sync_msr.interp_mdl = interp_mdl;
+       
+
     % These lines are inefficient & could be replaced by a single imported item in the
     % interface, but that's a change for later
     all_setpts = unique(data.lv.setpoint);
@@ -140,20 +96,31 @@ function tr = bec_transition_process(data,opts_tr)
            freq_stats.sig(ii) = nanmean(shots_temp.N_atoms);
            freq_stats.freq_err(ii) = nanstd(shots_temp.wm_set);
            freq_stats.num_shots(ii) = sum(fmask_temp);
-           if num_cal_seg ==0
-               shots_temp.cal_mean = 1;
-           end
-           freq_stats.sig_cal(ii) = nanmean(shots_temp.N_atoms ./ shots_temp.cal_mean');
-           freq_stats.sig_err(ii) = nanstd(shots_temp.N_atoms./ shots_temp.cal_mean');
+           freq_stats.sig_cal(ii) = nanmean(shots_temp.N_atoms./shots_temp.interp_mdl');
+           freq_stats.sig_err(ii) = nanstd(shots_temp.N_atoms./shots_temp.interp_mdl');
            freq_stat_mask(ii) = abs(freq_stats.freq(ii)) > 0;
        end
     end
     freq_stats = struct_mask(freq_stats,logical(freq_stat_mask));
     
+    
+    %% Fitting the data
+%     inv_peak = 1-freq_stats.sig_cal;
+    
+%     [peak_guess,peak_idx]= min(freq_stats.sig_cal);
+%     var_guess = 15;
+%     % Fit a dumb gaussian
+%     mdlfun = @(p,x) 1 - p(1)*exp(-0.5*((x-p(2))/p(3)).^2);
+%     beta0 = [1-peak_guess,freq_stats.freq(peak_idx),var_guess];
+%     fit = fitnlm(freq_stats.freq,freq_stats.sig_cal,mdlfun,beta0);
+    
+    
+    
+    
     %% Write output
-    tr.shots = sync_shots;
+    tr.sense = sync_msr;
+    tr.calib = sync_cal;
     tr.stats = freq_stats;
-    tr.calib = cal_vals;
 
 
 if opts_tr.plot
@@ -166,27 +133,50 @@ if opts_tr.plot
     [wm_hist,cal_wm_bin_edges] = histcounts(wm_set_err(wm_msr_mask),opts_tr.num_cal_bins);
     wm_bin_cents = 0.5*(cal_wm_bin_edges(1:end-1)+cal_wm_bin_edges(2:end));
     
-    
-    mid_setpt = opts_tr.pred_freq*1e3; %MHz
+
+  
+    plot_raw_T = sync_msr.tdc_time-start_time;
     plot_raw_X = sync_msr.wm_set-mid_setpt;
     plot_raw_Y = sync_msr.N_atoms;
+    
+    plot_cal_T = sync_cal.tdc_time-start_time;
     plot_cal_X = sync_cal.wm_set-mid_setpt;
     plot_cal_Y = sync_cal.N_atoms;
+    
+    plot_mdl_Y = sync_msr.N_atoms./interp_mdl';
+    
     plot_sig_X = freq_stats.freq-mid_setpt;
     plot_sig_Y = freq_stats.sig_cal;
     plot_sig_Y_err = freq_stats.sig_err;
     plot_sig_Y_err = plot_sig_Y_err.*~isnan(plot_sig_Y_err);
-
     
-    %% Fitting
-       
     
     
     %% Plotting
-    sfigure(400);
+    % Plotting the calibration model
+        
+    f1=sfigure(5000);
+    clf;
+    subplot(2,1,1)
+    plot(plot_raw_T,plot_raw_Y,'.')
+    hold on
+    plot(plot_cal_T,plot_cal_Y,'.')
+    plot(plot_raw_T,interp_mdl)
+    xlabel('Time elapsed')
+    ylabel('Counts')
+    legend('Measurement shots','calibration shots','Model')
+    title('Raw data')
+
+    subplot(2,1,2)
+    plot(plot_raw_X,plot_mdl_Y,'.')
+    xlabel(sprintf('f-%3.5f [MHz]',mid_setpt))
+    ylabel('N ratio')
+    title('Model-calibrated signal')    
+    suptitle('Calibration model')
+    
+    % Plotting the histograms
+    f2=sfigure(500);
     clf
-
-
     subplot(2,2,1)
     area(cal_bin_cents,cal_hist)
     xlabel('Value [V]')
@@ -204,30 +194,42 @@ if opts_tr.plot
     xlabel('Value [MHz]')
     ylabel('Counts')
     title(sprintf('Laser setpoint error, N=%u',length(wm_set_err(wm_set_mask))))
-
-
-    sfigure(601);
-    clf;
-    subplot(2,1,1)
-    plot(plot_raw_X,plot_raw_Y,'.')
+    
+    subplot(2,2,4)
+    plot(wm_time,'.')
     hold on
-    plot(plot_cal_X,plot_cal_Y,'.')
-    xlabel(sprintf('f-%3.5f [MHz]',mid_setpt))
-    ylabel('Atom Number')
-    legend('Calibration','Interrogation')
-    title('Raw')
-       
-    subplot(2,1,2)
+    plot(tdc_time,'.')
+    plot(lv_time,'.')
+    plot(ai_time,'.')
+    xlabel('Shot number')
+    ylabel('Time')
+    title('Recorded timestamps')
+    legend('WM','TDC','LV','AI')
+
+    % Plotting the result
+    f3=sfigure(501);
+    clf;
     errorbar(plot_sig_X,plot_sig_Y,plot_sig_Y_err,'.')
+    hold on
+%     plot(freq_stats.freq-mid_setpt,mdlfun(beta0,freq_stats.freq),'kx')
+%     plot(freq_stats.freq-mid_setpt,mdlfun(fit.Coefficients.Estimate,freq_stats.freq),'ro')
+%     plot(plot_sig_X,mdlfun(fit.Coefficients.Estimate,plot_sig_X+mid_setpt))
     xlabel(sprintf('f-%3.5f [MHz]',mid_setpt))
     ylabel('Atom Number Ratio')
-    if num_cal_seg >0
-        title('Binned & Calibrated')
-    elseif num_cal_seg == 0
-        title('Binned, UNCALIBRATED')
-    end
+
+    suptitle('Binned absorption spectrum')
     
-    suptitle('Processing diagnostics')
+    filename1 = fullfile(opts_tr.out_dir,sprintf('%s_raw_calib',mfilename));
+    saveas(f1,[filename1,'.fig']);
+    saveas(f1,[filename1,'.png'])
+
+    filename2 = fullfile(opts_tr.out_dir,sprintf('%s_diagnostic',mfilename));
+    saveas(f2,[filename2,'.fig']);
+    saveas(f2,[filename2,'.png'])
+
+    filename3 = fullfile(opts_tr.out_dir,sprintf('%s_spectrum',mfilename));
+    saveas(f3,[filename3,'.fig']);
+    saveas(f3,[filename3,'.png'])
     
 end
 

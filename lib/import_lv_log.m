@@ -1,6 +1,7 @@
-function data = import_lv_log(opts)
+function data = import_lv_log(opts_lv)
+    fprintf('Importing LV log...\n')
     lv_log=[];
-    lv_log.dir = strcat(opts.dir,'log_LabviewMatlab.txt');
+    lv_log.dir = strcat(opts_lv.dir,'log_LabviewMatlab.txt');
     fid = fopen(lv_log.dir );
     lv_log.cell=textscan(fid,'%s','Delimiter','\n');
     fclose(fid);
@@ -27,9 +28,37 @@ function data = import_lv_log(opts)
             lv_log.iso_times{ii}=line_cells{2};
         end
     end
-    data.labview=[];
-    data.labview.setpoint=lv_log.setpoints*1e6; %convert to hz
-    data.labview.time=lv_log.posix_times;
-    data.labview.shot_num=lv_log.iter_nums;
-    data.labview.calibration=lv_log.probe_calibration;
+    data.setpoint=lv_log.setpoints*1e6; %convert to hz
+    data.time=lv_log.posix_times;
+    data.shot_num=lv_log.iter_nums;
+    data.calibration=lv_log.probe_calibration;
+    fprintf('Done!\n')
+    
+    if opts_lv.plots
+        t0 = min(data.time);
+       
+        f =  sfigure(200);
+        clf;
+        subplot(2,2,1)
+        plot(data.shot_num,data.time-t0,'.')
+        xlabel('Shot number')
+        ylabel('Elapsed time')
+        ylabel('Shot time')
+        subplot(2,2,2)
+        plot(data.shot_num,data.setpoint,'.')
+        xlabel('Shot number')
+        ylabel('WM setpoint')
+        title('Wavelength scan')
+        subplot(2,2,[3 4])
+        plot(data.shot_num,data.calibration,'.')
+        xlabel('Shot number')
+        ylabel('Calibration?')
+        title('Calibration mask')
+
+        suptitle('LabView log diagnostics')
+        
+        filename = fullfile(opts_lv.out_dir,sprintf('%s_log',mfilename));
+        saveas(f,[filename,'.fig']);
+        saveas(f,[filename,'.png']);
+    end
 end

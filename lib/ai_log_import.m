@@ -28,7 +28,7 @@ if isfield(opts_ai,'post_fun')
     % Can be slow to plot large imports, but a) not likely to be enabled often and b) only called once
     % per import
     if opts_ai.plots % Add clause so this automatically disabled if reloading from cache?        
-        ai_diagnostic_plots(out_ai)
+        ai_diagnostic_plots(out_ai,opts_ai)
     end
 end
 
