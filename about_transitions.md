@@ -326,40 +326,54 @@ Things to do:
 * generalize monitor run feature
 
 
-Comparing loading params
+## 2019-03-28
+Some sequences built while looking for differences between 0.6 and 2s transfer
+I am suspicious that the drifts affecting the optical molasses stage could account for our loss of fluro over time, molasses stage has not been attended to in some time. This is not likely to be the cause of our lost BEC, though, that was probably our fault.
 
-BEC sequence
-LMOT frequency	
-1		8.53
-2		7.916
-3		6.2
-atten
-17.8
-2		7.1
-3		4.5
-Shunt
-1		10
-2		5.5
-3		0
-Quad
-1		5.25
-2		7.2
-3		5.74
+15 sec b trap test settings201927Mar224917	
+extended 0.6s hold settings201928Mar005945 
+2sf pared back to minimal load settings201928Mar011156 
 
-2sec transfer
-quad
-1		5.25		
-2		7.2
-Shunt
-1		10
-2		5.5
+## 2019-03-29
 
-settings201925Mar141613 TO
-settings201925Mar141613 BEC 
-settings201927Mar180449 evap off, synth off
-settings201927Mar184632 10 sec shorter				WORKS
-settings201927Mar184948 AL attn fixed
-settings201927Mar190600	
+30K ATOMS IN BEC YAY YAY YAY
 
-Moving to single-stage magnetic trap?
-settings201927Mar191132.xml
+Laser locked, BEC looking good
+
+Setting up for search and scan
+		* Peak previously sighted at 175MHz high from 727303244.58893MHz,  the Ritz predicted frequency
+		* That is, peak at 727303414.58893 MHz 
+		* We pass through an AO which passes the +1 order of a 189 MHz modulation, so to compensate for this we must offset by 189/2 MHz in the red
+		* Therefore this peak should be centred at **363651612.794465** MHz
+
+calibration settings201929Mar012806
+measurement settings201929Mar012745
+Probe power:
+		140mW into AOM
+		74mW at fibre coupler
+		26mW after first filter cube :(
+
+Laser reaches 200mV set point on photodiode for 19.5mW after waveplates. Neat conversion factor, hey.
+
+Ok. Let's look for signal, probe beam set point 0.15V
+
+Sighting at 		363.651693
+Saturated by 		363.651730
+
+BEC vanishes and remaining atoms really hot! Perfect
+
+Bingo, saturates at 363651708 MHz
+Remove support post from lens translation mount; still saturated!
+Move final telescope lens all the way away from chamber; STILL saturated
+Cut set point to .05V settings201929Mar024626, still saturated
+Take final lens OUT, beam now GIGANTIC.
+SIGNAL NOT SATURATED. Barely. Well, still does, but not every time.
+Scan manually; 
+Saturates between 363651707 and 363651699
+-> Centre at 363651703
+Shorten exposure by 2 seconds; only on during MOT load
+Still saturates at 363651702.5 MHz
+Hmmm. Could be WM drift at this stage. Looks pretty stable shot to shot, but can't say without calibration
+FINALLY get a handle on saturation maybe? Unless it's drifted
+Now have exposure only for 200ms during first ITC, with .05V set point and giant beam with photodiode gain up 10dB!
+That's a factor of 20 in duration, 3 in amplitude, 10 in gain, plus an absolutely colossal beam to get away from saturation
