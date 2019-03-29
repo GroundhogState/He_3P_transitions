@@ -69,6 +69,18 @@ header({1,'Processing...'})
 data.tr = bec_transition_process(data,opts.tr);
 fprintf('All done!\n')
 header({1,'Done.'})
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%% WRITE RESULTS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+fwtext(' RESULTS ')
+header({1,'Gaussian fit'})
+fprintf('Transition Frequency             %.2f±(%.3f) MHz\n',data.tr.gaus_fit(1),data.tr.gaus_fit(2))
+fprintf('Peak width                       %.3f±(%.3f) MHz\n',data.tr.gaus_fit(3),data.tr.gaus_fit(4))
+fprintf('Transition Wavelength            %.6f±(%.7f) nm\n',data.tr.gaus_fit(5),data.tr.gaus_fit(6))
+header({1,'Lorentzian fit'})
+fprintf('Transition Frequency             %.2f±(%.3f) MHz\n',data.tr.lorz_fit(1),data.tr.lorz_fit(2))
+fprintf('Peak width                       %.3f±(%.3f) MHz\n',data.tr.lorz_fit(3),data.tr.lorz_fit(4))
+fprintf('Transition Wavelength            %.6f±(%.7f) nm\n',data.tr.lorz_fit(5),data.tr.lorz_fit(6))
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%% SAVE RESULTS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

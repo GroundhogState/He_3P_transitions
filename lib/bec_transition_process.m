@@ -61,7 +61,7 @@ function tr = bec_transition_process(data,opts_tr)
    
     %% create a calibration model
     % v1: Interpolation. Fast, rough.
-    interp_mdl = interp1(sync_cal.tdc_time,sync_cal.N_atoms,sync_msr.tdc_time);
+    interp_mdl = interp1(sync_cal.tdc_time,sync_cal.N_atoms,sync_msr.tdc_time,'spline');
     sync_msr.interp_mdl = interp_mdl;
        
 
@@ -105,14 +105,39 @@ function tr = bec_transition_process(data,opts_tr)
     
     
     %% Fitting the data
-%     inv_peak = 1-freq_stats.sig_cal;
+   
+    [peak_guess,peak_idx]= min(freq_stats.sig_cal);
+    var_guess = 15;
+    % Fit a gaussian
+    mdlfun = @(p,x) 1 - p(1)*exp(-0.5*((x-p(2))/p(3)).^2);
+    beta0 = [1-peak_guess,freq_stats.freq(peak_idx)-mid_setpt,var_guess];
+    fit_gaus = fitnlm(sync_msr.wm_set-mid_setpt,sync_msr.N_atoms./interp_mdl',mdlfun,beta0);
+    % Fit Lorentzian
+    mdlfun = @(b,x) b(1)./((x-b(2)).^2+b(3))+1;
+    beta0 = [-peak_guess,freq_stats.freq(peak_idx)-mid_setpt,var_guess];
+    fit_lor = fitnlm(sync_msr.wm_set-mid_setpt,sync_msr.N_atoms./interp_mdl',mdlfun,beta0);
+    % Voigt profile?
     
-%     [peak_guess,peak_idx]= min(freq_stats.sig_cal);
-%     var_guess = 15;
-%     % Fit a dumb gaussian
-%     mdlfun = @(p,x) 1 - p(1)*exp(-0.5*((x-p(2))/p(3)).^2);
-%     beta0 = [1-peak_guess,freq_stats.freq(peak_idx),var_guess];
-%     fit = fitnlm(freq_stats.freq,freq_stats.sig_cal,mdlfun,beta0);
+    
+    %extract useful parameters
+    lorz_cen = fit_lor.Coefficients.Estimate(2)+mid_setpt-189;
+    lorz_unc = fit_lor.Coefficients.SE(2);
+    lorz_width = 2*sqrt(abs(fit_lor.Coefficients.Estimate(3)));
+    lorz_width_unc = 2*fit_lor.Coefficients.Estimate(3);
+    lorz_wav = (299792458/lorz_cen)*1e3;
+    lorz_cen_Hz = lorz_cen*1e6;
+    lorz_unc_Hz = lorz_unc*1e6;
+    lorz_wav_unc = lorz_unc_Hz*299792458/((lorz_cen_Hz)^2) * 1e9; % convert back to nm
+    
+
+    gaus_cen = fit_gaus.Coefficients.Estimate(2) + mid_setpt - 189;
+    gaus_unc = fit_gaus.Coefficients.SE(2);
+    gaus_width = fit_gaus.Coefficients.Estimate(3);
+    gaus_width_unc = fit_gaus.Coefficients.SE(3);
+    gaus_cen_Hz = lorz_cen*1e6;
+    gaus_unc_Hz = lorz_unc*1e6;
+    gaus_wav = (299792458/gaus_cen)*1e3;
+    gaus_wav_unc = gaus_unc_Hz*299792458/((gaus_cen_Hz)^2) * 1e9; % convert back to nm
     
     
     
@@ -121,6 +146,9 @@ function tr = bec_transition_process(data,opts_tr)
     tr.sense = sync_msr;
     tr.calib = sync_cal;
     tr.stats = freq_stats;
+    tr.gaus_fit = [gaus_cen,gaus_unc,gaus_width,gaus_width_unc,gaus_wav,gaus_wav_unc];
+    tr.lorz_fit = [lorz_cen,lorz_unc,lorz_width,lorz_width_unc,lorz_wav,lorz_wav_unc];
+
 
 
 if opts_tr.plot
@@ -132,12 +160,14 @@ if opts_tr.plot
 
     [wm_hist,cal_wm_bin_edges] = histcounts(wm_set_err(wm_msr_mask),opts_tr.num_cal_bins);
     wm_bin_cents = 0.5*(cal_wm_bin_edges(1:end-1)+cal_wm_bin_edges(2:end));
-    
-
   
     plot_raw_T = sync_msr.tdc_time-start_time;
     plot_raw_X = sync_msr.wm_set-mid_setpt;
     plot_raw_Y = sync_msr.N_atoms;
+    
+    plot_fit_X = linspace(min(plot_raw_X),max(plot_raw_X),1e4);
+    plot_fit_Y_lor = predict(fit_lor,plot_fit_X');
+    plot_fit_Y_gaus = predict(fit_gaus,plot_fit_X');
     
     plot_cal_T = sync_cal.tdc_time-start_time;
     plot_cal_X = sync_cal.wm_set-mid_setpt;
@@ -176,10 +206,14 @@ if opts_tr.plot
     
     subplot(3,1,3)
     plot(plot_raw_X,plot_mdl_Y,'.')
+    hold on
+    plot(plot_fit_X,plot_fit_Y_lor,'r-')
+    plot(plot_fit_X,plot_fit_Y_gaus,'k--')
     xlabel(sprintf('f-%3.5f [MHz]',mid_setpt))
     ylabel('N ratio')
     title('Model-calibrated signal')    
     suptitle('Calibration model')
+    legend('Calibrated data','Lorentzian fit','Gaussian fit')
     
     % Plotting the histograms
     f2=sfigure(500);
@@ -211,20 +245,21 @@ if opts_tr.plot
     xlabel('Shot number')
     ylabel('Time')
     title('Recorded timestamps')
-    legend('WM','TDC','LV','AI')
+    legend('WM','TDC','LV')
 
     % Plotting the result
     f3=sfigure(501);
     clf;
     errorbar(plot_sig_X,plot_sig_Y,plot_sig_Y_err,'.')
     hold on
-%     plot(freq_stats.freq-mid_setpt,mdlfun(beta0,freq_stats.freq),'kx')
-%     plot(freq_stats.freq-mid_setpt,mdlfun(fit.Coefficients.Estimate,freq_stats.freq),'ro')
-%     plot(plot_sig_X,mdlfun(fit.Coefficients.Estimate,plot_sig_X+mid_setpt))
-    xlabel(sprintf('f-%3.5f [MHz]',mid_setpt))
+    plot(plot_fit_X,plot_fit_Y_lor,'r-')
+    plot(plot_fit_X,plot_fit_Y_gaus,'k--')
+    xlabel(sprintf('f - Ritz frequency (MHz)'))
     ylabel('Atom Number Ratio')
+    legend('Frequency-binned data','Lorentzian fit','Gaussian fit')
 
-    suptitle('Binned absorption spectrum')
+    suptitle(sprintf('Absorption peak @ %.2f±(%.3f) MHz, FWHM~%.2fMHz',lorz_cen,lorz_unc,lorz_width))
+    title(sprintf('Vacuum wavelength %.10f nm ± %.6f fm',lorz_wav,1e6*lorz_wav_unc))
     
     filename1 = fullfile(opts_tr.out_dir,sprintf('%s_raw_calib',mfilename));
     saveas(f1,[filename1,'.fig']);
