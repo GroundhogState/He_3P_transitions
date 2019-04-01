@@ -14,4 +14,8 @@
 
 *.ini
 #The cache
+
 cache/
+
+# Config files
+transition_config*

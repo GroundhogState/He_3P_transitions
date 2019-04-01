@@ -1,8 +1,28 @@
 # TO DO BEFORE GIT
 
-	* Fix Core_BEC submodule
-	* Fix .gitignore inc. cache blindness
-	* This readme
+Software
+* Better logging
+	* figure exporting DONE
+	* Generate metadata logfiles 
+* Fix time offset between LV and MCP logs DONE 
+* Calibration model
+	* Implemented, just needs control flow & safeties if no calibrations found
+* Fitting
+	* Implemented structurally, needs safeties & control flow
+* generalize monitor run feature
+* Better modular caching
+	* smarter WM importing; timestamp sensitive?
+* Compile core import functions?
+
+Hardware
+* Desaturate signal
+		* Lower optical power
+				* Adjust set point
+				* Expand beam
+		* Higher init atom number
+				* Visible with no evaporator?
+* Narrower scan
+* First estimate!
 
 
 

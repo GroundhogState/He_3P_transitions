@@ -376,4 +376,27 @@ Still saturates at 363651702.5 MHz
 Hmmm. Could be WM drift at this stage. Looks pretty stable shot to shot, but can't say without calibration
 FINALLY get a handle on saturation maybe? Unless it's drifted
 Now have exposure only for 200ms during first ITC, with .05V set point and giant beam with photodiode gain up 10dB!
-That's a factor of 20 in duration, 3 in amplitude, 10 in gain, plus an absolutely colossal beam to get away from saturation
+That's a factor of 20 in duration, 3 in amplitude, 10 in gain, plus an absolutely colossal beam to get away from saturation.
+
+
+## Good morning!
+
+Things we learned
+		* This thing is super duper sensitive, we'll have no trouble saturating. Which might make it hard to control!
+		* Also, we're applying the light in the ITC; I tried applying to MOT, much weaker effect. 
+		* Beam appears to be desaturated and transition narrowed down to a few MHz! Would be good to run the code over the scan I left running.
+Things to do:
+		* Bring up atom number in BEC while running analysis on the morning run
+		* Clean one desk or optics bench
+		* Work towards computing the Allan deviation of the measured transition peak. Later we'll extend this to characterize the wavemeter with respect to the Cs transition.
+		* When I'm in, let's calibrate the wavemeter and try get something running over the weekend. 
+		* I'm going away this weekend and will need to prep once I've got some sleep, so I won't be in until after lunch.
+Things to think about:
+		* There's an ambient magnetic field that will Zeeman shift the transition. Could estimate this effect, I anticipate only a few MHz.
+		* Is it worth concocting another sequence to obtain the zero-field value?
+
+
+* Raised atom count by about 5k, not great but not bad
+* Doing some comparison scans for the over night run, to see if it drifts/ is effected by other sources such as the evap
+* added some features to the analysis code see side computer, value for the transition is very close to theory
+* Should try to understand zeeman shift/ characterise it then move on to the next transition
