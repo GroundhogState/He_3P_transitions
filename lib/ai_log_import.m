@@ -19,23 +19,27 @@ out_ai=simple_function_cache(cache_opts,@ai_log_import_core,{opts_ai,data_sub});
 % elsewhere. It's easy to start computing things in here as diagnostic which end up getting used
 % later... But for the sake of component testing, this is here. 
 % Could be abstracted further  “¯\_(?)_/¯“
+if ~isempty(out_ai.file_names)
+    if isfield(opts_ai,'post_fun')
+        header({2,'Post-processing...'})
+        out_ai = opts_ai.post_fun(opts_ai,out_ai);
+        header({2,'Done'})
 
-if isfield(opts_ai,'post_fun')
-    header({2,'Post-processing...'})
-    out_ai = opts_ai.post_fun(opts_ai,out_ai);
-    header({2,'Done'})
-    
-    % Can be slow to plot large imports, but a) not likely to be enabled often and b) only called once
-    % per import
-    if opts_ai.plots % Add clause so this automatically disabled if reloading from cache?        
-        ai_diagnostic_plots(out_ai)
+        % Can be slow to plot large imports, but a) not likely to be enabled often and b) only called once
+        % per import
+        if opts_ai.plots % Add clause so this automatically disabled if reloading from cache?        
+            ai_diagnostic_plots(out_ai,opts_ai)
+        end
     end
-end
 
-if opts_ai.verbose > 0
-    header({1,'Done!'})
+    if opts_ai.verbose > 0
+        header({1,'Done!'})
+    end
+else
+    warning('No analog log files found!')
+    out_ai.error = 'No record';
+    out_ai.data = [];
 end
-
 end
 
 function ai_log_out=ai_log_import_core(opts_ai,data)

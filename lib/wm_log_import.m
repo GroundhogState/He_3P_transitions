@@ -11,13 +11,19 @@ if opts_wm.plots
     wm_time = wm.blue_freq.posix_time;
     t0 = min(wm_time);
     wm_blue = wm.blue_freq.value;
-    sfigure(300);
+    
+    f = sfigure(300);
     clf
     plot(wm_time-t0,wm_blue,'x')
     xlabel('Time elapsed')
     ylabel('WM blue setpt')
     title('WM blue freq')
     suptitle('WM import diagnostics')
+    
+    
+    filename = fullfile(opts_wm.out_dir,sprintf('%s_log',mfilename));
+    saveas(f,[filename,'.fig']);
+    saveas(f,[filename,'.png']);
 end
 
 header({0,'Done'})

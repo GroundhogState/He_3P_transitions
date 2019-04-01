@@ -1,6 +1,7 @@
 function opts = transition_config()
 
-opts.dir = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
+
+opts.dir = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\20190329_overnight_desaturated\';
 
 opts.probe_set_pt=0.4;
 opts.ritz_wl = 412.19733341; % NIST Ritz wavelength, nm
@@ -22,14 +23,19 @@ opts.trig_dld=20.3;
 opts.dld_aquire=4;
 opts.aquire_time=4;
 
+%% Generate out directory
+%set up an output dir %https://gist.github.com/ferryzhou/2269380
+if (exist([opts.dir,'out'], 'dir') == 0), mkdir([opts.dir,'out']); end
+%make a subfolder with the ISO timestamp for that date
+opts.out_dir=sprintf('%sout\\%s\\',...
+    opts.dir,datestr(datetime('now'),'yyyymmddTHHMMSS'));
+if (exist(opts.out_dir, 'dir') == 0), mkdir(opts.out_dir); end
 
-% data.mcp_tdc.probe.calibration = ones(34,1);
-% data.mcp_tdc.time_create_write=ones(2,2);
+
 %% Analog import
-
 opts.ai.num_files = nan;
-
 opts.ai.dir=opts.dir;
+opts.ai.out_dir = opts.out_dir;
 % opts.ai.force_recalc_import = true;
 opts.ai.log_name='log_analog_in_';
 opts.ai.verbose = 1;
@@ -69,6 +75,7 @@ opts.ai.tdc_override=1;
 
 %% Wavemeter log
 opts.wm.dir=opts.dir;
+opts.wm.out_dir = opts.out_dir;
 opts.wm.force_reimport=false;
 opts.wm.num_logs = nan;
 opts.wm.plots = true;
@@ -99,13 +106,15 @@ opts.wm.rvb_thresh=20; %allowable value of abs(2*red-blue)
 %% LV import
 
 opts.lv.dir = opts.dir;
+opts.lv.out_dir = opts.out_dir;
 opts.lv.plots = true;
 
 
 %% TDC import
 
 opts.tdc.dir = opts.dir;
-% opts.probe_set_pt=loop_config.set_pt(dir_idx);
+opts.tdc.out_dir = opts.out_dir;
+opts.tdc.plots = true;
 opts.tdc.file_name='d';
 opts.tdc.force_load_save=false;   %takes precidence over force_reimport
 opts.tdc.force_reimport=false;
@@ -124,6 +133,7 @@ opts.aom_freq=0;%190*1e6;%Hz %set to zero for comparison with previous data runs
 
 %% Plotting
 opts.tr.plot = 1; 
+opts.tr.out_dir = opts.out_dir;
 opts.tr.pred_freq = opts.pred_freq;
 opts.tr.pred_wl = opts.pred_wl;
 opts.tr.num_cal_bins = 50;
@@ -131,15 +141,6 @@ opts.tr.wm_tolerance = 10; %MHz
 opts.rt.num_freq_bins = nan; %MHz
 opts.tr.freq_bin_size = 0.25;
 
-%% Generate out directory
-%set up an output dir %https://gist.github.com/ferryzhou/2269380
-if (exist([opts.dir,'out'], 'dir') == 0), mkdir([opts.dir,'out']); end
-%make a subfolder with the ISO timestamp for that date
-out.dir=sprintf('%sout\\%s\\',...
-    opts.dir,datestr(datetime('now'),'yyyymmddTHHMMSS'));
-if (exist(out.dir, 'dir') == 0), mkdir(out.dir); end
-opts.wm.out_dir=out.dir;
-opts.ai.out_dir=out.dir;
-opts.tr.out_dir=out.dir;
+
 
 end

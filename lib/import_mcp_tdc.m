@@ -6,8 +6,23 @@ function data_tdc = import_mcp_tdc(opts_tdc)
 %     if isfield(opts_tdc,mcp_post_fun)
         data_tdc = mcp_post_fun(data_tdc,opts_tdc);
 %     end
-    
-    
+    if opts_tdc.plots
+        f = sfigure(400);
+        
+        plot(data_tdc.shot_num,data_tdc.num_counts,'.')
+        xlabel('Shot number')
+        ylabel('Number of atoms')
+        title('Hit count trend')
+        
+        suptitle('DLD import diagnostics')
+        
+        
+        filename = fullfile(opts_tdc.out_dir,sprintf('%s_log',mfilename));
+        saveas(f,[filename,'.fig']);
+        saveas(f,[filename,'.png']);
+        
+        
+    end
 end
 
 

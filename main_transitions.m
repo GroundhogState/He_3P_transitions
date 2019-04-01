@@ -69,9 +69,34 @@ header({1,'Processing...'})
 data.tr = bec_transition_process(data,opts.tr);
 fprintf('All done!\n')
 header({1,'Done.'})
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%% PRESENTING RESULTS
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%% WRITE RESULTS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-fwtext('ALL DONE!!!')
+fwtext(' RESULTS ')
+header({1,'Gaussian fit'})
+fprintf('Transition Frequency             %.2f±(%.3f) MHz\n',data.tr.gaus_fit(1),data.tr.gaus_fit(2))
+fprintf('Peak width                       %.3f±(%.3f) MHz\n',data.tr.gaus_fit(3),data.tr.gaus_fit(4))
+fprintf('Transition Wavelength            %.6f±(%.7f) nm\n',data.tr.gaus_fit(5),data.tr.gaus_fit(6))
+header({1,'Lorentzian fit'})
+fprintf('Transition Frequency             %.2f±(%.3f) MHz\n',data.tr.lorz_fit(1),data.tr.lorz_fit(2))
+fprintf('Peak width                       %.3f±(%.3f) MHz\n',data.tr.lorz_fit(3),data.tr.lorz_fit(4))
+fprintf('Transition Wavelength            %.6f±(%.7f) nm\n',data.tr.lorz_fit(5),data.tr.lorz_fit(6))
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%% SAVE RESULTS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Commented out for now; eventually the fit parameters & uncerts can be written out also
+% header({0,'Saving output'})
+% out_struct.data = data;
+% out_struct.opts = opts;
+% 
+% % Trim the raw data
+% out_struct.data.tdc = rmfield(out_struct.data.tdc,'counts_txy');
+% % WM and AI logs would be huge
+% out_struct.data = rmfield(out_struct.data,'wm');
+% out_struct.data = rmfield(out_struct.data,'ai');
+% outfilename = fullfile(opts.out_dir,['results_',datestr(datetime('now'),'yyyymmddTHHMMSS'),'.mat']);
+% save(outfilename,'out_struct','-v7.3')
+% header({0,'Saved'})
+% fwtext('ALL DONE!!!')
 %% Settings
+
