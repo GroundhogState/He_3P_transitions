@@ -40,7 +40,7 @@ fwtext('')
 fwtext('STARTING ANALYSIS')
 fwtext('')
 
-%% Setting up
+% % Setting up
 header({0,'Setting up configs...'})
 % Declare useful constants
 hebec_constants
