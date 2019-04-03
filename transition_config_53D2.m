@@ -1,16 +1,13 @@
 function opts = transition_config()
 
-opts.dir = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
-
+opts.dir = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\20190401_5^3D_2_v1\';
+opts.tr_name = '5^3D_2';
+opts.tr.tr_name = opts.tr_name;
 
 opts.probe_set_pt=0.4;
-% opts.ritz_wl = 412.19733341; % NIST Ritz wavelength, nm
-% opts.ritz_freq = 299792458/opts.ritz_wl; %GHz
-% opts.obs_wl = 412.1978; %NIST observed vacuum wl, nm
-% opts.obs_freq = 299792458/opts.obs_wl; %GHz
-opts.ritz_wl = 412.19733341; % NIST Ritz wavelength, nm
+opts.ritz_wl = 	402.73237070; % NIST Ritz wavelength, nm
 opts.ritz_freq = 299792458/opts.ritz_wl; %GHz
-opts.obs_wl = 412.1978; %NIST observed vacuum wl, nm
+opts.obs_wl = 402.73292; %NIST observed vacuum wl, nm
 opts.obs_freq = 299792458/opts.obs_wl; %GHz
 
 opts.pred_wl = opts.ritz_wl;
@@ -142,9 +139,8 @@ opts.tr.pred_freq = opts.pred_freq;
 opts.tr.pred_wl = opts.pred_wl;
 opts.tr.num_cal_bins = 50;
 opts.tr.wm_tolerance = 10; %MHz
-opts.rt.num_freq_bins = nan; %MHz
+opts.tr.num_freq_bins = 30; %MHz
 opts.tr.freq_bin_size = 0.25;
-
-
+opts.tr.aom_freq = 189; %MHz, blue
 
 end
