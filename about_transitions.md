@@ -400,3 +400,109 @@ Things to think about:
 * Doing some comparison scans for the over night run, to see if it drifts/ is effected by other sources such as the evap
 * added some features to the analysis code see side computer, value for the transition is very close to theory
 * Should try to understand zeeman shift/ characterise it then move on to the next transition
+
+## 2019-04-02
+Calibrating wavemeter
+
+Stop WM feedback					DONE
+note setpoint 						372.196857/744.393723, tisaf 805.2
+tisaf setpt to 822.2 				DONE		
+run wm feedback without blue 		DONE	
+run measure_2photon_transitions 	DONE
+turn on pmt 						DONE
+run measure 3 times 				DONE 	had to increase scan range, drift was approx 10MHz
+stash in folder 					DONE
+stop WM feedback 					DONE
+turn on modulation fn 				DONE
+select ch1 on settings signal 		DONE?
+stop wm monitor						DONE
+Operation->Calibration->etc 		DONE?
+kill matlab   						DONE
+Start wm monitor 					DONE
+run ws8 fb then meas_2p    			DONE
+Kill meas_2p 						DONE
+reboot ws8 feedback  			 	DONE	
+restore noted setpt 				DONE
+power off pmt and mod 				DONE
+
+Pre cal offset -6.125 MHz
+Post cal offset 0.25MHz
+
+
+## 2019-04-03
+
+Issues calibrating wavemeter were thanks to incomplete to-do list!
+Including the missing stage:
+
+Stop WM feedback
+note setpt
+tisaf setpt to 822.2 
+run wm feedback without blue
+run measure_2photon_transitions
+turn on pmt
+run measure ~ 3 times
+stash in folder
+stop WM feedback
+turn on modulation fn 
+Run lock_to_2p
+select ch1 on settings signal
+stop wm monitor
+Operation>Calibration>etc0
+kill matlab 
+run ws8 fb then meas_2p 
+Kill meas_2p, reboot ws8 feedback & restore noted setpt
+power off pmt & mod
+
+So, after calibrating wavemeter again, we have offset calculations:
+0.263787±0.029643
+0.274663±0.033188
+0.383103±0.037893
+0.405642±0.026936
+0.396748±0.041161
+0.393202±0.034740
+MEAN  0.35285758972168 STD 0.0652732911713087
+Could probably fine tune a bit, but we're not running overnight so I'll leave laser locked overnight and see what happens come morning.
+
+
+##2019-04-04
+
+ZEEMAN DAY (or two or...)
+
+* Run trap simulator with ITC settings stage 1 and 2
+
+* Measure ITC AOM drive in first stages of ITC
+
+* Use Mathematica script to estimate splitting in 5^3S_1 manifold transitions, use simulator and/or AO offset to estimate field 
+
+* Write script (mathematica or matlab) to compute polz state (relative to lab) given waveplate angles and translate into B-field frame
+
+	* The dream: A mathematica script that accepts a set of WP angles plus a magnetic field and predicts the line positions and relative strengths ;)
+
+* Measure some lines in the 5^3S_1 manifold in first stage ITC
+
+* If field still nice and homogeneous in stage 2 based on trap simulator, use second stage as high-field measurement
+
+* 
+
+
+Objective: One Good Run
+Target is the 412nm transition to 5^3 S_1
+
+Calibrated wavemeter 10:00
+Measured offset from 3 scans of F3->F3 (check which) Cs transition:
+Mean 0.373769693076611 STD 0.0705489367563666
+
+Retuned laser to 824nm, recoupled fibre
+180mW into AOM (could probably improve)
+73mW into fibre
+29mW after first post-fibre beam cube
+
+Lock offset: 252.988722MHz when attached to PC
+
+TODO: 
+	Approximate beam profile (eg aperture over power meter, measure peak power and estimate 1/e^2 radius)
+	Calc expected Zeeman shifts -> MOT AO, trap sim
+	Find transition transition again
+	Search for Zeeman transitions
+	Test polarization dependence
+	Try high-field measurement

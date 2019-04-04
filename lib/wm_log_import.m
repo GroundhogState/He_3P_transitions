@@ -8,16 +8,28 @@ wm=simple_function_cache(cache_opts,@wm_log_import_core,{opts_wm});
 
 
 if opts_wm.plots
-    wm_time = wm.blue_freq.posix_time;
+    wm_time = wm.feedback.posix_time;
     t0 = min(wm_time);
-    wm_blue = wm.blue_freq.value;
+    wm_set = wm.feedback.setpt;
+    wm_act = wm.feedback.actual;
     
     f = sfigure(300);
     clf
-    plot(wm_time-t0,wm_blue,'x')
+    subplot(2,1,1)
+    plot(wm_time-t0,wm_set,'x')
+    hold on
+    plot(wm_time-t0,wm_act,'x')
     xlabel('Time elapsed')
     ylabel('WM blue setpt')
     title('WM blue freq')
+    
+    subplot(2,1,2)
+    plot(wm_time-t0,wm_set-wm_act,'x')
+    title('WM error')
+    xlabel('Time elapsed')
+    ylabel('Set-actual freq')
+    
+    
     suptitle('WM import diagnostics')
     
     
