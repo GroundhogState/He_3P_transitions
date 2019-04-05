@@ -1,6 +1,8 @@
 function opts = transition_config()
 
 opts.dir = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\20190401_singlet_5^1D2_fine_scan\';
+opts.dir = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\20190405_5^1D_2_cal_qwp_236_stage_1_ITC\';
+% opts.dir = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\20190405_5^1D_2_cal_qwp_146_stage_1_ITC\'
 opts.transition = '5^1D_2';
 opts.tr.tr_name = opts.transition;
 

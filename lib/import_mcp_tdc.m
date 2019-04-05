@@ -9,10 +9,17 @@ function data_tdc = import_mcp_tdc(opts_tdc)
     if opts_tdc.plots
         f = sfigure(400);
         
+        subplot(2,2,1)
         plot(data_tdc.shot_num,data_tdc.num_counts,'.')
         xlabel('Shot number')
         ylabel('Number of atoms')
         title('Hit count trend')
+        
+        subplot(2,2,2)
+        plot(data_tdc.shot_num,data_tdc.time_create_write(:,2),'.')
+        
+        subplot(2,1,2)
+        plot(data_tdc.time_create_write(:,2),data_tdc.num_counts,'.')
         
         suptitle('DLD import diagnostics')
         
