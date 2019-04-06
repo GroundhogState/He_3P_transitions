@@ -1,4 +1,5 @@
 function freq_stats = bin_by_wavelength(data,opts)
+header({0,'Binning data for presentation'})
     sync_msr = data.tr.sync.msr;
     
     
@@ -39,4 +40,5 @@ function freq_stats = bin_by_wavelength(data,opts)
        end
     end
     freq_stats = struct_mask(freq_stats,logical(freq_stat_mask));
+    header({1,'Done.'})
 end

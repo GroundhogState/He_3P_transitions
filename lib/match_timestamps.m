@@ -7,6 +7,8 @@ function sync_data = match_timestamps(data,opts)
     % Extract as function/consider generalizing
     % What's with the 10MHz offset?!
     
+    header({0,'Correlating timestamps...'})
+    
     tdc_time = data.tdc.time_create_write(:,2);
 %     ai_time = data.ai.timestamp;
     lv_time = data.lv.time;
@@ -64,9 +66,7 @@ function sync_data = match_timestamps(data,opts)
     % Break out calibration % measurement blocks
     sync_cal = struct_mask(sync_shots,cal_mask);
     sync_msr = struct_mask(sync_shots,msr_mask);
-    
-
-    
+        
     
 
     
@@ -75,6 +75,8 @@ function sync_data = match_timestamps(data,opts)
     sync_data.cal = sync_cal;
     sync_data.msr = sync_msr;
     
+    
+    header({1,'Done.'})
     
     %% Plot diagnostics
     

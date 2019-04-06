@@ -502,7 +502,99 @@ Lock offset: 252.988722MHz when attached to PC
 TODO: 
 	Approximate beam profile (eg aperture over power meter, measure peak power and estimate 1/e^2 radius)
 	Calc expected Zeeman shifts -> MOT AO, trap sim
-	Find transition transition again
+	Find transition again
 	Search for Zeeman transitions
 	Test polarization dependence
 	Try high-field measurement
+
+peak around (record in the red):
+first: 363651706.794468 (HWP = 146)
+Switch to polarization of opposite handedness and search around the opposite side of the vacuum transition; nothing shows up.
+An absence of extra peaks is consistent with the pump beam spin-polarizing the ground state to the m_j = 2 state. This can only scatter by sigma- transition to the m_j = 1 state of the 5^3 S_1; so we may actually be unable to resolve more Zeeman peaks! 
+* We can make the basic check by scanning very wide around the sighted transition; if no lines are found, this supports the hypothesis that we are spin-polarized.
+* We could try to pump into more states, but require a model of how the pump beam polarizes the atoms.
+* We could try looking at another transition with more observable splittings; for example driving with linear probe beam on the 5^3D_5 transition we could resolve two peaks.
+* We can try to characterize the action of the waveplates based on our measurements of their fast axes and test consistency with this hypothesis.
+
+
+### Evening session
+	* OK, let's pinpoint the peak and ensure consistency between control and analysis.
+	* Run one scan 20MHz, 1MHz steps either side of the 5^3S_1 peak with HWP at 150 degrees (very circular)
+		Fitted single peak at 727303224.46MHz
+		2x Scan centre - 189MHz is 727303224.588936!!! Looks like we've got agreement at last
+	* Run another scan with waveplate at 190 degrees - should be linear
+		* Only one peak sighted, within 0.67MHz error of previous run. Expected amplitude to decrease, but hard to say given 1MHz steps easily missed the peak value.
+
+
+Got locked out of lab, progress significantly stifled :(
+
+* Setting up for long scan
+	* If this is the 2^3P_2 m_j=2 to 5^3S_1 m_j=1, then it is expected to be approx 20MHz red of the vacuum resonance. The greatest splitting is approx 74MHz at 18G between the delta_j = +1 and -1 transitions from the g_ground = 0 state. For safety, I set up a scan 100MHz wide centred approx on the vacuum wavelength, 727303244 (which actually is just about bang-on the theoretical value)
+	* I set the qwp to 190 degrees to pass linear (aka ambidextrous) light into the chamber, so if we are able to drive other sigma transitions we push them both
+	* A quick test shows that we can still see the peak of the transition even though half the light is polarized in the other handedness, so we'll see at least one.
+	* Another quick test: Set the probe to switch on during second stage cooling, settings201904Apr231624
+		* Expect peak to move. If AO calibration is to be believed, it should shift 9MHz to the blue, closer to theory.
+		* Fitted peak at 727303233 MHz, shifted blue by 9MHz YES!!! Physics works!
+	* Probably nothing else to learn near this transition, so...
+
+
+* Tune laser to 805.4nm
+* 15 mW delivered after fibre beam cube
+* 47 mW input to fibre
+* 91 mW input to AOM
+* Laser output power 132 mW :( after optimizing the crap out of the cavities - Try different crystal position if we need more power
+* Note that while walking laser, kept eye on post-fibre photodiode and tweaked alignment on the run
+* Predict peaks at 744396232.78, 744396178.2, and 744396186.92 MHz should be visible*
+* so set scan centred at 744396205MHz (midpoint of extremal values each 27MHz away
+	* Set scan range 40MHz either side (in the blue), so 80MHz wide in the blue in 1MHz steps
+	* Each scan should take 2.3hrs so we can run 3-4 before analysing. While we wait, plenty to work on.
+* Set exposure time to 300ms to make up for loss of power and splitting polz between sigma+ and sigma-
+
+
+## 2019-04-05
+Today's tasks:
+Leave the scan running as long as you can bear. You should be able to work out a method for task 2 given data in this log/wiki, and it should be pretty straightforward.
+	* First: Read wiki. Measure WM offset. Use the closest reference available. More than one if practical. Then clean/tidy something.
+	* Central goal for today: Back-calculate field as precisely as possible, with quantified uncertainty. 
+	* Extremely useful but not urgent: complete reference wavelength table with closest Cs references to all observed/target wavelengths, list red and blue freqs, sorted for readability
+	* Bonus: build PD set point check into analysis program
+	* Bonus: Add intensity calibration to analysis script to provide vertical scale
+In future:
+	* Chase down branching ratios/Einstein A coefficients from forbidden transition
+	* Write a function that turns waveplate dial angles into polarization in the lab/atom frame (also useful for TO, we can fix the handedness here)
+
+Running analysis on over night run
+
+average offset 0.263610861518166 std 0.278591590217379
+
+## Weekend scan
+
+LET'S GET CRAZY
+Biggest distance between transitions to the triplet D state is 332MHz (744396179.59MHz to 744396512.46 MHz) So I will scan 200MHz (blue) either side of the midpoint 744396346MHz. That's 5.5 hours per scan with 1MHz steps. This should do the trick!
+I'll run the interrogation period in the second stage of ITC so we get a second field value for the data collected today. 
+* PD set point 350mV, 14.4mW, QWP 146 degrees, fresh dewar in
+
+Things to do:
+* Saturday:		Come in, change waveplate angle, repeat scan
+* Sunday: 		Come in, run scan in first stage of ITC with your choice of waveplate angle
+* Monday: 		Party?
+
+
+
+* Saturday: 
+	* Left beam dump in, so no data :( But at least we have big, stable BECs. 
+	* Measuring WM offset:
+		mean -0.006408±0.000345 (se), sd 0.004145
+	* Take the block out, restart run.
+	* Came back at end of run to check output & change parameters
+		* Landscape looks pretty barren. Would probably not lose much by restricting scan to near peaks. However, for completeness, let's get 'em all for now.
+		* Modified interface so it cycles through multiple probe settings; in this case the sequence is calibrate-> Stage 1 -> stage 2
+		* This way I can run the scan overnight and get both magnetic field settings for a single WP angle, will take 8.2hrs per scan
+		* Set QWP to 236, so we'll get
+			* Stage 1 D_2, qwp 236 <- already have this
+			* Stage 1 D_3, qwp 236 <- 
+			* Stage 2 D_2, qwp 236  |-- New data
+			* Stage 2 D_3, qwp 236 <-
+		* Note that an extra segment is required in the analysis script to deal with these 
+	* So why do we only see these peaks? I wonder; can we actually see the D_3 and the D_1, because the D_2 is forbidden by selection rules?! 
+	* NB QWP fast axis offset at 203 degrees, HWP fast axis offset at 20 degrees

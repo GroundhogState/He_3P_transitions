@@ -23,14 +23,11 @@
 
 
 
-%%
-%     FORGOT TO CLEAR WM LOG
-%     Means we'll have to sort by timestamps; would have needed to do this anyway, so good prompt
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%% GETTING STARTED
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % add all subfolders to the path
-
+clear all;
 this_folder = fileparts(which(mfilename));
 core_folder = fullfile(fileparts(this_folder),'Core_BEC_Analysis\');
 addpath(genpath(this_folder));
@@ -44,7 +41,7 @@ header({0,'Setting up configs...'})
 % Declare useful constants
 hebec_constants
 % initialize variables
-opts = transition_config_51D2();
+opts = transition_config_53D3_400GHz_qwp_146();
 header({1,'Done.'})
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -62,14 +59,8 @@ data.tdc = import_mcp_tdc(opts.tdc);
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%% PROCESSING DATA
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Declare global variables
 fwtext('PROCESSING IMPORTS')
-header({1,'Processing...'})
-% data.tr = transition_process(data,opts.tr);
-% data = bec_transition_process(data,opts.tr);
-
-
-%% %%%%%%%%%%%% PRECONDITIONING THE DATA 
-%     num_files = numel(data.tdc.shot_num);
 tdc_time = data.tdc.time_create_write(:,2);
 lv_time = data.lv.time;
 wm_time = data.wm.feedback.posix_time;
@@ -89,79 +80,120 @@ data.tr.sync = match_timestamps(data,opts.tr);
 %% Create a simple calibration model
 data.tr.sync.msr.calib = make_calibration_model(data,opts.tr);
 
-%% Grouping by wavelength (Independent variable)
-data.tr.freq_stats = bin_by_wavelength(data,opts.tr);
-
-
 %% Fitting the data
 
 % Finding the peaks
-opts_tr.cutoff_thresh = 0.1;
-opts_tr.smooth_width = 20;
-opts_tr.saturation_threshold = 0.975;
-data.tr.peaks = find_spectral_peaks(data.tr,opts_tr);
+% First, order by frequency
+opts.cutoff_thresh = 0.1;
+opts.smooth_width = 15;
+opts.saturation_threshold = 0.975;
 
-% Fit the peaks
-data.tr.fits = fit_peaks(data,opts_tr);
+[data.spec.freq,data.spec.order] = sort(data.tr.sync.msr.probe_set);
+sig_sorted = data.tr.sync.msr.N_atoms./data.tr.sync.msr.calib';
+data.spec.signal = sig_sorted(data.spec.order);
 
-%% Plotting
-if opts_tr.plot
-  
-    % % Compute things
-    plot_pred = opts_tr.pred_freq.*1e3-data.tr.fits.gaus_fit(1);
-    
-    plot_set_X = 2*sort(all_setpts);
-    plot_set_X = plot_set_X(~isnan(plot_set_X))/1e6; %MHz
+data.tr.peaks = find_spectral_peaks(data,opts);
 
-    plot_fit_X = linspace(min([data.tr.fits.freqs_centred,plot_pred-1]),max([data.tr.fits.freqs_centred,plot_pred+1]),1e4);
-    plot_fit_Y_lor = data.tr.fits.lor_mdlfun(data.tr.fits.lor_cen_prms,plot_fit_X);
-    plot_fit_Y_gaus = data.tr.fits.gaus_mdlfun(data.tr.fits.gaus_cen_prms,plot_fit_X);
-        
-    plot_sig_X = data.tr.freq_stats.freq-data.tr.fits.lorz_fit(1);
-    plot_sig_Y = data.tr.freq_stats.sig_cal;
-    plot_sig_Y_err = data.tr.freq_stats.sig_err;
-    plot_sig_Y_err = plot_sig_Y_err.*~isnan(plot_sig_Y_err);
-    
-    % Plotting the result
-    f3=sfigure(501);
-    clf;
-    errorbar(plot_sig_X,plot_sig_Y,plot_sig_Y_err,'.')
-    hold on
-    plot(plot_fit_X,plot_fit_Y_lor,'r-')
-    plot(plot_fit_X,plot_fit_Y_gaus,'k--')
-    plot(plot_pred.*[1,1],[0,2],'b-','LineWidth',2.0)
-    xlim(1.1*[min([plot_sig_X;plot_pred-1]),max([plot_sig_X;plot_pred+1])])
-    ylim([0,1.15])
-    xlabel(sprintf('f - %6f (MHz)',data.tr.fits.lorz_fit(1)))
-    ylabel('Atom Number Ratio')
-    legend('Frequency-binned data','Lorentzian fit','Gaussian fit','Theory Value','Location','Best')
-
-    suptitle([opts_tr.tr_name,sprintf(' absorption peak @ %.2f±(%.3f) MHz, FWHM~%.2fMHz',...
-        data.tr.fits.lorz_fit(1),data.tr.fits.lorz_fit(2),data.tr.fits.lorz_fit(3))])
-    title(sprintf('Vacuum wavelength %.10f nm ± %.6f fm, 2*%u shots',...
-        data.tr.fits.lorz_fit(5),1e6*data.tr.fits.lorz_fit(6),length(data.tr.sync.msr.tdc_time)))
-    
-    % Saving 
-    filename3 = fullfile(opts_tr.out_dir,sprintf('%s_spectrum',opts_tr.tr_name));
-    saveas(f3,[filename3,'.fig']);
-    saveas(f3,[filename3,'.png'])
+midpoint = median(data.spec.freq);
+f=sfigure(1337);
+clf;
+subplot(3,1,[1 2])
+plot(data.spec.freq-midpoint,1-data.spec.signal,'k-.')
+hold on
+for pidx = 1:length(data.tr.peaks.vals)
+   centre = data.tr.peaks.freqs(pidx)-midpoint;
+   height = data.tr.peaks.vals(pidx);
+   plot(centre*[1,1],[-0.20,height],'b-','Linewidth',2) 
+   plot(centre+0.5*data.tr.peaks.widths(pidx)*[-1,1],0.5*height*[1,1],'b-','Linewidth',2)
 end
 
-fprintf('All done!\n')
-header({1,'Done.'})
+xlabel(sprintf('f - %.2f MHz',midpoint))
+ylabel('1-N_{probe}/N_{cal}')
+suptitle([opts.tr_name,' spectral data'])
+
+tabledata = {'Peak number','Frequency','Width','Strength'};
+for pidx = 1:length(data.tr.peaks.vals)
+   new_row = {pidx,sprintf('%.2f',data.tr.peaks.freqs(pidx)),...
+       sprintf('%.2f',data.tr.peaks.widths(pidx)),sprintf('%.2f',data.tr.peaks.vals(pidx))};
+    tabledata = [tabledata;new_row];
+end
+uit = uitable(f,'Data',tabledata,'Position',[20 20 462 200]);
+
+fname=fullfile(opts.out_dir,sprintf('%s_spectrum_findpeaks',opts.tr_name));
+saveas(f,[fname,'.fig']);
+saveas(f,[fname,'.png'])
+
+for pidx = 1:length(data.tr.peaks.vals)
+    header({1,'Peak %u data from findpeaks:',pidx})
+    fprintf('Centre frequency           %.3f\n',data.tr.peaks.freqs(pidx));
+    fprintf('FWHM                       %.3f\n',data.tr.peaks.widths(pidx));
+    fprintf('Relative strength          %.2f\n',data.tr.peaks.vals(pidx));
+end
+%% Fit the peaks
+% data.tr.fits = fit_found_peaks(data,opts);
+
+
+%% Grouping by wavelength (Independent variable)
+data.tr.freq_stats = bin_by_wavelength(data,opts.tr);
+
+%% Plotting
+
+%   
+% % % Compute things
+% plot_pred = opts.pred_freq.*1e3-data.tr.fits.gaus_fit(1);
+% 
+% plot_set_X = 2*sort(all_setpts);
+% plot_set_X = plot_set_X(~isnan(plot_set_X))/1e6; %MHz
+% 
+% plot_fit_X = linspace(min([data.tr.fits.freqs_centred,plot_pred-1]),max([data.tr.fits.freqs_centred,plot_pred+1]),1e4);
+% plot_fit_Y_lor = data.tr.fits.lor_mdlfun(data.tr.fits.lor_cen_prms,plot_fit_X);
+% plot_fit_Y_gaus = data.tr.fits.gaus_mdlfun(data.tr.fits.gaus_cen_prms,plot_fit_X);
+% 
+% plot_sig_X = data.tr.freq_stats.freq-data.tr.fits.lorz_fit(1);
+% plot_sig_Y = data.tr.freq_stats.sig_cal;
+% plot_sig_Y_err = data.tr.freq_stats.sig_err;
+% plot_sig_Y_err = plot_sig_Y_err.*~isnan(plot_sig_Y_err);
+% 
+% % Plotting the result
+% f3=sfigure(501);
+% clf;
+% errorbar(plot_sig_X,plot_sig_Y,plot_sig_Y_err,'.')
+% hold on
+% plot(plot_fit_X,plot_fit_Y_lor,'r-')
+% plot(plot_fit_X,plot_fit_Y_gaus,'k--')
+% plot(plot_pred.*[1,1],[0,2],'b-','LineWidth',2.0)
+% xlim(1.1*[min([plot_sig_X;plot_pred-1]),max([plot_sig_X;plot_pred+1])])
+% ylim([0,1.15])
+% xlabel(sprintf('f - %6f (MHz)',data.tr.fits.lorz_fit(1)))
+% ylabel('Atom Number Ratio')
+% legend('Frequency-binned data','Lorentzian fit','Gaussian fit','Theory Value','Location','Best')
+% 
+% suptitle([opts.tr_name,sprintf(' absorption peak @ %.2f±(%.3f) MHz, FWHM~%.2fMHz',...
+%     data.tr.fits.lorz_fit(1),data.tr.fits.lorz_fit(2),data.tr.fits.lorz_fit(3))])
+% title(sprintf('Vacuum wavelength %.10f nm ± %.6f fm, 2*%u shots',...
+%     data.tr.fits.lorz_fit(5),1e6*data.tr.fits.lorz_fit(6),length(data.tr.sync.msr.tdc_time)))
+% 
+% % Saving 
+% filename3 = fullfile(opts.out_dir,sprintf('%s_spectrum',opts.tr_name));
+% saveas(f3,[filename3,'.fig']);
+% saveas(f3,[filename3,'.png'])
+% 
+% 
+% fprintf('All done!\n')
+% header({1,'Done.'})
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%% WRITE RESULTS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-fwtext(' RESULTS ')
-header({1,'Gaussian fit'})
-fprintf('Transition Frequency             %.2f±(%.3f) MHz\n',data.tr.fits.gaus_fit(1),data.tr.gaus_fit(2))
-fprintf('Peak width                       %.3f±(%.3f) MHz\n',data.tr.gaus_fit(3),data.tr.gaus_fit(4))
-fprintf('Transition Wavelength            %.6f±(%.7f) nm\n',data.tr.gaus_fit(5),data.tr.gaus_fit(6))
-header({1,'Lorentzian fit'})
-fprintf('Transition Frequency             %.2f±(%.3f) MHz\n',data.tr.fits.lorz_fit(1),data.tr.lorz_fit(2))
-fprintf('Peak width                       %.3f±(%.3f) MHz\n',data.tr.lorz_fit(3),data.tr.lorz_fit(4))
-fprintf('Transition Wavelength            %.6f±(%.7f) nm\n',data.tr.lorz_fit(5),data.tr.lorz_fit(6))
+% fwtext(' RESULTS ')
+% header({1,'Peak data'})
+% fprintf('Transition Frequency             %.2f±(%.3f) MHz\n',data.tr.fits.gaus_fit(1),data.tr.gaus_fit(2))
+% fprintf('Peak width                       %.3f±(%.3f) MHz\n',data.tr.gaus_fit(3),data.tr.gaus_fit(4))
+% fprintf('Transition Wavelength            %.6f±(%.7f) nm\n',data.tr.gaus_fit(5),data.tr.gaus_fit(6))
+% header({1,'Lorentzian fit'})
+% fprintf('Transition Frequency             %.2f±(%.3f) MHz\n',data.tr.fits.lorz_fit(1),data.tr.lorz_fit(2))
+% fprintf('Peak width                       %.3f±(%.3f) MHz\n',data.tr.lorz_fit(3),data.tr.lorz_fit(4))
+% fprintf('Transition Wavelength            %.6f±(%.7f) nm\n',data.tr.lorz_fit(5),data.tr.lorz_fit(6))
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%% SAVE RESULTS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

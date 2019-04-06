@@ -1,5 +1,5 @@
 function data = import_lv_log(opts_lv)
-    fprintf('Importing LV log...\n')
+    header({0,'Importing LV log...'})
     lv_log=[];
     lv_log.dir = strcat(opts_lv.dir,'log_LabviewMatlab.txt');
     fid = fopen(lv_log.dir );
@@ -32,7 +32,7 @@ function data = import_lv_log(opts_lv)
     data.time=lv_log.posix_times;
     data.shot_num=lv_log.iter_nums;
     data.calibration=lv_log.probe_calibration;
-    fprintf('Done!\n')
+    header({1,'Done!'})
     
     if opts_lv.plots
         t0 = min(data.time);

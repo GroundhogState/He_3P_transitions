@@ -3,8 +3,6 @@ function fits = fit_peaks(data,opts)
     [peak_guess,peak_idx]= min(data.tr.freq_stats.sig_cal);
     peak_freq = data.tr.freq_stats.freq(peak_idx);
     
-    
-    
     freqs_centred_fit = data.tr.sync.msr.probe_set-peak_freq;
     var_guess = 15;
     % Fit a gaussian

@@ -2,7 +2,7 @@ function opts = transition_config()
 
 opts.dir = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\20190401_first_402_scan\';
 opts.dir = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\20190401_second_scan_402\';
-opts.dir = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\20190405_5^3D_3_cal_qwp_190_stage_1_ITC\'
+opts.dir = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\20190405_5^3D_3_cal_qwp_146_stage_1_ITC\'
 opts.tr_name = '5^3D_3';
 opts.tr.tr_name = opts.tr_name;
 

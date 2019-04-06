@@ -38,7 +38,7 @@ if opts_wm.plots
     saveas(f,[filename,'.png']);
 end
 
-header({0,'Done'})
+header({1,'Done'})
 
 end
 
@@ -55,7 +55,7 @@ function wm_log=wm_log_import_core(opts_wm)
 %with wm_log.feedback.time wm_log.feedback.set_wav
 wm_log=struct();
 add_to_struct=true;
-fprintf('importing %u wavemeter-laser feedback log files',size(opts_wm.names,2))
+fprintf('Importing %u wavemeter-laser feedback log files',size(opts_wm.names,2))
 iimax=size(opts_wm.names,2);
 for ii=1:iimax
     path=strcat(opts_wm.dir,opts_wm.names{ii});
@@ -138,11 +138,8 @@ for ii=1:iimax
         end
     end
 end
-fprintf('\nCleaning up output structure...')
+fprintf('\nCleaning up output structure...\n')
 wm_log=clean_log_structure(wm_log,[]); %itteratively defined cleaner
-fprintf('Done\n')
-fprintf('Done wm import\n')
-
 
 
 
