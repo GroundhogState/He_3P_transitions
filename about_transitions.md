@@ -597,4 +597,12 @@ Things to do:
 			* Stage 2 D_3, qwp 236 <-
 		* Note that an extra segment is required in the analysis script to deal with these 
 	* So why do we only see these peaks? I wonder; can we actually see the D_3 and the D_1, because the D_2 is forbidden by selection rules?! 
+	* Some of these transitions are very close to theory. We NEED to calibrate wavemeter in a closer region.
+	* Also, what about peaks that are too weak for us to recover?
 	* NB QWP fast axis offset at 203 degrees, HWP fast axis offset at 20 degrees
+* Sunday
+	* Damnit, unexpected failure; Huge numbers of coincidences in LabView log times?! How did that happen? Probably salvageable 
+	* FUCKING DAYLIGHT SAVINGS. We should probably query a server somewhere for UNIX time. Or disable auto-DST updates?
+	* Hack fix: Mask out all the files in that 2hr window...
+	* Setting up for another run. What do we need?
+	* Confident that the shift in peak amplitude is enough to identify everything. So take waveplates out and extend exposure; let's not miss anything

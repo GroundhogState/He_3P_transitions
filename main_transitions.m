@@ -36,12 +36,12 @@ fwtext('')
 fwtext('STARTING ANALYSIS')
 fwtext('')
 
-% % Setting up
+%% Setting up
 header({0,'Setting up configs...'})
 % Declare useful constants
 hebec_constants
 % initialize variables
-opts = transition_config_53D3_400GHz_qwp_146();
+opts = transition_config_53D3_400GHz_qwp_236_double_stage();
 header({1,'Done.'})
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -75,7 +75,7 @@ num_files = length(lv_time);
 %% %%%%%%%%% COMPUTATION ON THE DATA
 
 %% Match the timestamps    
-data.tr.sync = match_timestamps(data,opts.tr);
+data.tr.sync = match_timestamps(data,opts);
 
 %% Create a simple calibration model
 data.tr.sync.msr.calib = make_calibration_model(data,opts.tr);

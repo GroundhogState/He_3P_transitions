@@ -1,7 +1,7 @@
 function calib  = make_calibration_model(data,opts)    
     
-    
-    calib = interp1(data.tr.sync.cal.tdc_time,data.tr.sync.cal.N_atoms,data.tr.sync.msr.tdc_time);      
+    header({0,'Making calibration model'})
+ 
 
     % Plotting the calibration model
         
@@ -14,6 +14,7 @@ function calib  = make_calibration_model(data,opts)
     plot_cal_X = data.tr.sync.cal.probe_set;
     plot_cal_Y = data.tr.sync.cal.N_atoms;
     
+    calib = interp1(data.tr.sync.cal.tdc_time,data.tr.sync.cal.N_atoms,data.tr.sync.msr.tdc_time);     
     plot_mdl_Y = data.tr.sync.msr.N_atoms./calib';
     
     f1=sfigure(5000);
@@ -28,12 +29,18 @@ function calib  = make_calibration_model(data,opts)
     legend('Measurement shots','calibration shots','Model')
     title('Raw data')
 
+   
+    
+    
     subplot(3,1,2)
     plot(plot_raw_T,plot_mdl_Y,'.')
     xlabel('Time elapsed')
     ylabel('N ratio')
     title('Model-calibrated signal')    
-    suptitle('Calibration model')
+%     suptitle('Calibration model')
+    
+    
+    
     
     subplot(3,1,3)
     plot(plot_raw_X,plot_mdl_Y,'.')
@@ -43,11 +50,12 @@ function calib  = make_calibration_model(data,opts)
     ylabel('N ratio')
     ylim([-0.1,1.1])
     title('Calibrated spectral data')    
-    suptitle('Calibration model')
-    
-    filename2 = fullfile(opts.out_dir,sprintf('%s_diagnostic',mfilename));
-    saveas(f1,[filename2,'.fig']);
-    saveas(f1,[filename2,'.png'])
+%     suptitle('Calibration model')
+%     
+%     filename2 = fullfile(opts.out_dir,sprintf('%s_diagnostic',mfilename));
+%     saveas(f1,[filename2,'.fig']);
+%     saveas(f1,[filename2,'.png'])
 
+    header({1,'Done.'})
 
     end
