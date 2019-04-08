@@ -37,7 +37,7 @@ const.f_table.g_2_3P_2.e_5_1D_2 = 744.43034335e12; % 402.7nm
 %Fitted valuse for the 5^3D's
 const.f_table.g_2_3P_2.e_5_3D_3 = 744.39620568e12;
 const.f_table.g_2_3P_2.e_5_3D_2 = 744.39622589e12;
-const.f_table.g_2_3P_2.e_5_3D_1 = 744.3965001e12;
+const.f_table.g_2_3P_2.e_5_3D_1 = 744.3964801e12;
 
 
 opt.prm = [];

@@ -90,9 +90,9 @@ data = present_data(data,opts);
 figure(1)
 clf
 zeeman_structured()
-
-B_vals = [18,10];
-B_vals = [17.8,11.951];
+f_offset = 10e6;
+B_vals = [14,5];
+% B_vals = [17.8,11.951];
 %B_vals = [14.5,8.65];
 peak_idxs = [1,2,3,4,5;
             1,2,3,4,5];
@@ -102,7 +102,7 @@ X = [];
 Y = [];
 for cat_idx = 1:numel(data.cat)
     X = [X,B_vals(cat_idx)*ones(size(data.cat{cat_idx}.peaks.freqs))];
-    Y = [Y,data.cat{cat_idx}.peaks.freqs(peak_idxs(cat_idx,:))*1e6];
+    Y = [Y,data.cat{cat_idx}.peaks.freqs(peak_idxs(cat_idx,:))*1e6+f_offset];
 end
 
 if numel(data.cat) == 1
@@ -112,7 +112,7 @@ else
 end
 plot(X',Y',plotstyle)
 
-xlim([7,19])
+% xlim([7,19])
 
 
 title('Combining theory and data')
