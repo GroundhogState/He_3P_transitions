@@ -57,6 +57,8 @@ function sync_data = match_timestamps(data,opts)
         this_tdc_idx = this_tdc_idx ;
         sync_shots.tdc_time(idx) = tdc_time(this_tdc_idx);
         sync_shots.N_atoms(idx) = data.tdc.N_atoms(this_tdc_idx)';
+        
+        sync_shots.class(idx) = data.lv.shot_class(this_lv_idx);
     end
     
     ctrl_mask = logical(sync_shots.lv_cal)';

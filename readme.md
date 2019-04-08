@@ -1,9 +1,10 @@
 # TO DO BEFORE GIT
 
 Software
+* Import analog logs and implement checks: WM set point
 * Better logging
 	* figure exporting DONE
-	* Generate metadata logfiles 
+	* Generate metadata logfiles and export
 * Fix time offset between LV and MCP logs DONE 
 * Calibration model
 	* Implemented, just needs control flow & safeties if no calibrations found
@@ -12,6 +13,7 @@ Software
 * generalize monitor run feature
 * Better modular caching
 	* smarter WM importing; timestamp sensitive?
+	* Why does cache fail to import so often?
 * Compile core import functions?
 
 Hardware
