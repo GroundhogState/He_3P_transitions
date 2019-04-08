@@ -41,7 +41,7 @@ header({0,'Setting up configs...'})
 % Declare useful constants
 hebec_constants
 % initialize variables
-opts = transition_config_53D3_400GHz_qwp_236_double_stage();
+opts = transition_config_53D3_400GHz_horz_pol_double_stage();
 header({1,'Done.'})
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
