@@ -579,8 +579,6 @@ Things to do:
 * Sunday: 		Come in, run scan in first stage of ITC with your choice of waveplate angle
 * Monday: 		Party?
 
-
-
 * Saturday: 
 	* Left beam dump in, so no data :( But at least we have big, stable BECs. 
 	* Measuring WM offset:
@@ -605,4 +603,37 @@ Things to do:
 	* FUCKING DAYLIGHT SAVINGS. We should probably query a server somewhere for UNIX time. Or disable auto-DST updates?
 	* Hack fix: Mask out all the files in that 2hr window...
 	* Setting up for another run. What do we need?
-	* Confident that the shift in peak amplitude is enough to identify everything. So take waveplates out and extend exposure; let's not miss anything
+	* Confident that the shift in peak amplitude is enough to identify everything. So take waveplates out and run two-stage scan
+	* Goal: Determine magnetic field. Along the way, will likely need to identify transitions. So, here goes.
+		* Step 1: Extend analysis capability DONE
+		* Step 2: Identify lines...
+			* Almost there!
+
+## Hello, Kieran!
+
+Obviously, quite a lot happened on the weekend, so I'm going to take a chunk of Monday to stay home. Some progress to acquaint yourself with:
+	* the zeeman_theory code in the repo is pretty well established (could be more flexible), have a play with it. Uses include:
+		* Determining scan ranges
+		* Generating theory to fit to data
+		* Getting a feel for the Zeeman effect
+		* The plots are pretty poorly labeled atm, but if the colour scheming works then:
+			* darker = lower initial ground m_j, lighter = higher ground m_j 
+			* ^ = sigma+, o = pi, v = sigma-
+	* The plot in the lower right of main monitor is about as far as I got. It's almost done! Try manually identifying the observed peaks with the predicted data, then fit the theory offset & magnetic field strengths.
+		* Note the displayed data came from me ripping the waveplates out! 
+		* We also have a ton of data with various light polarizations
+		* Sorry about the poor code hygiene/half-baked figures...
+	* Nonetheless, I think it's pretty concievable that you can make serious headway towards these today:
+		* What is the magnetic field strength?
+		* What pumped states (in the 2^3P manifold) exist in the trap?
+		* Which transitions are we driving? 
+	* I'll come in for a bit in the afternoon, but you can contact me on messenger any time.
+	* Other sundry things that need attention:
+		* Fill up Little Boy, Fat Man has been running all weekend
+		* Find Cs transitions that we could use to calibrate near 402 (and the forbidden line, fingers crossed)
+		* Fix the caching functionality in the analysis script; often re-imports when not necessary, taking heaps of time
+		* Add the analog import back in, and add a check for the PD voltage
+			* If the PD voltage is below set point but steady, we can just scale the signal at that shot, if the signal is linear...
+		* So let's find out! Take a few quick scans over a peak with varying intensity and see how the peak height varies.Probably the best data to take now, and quite quick too. 
+		* Code could do with a general tidy & better documentation
+		* Good luck and happy science!

@@ -1,7 +1,37 @@
 function data_tdc = import_mcp_tdc(opts_tdc)
     header({0,'Importing TDC data'})
     
-    data_tdc = mcp_tdc_import_core(opts_tdc);
+    cache_opts=[];
+    cache_opts.verbose=1;
+
+    if ~isfield(opts_tdc,'force_load_save')
+        opts_tdc.force_load_save=false;
+    end
+    cache_opts.force_cache_load=opts_tdc.force_load_save;
+    opts_tdc=rmfield(opts_tdc,'force_load_save');
+
+    if ~isfield(opts_tdc,'force_forc')
+        opts_tdc.force_forc=false;
+    end
+
+    % if ~isfield(opts_tdc,'no_save')
+    %     %to be completed, requires modification to function_cache
+    % end
+
+    if opts_tdc.force_forc %if force_forc then have to skip the cache
+        opts_tdc.force_reimport=true;
+    end
+
+    if ~isfield(opts_tdc,'force_reimport')
+        opts_tdc.force_reimport=false;
+    end
+    cache_opts.force_recalc=opts_tdc.force_reimport;
+    opts_tdc=rmfield(opts_tdc,'force_reimport');
+
+    outputs=function_cache(cache_opts,@mcp_tdc_import_core,{opts_tdc});
+    data_tdc=outputs{1};
+    
+%     data_tdc = mcp_tdc_import_core(opts_tdc);
     
 %     if isfield(opts_tdc,mcp_post_fun)
         data_tdc = mcp_post_fun(data_tdc,opts_tdc);
@@ -49,7 +79,7 @@ function mcp_tdc_data = mcp_tdc_import_core(opts_tdc)
     %start up the diary of stdout
     diary([out.dir,'anal.txt'])
     %import the data
-    [mcp_tdc_data,import_opts]=import_mcp_tdc_data(opts_tdc);
+    [mcp_tdc_data,opts_tdc]=import_mcp_tdc_data(opts_tdc);
 
 end
 

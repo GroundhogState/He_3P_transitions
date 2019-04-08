@@ -5,17 +5,17 @@ function calib  = make_calibration_model(data,opts)
 
     % Plotting the calibration model
         
-    plot_raw_T = data.tr.sync.msr.tdc_time-data.tr.start_time;
-    plot_raw_X = data.tr.sync.msr.probe_set;
-    plot_raw_Y = data.tr.sync.msr.N_atoms;
+    plot_raw_T = data.sync.msr.tdc_time-data.start_time;
+    plot_raw_X = data.sync.msr.probe_set;
+    plot_raw_Y = data.sync.msr.N_atoms;
     
     
-    plot_cal_T = data.tr.sync.cal.tdc_time-data.tr.start_time;
-    plot_cal_X = data.tr.sync.cal.probe_set;
-    plot_cal_Y = data.tr.sync.cal.N_atoms;
+    plot_cal_T = data.sync.cal.tdc_time-data.start_time;
+    plot_cal_X = data.sync.cal.probe_set;
+    plot_cal_Y = data.sync.cal.N_atoms;
     
-    calib = interp1(data.tr.sync.cal.tdc_time,data.tr.sync.cal.N_atoms,data.tr.sync.msr.tdc_time);     
-    plot_mdl_Y = data.tr.sync.msr.N_atoms./calib';
+    calib = interp1(data.sync.cal.tdc_time,data.sync.cal.N_atoms,data.sync.msr.tdc_time);     
+    plot_mdl_Y = data.sync.msr.N_atoms./calib';
     
     f1=sfigure(5000);
     clf;

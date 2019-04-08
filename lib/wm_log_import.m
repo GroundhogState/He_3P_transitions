@@ -3,7 +3,8 @@ function wm=wm_log_import(opts_wm)
 header({0,'Importing WM data'})
 
 cache_opts = opts_wm.cache_import;
-
+cache_opts.verbose = 1;
+opts_wm.force_recalc = false;
 wm=simple_function_cache(cache_opts,@wm_log_import_core,{opts_wm});
 
 

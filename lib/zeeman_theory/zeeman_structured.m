@@ -8,7 +8,7 @@
 
 %% init
 disp('=== Zeeman splittings ===')
-clear all;
+% clear all;
 this_folder = fileparts(which(mfilename));
 core_folder = fullfile(fileparts(this_folder),'Core_BEC_Analysis\');
 addpath(genpath(this_folder));
@@ -34,27 +34,24 @@ const.f_table.g_2_3P_2.e_5_1S_0 = 1e9*const.c/406.8886971706;
 const.f_table.g_2_3P_2.e_5_1P_1 = 1e9*const.c/402.322271224483;
 const.f_table.g_2_3P_2.e_5_1D_2 = 744.43034335e12; % 402.7nm
 
+%Fitted valuse for the 5^3D's
+const.f_table.g_2_3P_2.e_5_3D_3 = 744.39620568e12;
+const.f_table.g_2_3P_2.e_5_3D_2 = 744.39622589e12;
+const.f_table.g_2_3P_2.e_5_3D_1 = 744.3965001e12;
+
+
 opt.prm = [];
 
 % Parameters
-B = linspace(0,25,100);
+B = linspace(0,30,50);
 g_level = '2_3P_2';
 g_state = '2_3P_2_2';
 e_term = '5_3D';
+e_manifold  = e_term(1:3);
 % Generate the lookup table
-% lines = z_level2term(B,g_level,e_term,const);
+lines = z_level2manifold(B,g_level,e_manifold,const);
 
-% Plot things, looping over upper levels and then types of transition
-% function plot_state2manifold
-
-
-figure(1)
-clf
-    % kind of built exclusively for each other atm
-    e_manifold = '5_3'; % singlet manifold
-    lines = z_level2manifold(B,g_level,e_manifold,const);
-    plot_state2manifold(lines,g_state,e_manifold,const,opt)
-% plot_level2term(lines,g_level,e_term,const,opt)
+plot_level2term(lines,g_level,e_term,const,opt)
 % plot_state2term(lines,g_state,e_term,const,opt)
 xlabel('Magnetic field strength (G)')
 ylabel('Frequency (Hz)')

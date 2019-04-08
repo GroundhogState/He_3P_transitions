@@ -13,16 +13,19 @@ function data = import_lv_log(opts_lv)
                 lv_log.setpoints(ii)=line_cells{5};
                 lv_log.probe_calibration(ii)=false;
                 lv_log.iter_nums(ii)=line_cells{7};
+                lv_log.shot_class{ii} = erase(line_cells{4}{1},'measure_probe_');
             elseif contains(lv_log.cell{ii},'calibrate')
                 line_cells=textscan(lv_log.cell{ii},'%f %s %s %s %s %u','Delimiter',',');
                 lv_log.setpoints(ii)=NaN;
                 lv_log.probe_calibration(ii)=true;
                 lv_log.iter_nums(ii)=line_cells{6};
+                lv_log.shot_class{ii} = 'calibration';
             else %deals with the legacy case (only 20180813_CW_AL_tuneout_scan)
                 line_cells=textscan(lv_log.cell{ii},'%f %s %s %s %f %s %u','Delimiter',',');
                 lv_log.setpoints(ii)=line_cells{5};
                 lv_log.probe_calibration(ii)=false;
                 lv_log.iter_nums(ii)=line_cells{7};
+                lv_log.shot_class{ii} = 'null';
             end
             lv_log.posix_times(ii)=line_cells{1};
             lv_log.iso_times{ii}=line_cells{2};
@@ -32,6 +35,7 @@ function data = import_lv_log(opts_lv)
     data.time=lv_log.posix_times;
     data.shot_num=lv_log.iter_nums;
     data.calibration=lv_log.probe_calibration;
+    data.shot_class = lv_log.shot_class;
     header({1,'Done!'})
     
     if opts_lv.plots

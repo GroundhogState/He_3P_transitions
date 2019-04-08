@@ -135,6 +135,9 @@ opts.aom_freq=0;%190*1e6;%Hz %set to zero for comparison with previous data runs
 
 
 %% Plotting
+opts.cutoff_thresh = 0.1;
+opts.smooth_width = 20;
+opts.saturation_threshold = 0.975;
 opts.tr.plot = 1; 
 opts.tr.out_dir = opts.out_dir;
 opts.tr.pred_freq = opts.pred_freq;
