@@ -1,12 +1,12 @@
-function peaks = find_spectral_peaks(data,opts)
+function peaks = find_spectral_peaks(spec,opts)
 header({0,'Finding peaks...'})
-    signal = 1-data.spec.signal;
+    signal = 1-spec.signal;
     satch_mask = signal > opts.saturation_threshold;
     sig_satch = signal;
     sig_satch(satch_mask) = 1;
-    freq_cut = data.spec.freq;
+    freq_cut = spec.freq;
 
-    df = mean(diff(data.spec.freq));
+    df = mean(diff(spec.freq));
     
     smooth_out = smoothdata(sig_satch,'gaussian',opts.smooth_width);
     smooth_cut = smooth_out.*(smooth_out>opts.cutoff_thresh);    
@@ -19,7 +19,7 @@ header({0,'Finding peaks...'})
     peaks.peak_num = (1:length(pks))';
     peaks.vals = signal(locs)';
     peaks.locs = locs';
-    peaks.freqs = data.spec.freq(locs)';
+    peaks.freqs = spec.freq(locs)';
     peaks.widths = (w*df)';
     peaks.prominences = p';
     
@@ -27,17 +27,19 @@ header({0,'Finding peaks...'})
     %% Verbose output
     
     header({2,'%u peaks found.',length(locs)})
-
-    
-    sfigure(50123);
+    fnum = 50123;
+    if isfield(opts,'fig_idx')
+        fnum = fnum + opts.fig_idx;
+    end
+    sfigure(fnum);
     clf;
-    plot(data.spec.freq,signal,'g.')
+    plot(spec.freq,signal,'g.')
     hold on
-    plot(data.spec.freq,sig_satch,'b.')
+    plot(spec.freq,sig_satch,'b.')
     plot(freq_cut,smooth_out,'k.')
     plot(freq_cut,smooth_cut,'ro')    
     for pidx = 1:length(pks)
-        loc = data.spec.freq(locs(pidx));
+        loc = spec.freq(locs(pidx));
        plot(loc.*[1,1],[0,-0.1],'k-','LineWidth',1.0) 
        plot(loc.*[1,1]+0.5*peaks.widths(pidx)*[-1,1],[-0.05,-0.05],'k-','LineWidth',1.0) 
     end
