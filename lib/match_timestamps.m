@@ -30,13 +30,6 @@ function sync_data = match_timestamps(data,opts)
     
     
     sync_shots = [];
-    sync_shots.wm_setpt = zeros(num_files,1);
-    sync_shots.lv_cal = zeros(num_files,1);
-    sync_shots.lv_set = zeros(num_files,1);
-    sync_shots.tdc_time = zeros(num_files,1);
-    sync_shots.wm_time = zeros(num_files,1);
-    sync_shots.lv_time = zeros(num_files,1);
-
     for idx = 1:num_files
         this_lv_idx = file_idxs(idx); % To allow for manual masking
        % Fun job: Write fn/ modify closest_value so it can be vectorized
@@ -54,7 +47,7 @@ function sync_data = match_timestamps(data,opts)
         sync_shots.probe_set(idx) = 2*sync_shots.wm_setpt(idx) - opts.tr.aom_freq;
         
         [~,this_tdc_idx] = closest_value(tdc_time,this_time+25);
-        this_tdc_idx = this_tdc_idx ;
+%         this_tdc_idx = this_tdc_idx ;
         sync_shots.tdc_time(idx) = tdc_time(this_tdc_idx);
         sync_shots.N_atoms(idx) = data.tdc.N_atoms(this_tdc_idx)';
         

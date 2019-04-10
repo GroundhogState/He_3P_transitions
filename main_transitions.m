@@ -40,7 +40,10 @@ header({0,'Setting up configs...'})
 % Declare useful constants
 hebec_constants
 % initialize variables
-opts = transition_config_53D3_400GHz_horz_pol_double_stage();
+
+opts = transition_config_5_3D2_3D3_qwp_236();
+% opts = transition_config_53D3();
+
 header({1,'Done.'})
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -82,46 +85,75 @@ data.sync.msr.calib = make_calibration_model(data,opts.tr);
 %% Break data into categories
 data.cat = categorize_shots(data,opts);
 
-%%
-data = present_data(data,opts);
+%% Peak detection
+data = auto_peak_detect(data,opts);
+
+%% Fitting goes here
+
+%% Grouping by wavelength 
+data = bin_by_wavelength(data,opts);
+
+%% Fit the detected peaks
+data = fit_detected_peaks(data,opts);
+
+
+
+%% Try looking for hidden peaks
 
 %%
 figure(1)
 clf
 zeeman_structured()
-
-B_vals = [18,10];
-B_vals = [17.8,11.951];
+f_offset = 3e6;
+B_vals = [17.8,10];
+B_err = [1.5,1];
+% B_vals = [17.8,11.951];
 %B_vals = [14.5,8.65];
 peak_idxs = [1,2,3,4,5;
-            1,2,3,4,5];
+            1,3,4,4,5];
 % peak_idxs = [1,2,3,4,5;
 %             1,3,4,4,5];
 X = [];
 Y = [];
+Y_err = [];
+X_err = [];
 for cat_idx = 1:numel(data.cat)
-    X = [X,B_vals(cat_idx)*ones(size(data.cat{cat_idx}.peaks.freqs))];
-    Y = [Y,data.cat{cat_idx}.peaks.freqs(peak_idxs(cat_idx,:))*1e6];
+%     X = [X,B_vals(cat_idx)*ones(size(data.cat{cat_idx}.peaks.freqs))];
+%     X_err = [X_err,B_err(cat_idx)*[1,1,1,1,1]'];
+%     Y = [Y,data.cat{cat_idx}.peaks.freqs*1e6+f_offset];
+%     Y_err = [Y_err,1e6*[5,10,5,5,5]'];
+    X = B_vals(cat_idx)*ones(size(data.cat{cat_idx}.peaks.freqs));
+    X_err = [X_err,B_err(cat_idx)*[1,1,1,1,1]'];
+    Y = data.cat{cat_idx}.peaks.freqs*1e6+f_offset;
+    plot(X',Y','kx')
+    hold on
 end
-
-if numel(data.cat) == 1
-    plotstyle = 'kx';
-else
-    plotstyle = 'kx-';
-end
-plot(X',Y',plotstyle)
-
-xlim([7,19])
-
-
+Y = [
+     154.46,176.78
+     187.50,187.27
+     187.50,201.50
+     216.99,218.98
+    ];
+Y = (Y + 744396000).*1e6+f_offset;
+X = ones(size(Y,1),2).*B_vals;
+plot(X',Y','k*')
+Y = [189.73,201.75
+     218.77,223.78
+     233.98,223.78
+    ];
+Y = (Y + 744396000).*1e6+f_offset;
+X = ones(size(Y,1),2).*B_vals;
+plot(X',Y','r+')
 title('Combining theory and data')
 
 %% Fit the peaks
 % data.fits = fit_found_peaks(data,opts);
-
-
-%% Grouping by wavelength (Independent variable)
-% data.freq_stats = bin_by_wavelength(data,opts.tr);
+%% Save to output
+header({0,'Saving output...'})
+out_data = data.cat;
+filename = fullfile(opts.out_dir,'output.m');
+save(filename,'out_data','-v7.3')
+header({1,'Done!'})
 
 %% Plotting
 

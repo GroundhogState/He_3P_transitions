@@ -36,6 +36,12 @@ const.f_table.g_2_3P_2.e_5_1P_1 = 1e9*const.c/402.322271224483;  % Should be vis
 const.f_table.g_2_3P_2.e_5_1D_2 = 744430343.14e6;% Spotted; should be able to get two lines
 
 
+%Fitted values for the 5^3D's
+const.f_table.g_2_3P_2.e_5_3D_3 = 744.39620836e12;
+const.f_table.g_2_3P_2.e_5_3D_2 = 744.39622758e12;
+const.f_table.g_2_3P_2.e_5_3D_1 = 744.39651114e12;
+
+
 
 opt.mg_range = 0:2;
 

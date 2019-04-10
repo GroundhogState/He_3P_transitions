@@ -15,7 +15,7 @@ function calib  = make_calibration_model(data,opts)
     plot_cal_Y = data.sync.cal.N_atoms;
     
     calib = interp1(data.sync.cal.tdc_time,data.sync.cal.N_atoms,data.sync.msr.tdc_time);     
-    plot_mdl_Y = data.sync.msr.N_atoms./calib';
+    plot_mdl_Y = data.sync.msr.N_atoms./calib;
     
     f1=sfigure(5000);
     clf;
