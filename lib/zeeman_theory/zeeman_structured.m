@@ -26,21 +26,18 @@ const.f_table.g_2_3P_2.e_5_3P_0 = 1e9*const.c/404.628937550957;
 const.f_table.g_2_3P_2.e_5_3P_1 = 1e9*const.c/404.629844755577;
 const.f_table.g_2_3P_2.e_5_3P_2 = 1e9*const.c/404.629918705477; 
 % Historically controversial transitions
-const.f_table.g_2_3P_2.e_5_3D_3 = 744.39620968e12;
-const.f_table.g_2_3P_2.e_5_3D_2 = 744.39622889e12;
-const.f_table.g_2_3P_2.e_5_3D_1 = 744.39651246e12; 
+    % Updated c.f. Drake's email
+const.f_table.g_2_3P_2.e_5_3D_3 = 744396208.36e6;%744.39620968e12;
+const.f_table.g_2_3P_2.e_5_3D_2 = 744396227.58e6;% 744.39622889e12;
+const.f_table.g_2_3P_2.e_5_3D_1 = 744396511.14e6 ;%744.39651246e12; 
 % Singlet-triplet transitions
-const.f_table.g_2_3P_2.e_5_1S_0 = 1e9*const.c/406.8886971706;
-const.f_table.g_2_3P_2.e_5_1P_1 = 1e9*const.c/402.322271224483;
-const.f_table.g_2_3P_2.e_5_1D_2 = 744.43034335e12; % 402.7nm
-
-%Fitted valuse for the 5^3D's
-const.f_table.g_2_3P_2.e_5_3D_3 = 744.39620568e12;
-const.f_table.g_2_3P_2.e_5_3D_2 = 744.39622589e12;
-const.f_table.g_2_3P_2.e_5_3D_1 = 744.3965001e12;
+const.f_table.g_2_3P_2.e_5_1S_0 = 1e9*const.c/406.8886971706; % Can't observe from our pump state :( 
+const.f_table.g_2_3P_2.e_5_1P_1 = 1e9*const.c/402.322271224483;  % Should be visible with sigma-
+const.f_table.g_2_3P_2.e_5_1D_2 = 744430343.14e6;% Spotted; should be able to get two lines
 
 
-opt.prm = [];
+
+opt.mg_range = 0:2;
 
 % Parameters
 B = linspace(0,30,50);
@@ -52,7 +49,7 @@ e_manifold  = e_term(1:3);
 lines = z_level2manifold(B,g_level,e_manifold,const);
 
 plot_level2term(lines,g_level,e_term,const,opt)
-% plot_state2term(lines,g_state,e_term,const,opt)
+% plot_state2manifold(lines,g_state,e_manifold,const,opt)
 xlabel('Magnetic field strength (G)')
 ylabel('Frequency (Hz)')
 % g_label = [strrep(g_state(1:4),'_','^'),g_state(5:6),strrep(g_state(7:end),'_',',m_j=')];

@@ -3,8 +3,9 @@
 function plot_level2term(lines,g_level,e_term,const,opt)
     J_g = str2num(g_level(end));
     if ~isfield(opt,'mg_range')
-        mg_range = -J_g:J_g; % options to restric
-        mg_range = 2;
+        mg_range = -J_g:J_g; % options to restrict
+    else
+        mg_range = opt.mg_range;
     end
     for i=1:length(mg_range)
 %         cmap = colormap(viridis(length(mg_range)+1));
