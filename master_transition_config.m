@@ -1,63 +1,44 @@
-function opts = master_transition_config()
+function [opts,const] = master_transition_config()
 
+%% Frequently adjusted quantities
 
 
 opts.dir = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\20190404_5^3S_1_after_calibration_qwp_150\'
-% Find the local config
+% Import the local config
 
 % Extract the transition name
 opts.tr_name = '5^3D_3';
 
 
+% These variables are set here for quick access to quantities passed to
+% functions in fields defined later in this code
 % opts.ignorefiles = 1028:1305;
+peak_cutoff_thresh = 0.1;
+peak_smooth_width = 15;
+peak_saturation_threshold = 0.975;
+
+
+% Experimental parameters
 opts.probe_set_pt=0.4;
-opts.ritz_wl = 402.73238109; % NIST Ritz wavelength, nm
-opts.ritz_freq = 299792458/opts.ritz_wl; %GHz
-opts.obs_wl = 402.73292; %NIST observed vacuum wl, nm
-opts.obs_freq = 299792458/opts.obs_wl; %GHz
-
-opts.pred_wl = opts.ritz_wl;
-opts.pred_freq = opts.ritz_freq;
-
-opts.global.fall_time=0.417;
-opts.global.qe=0.09;
-
-opts.wm.plot_all=1;
-
-opts.wm.plot_failed=false;
 opts.trig_ai_in=20;
 opts.trig_dld=20.3;
 opts.dld_aquire=4;
 opts.aquire_time=4;
+opts.aom_freq=189;%190*1e6;%Hz %set to zero for comparison with previous data runs
+% Experimental constants
 
-%% Generate out directory
+%% Generate output directory
 %set up an output dir %https://gist.github.com/ferryzhou/2269380
 if (exist([opts.dir,'out'], 'dir') == 0), mkdir([opts.dir,'out']); end
 %make a subfolder with the ISO timestamp for that date
 opts.out_dir=sprintf('%sout\\%s\\',...
     opts.dir,datestr(datetime('now'),'yyyymmddTHHMMSS'));
 if (exist(opts.out_dir, 'dir') == 0), mkdir(opts.out_dir); end
+%% LabView import
 
-%% Reference values
-const.f_table.g_2_3P_2.e_5_3S_1 = 727.3032446e12;
-% Misc transitions - what do the stars mean?
-const.f_table.g_2_3P_2.e_5_3P_0 = 1e9*const.c/404.628937550957;
-const.f_table.g_2_3P_2.e_5_3P_1 = 1e9*const.c/404.629844755577;
-const.f_table.g_2_3P_2.e_5_3P_2 = 1e9*const.c/404.629918705477; 
-% Historically controversial transitions
-const.f_table.g_2_3P_2.e_5_3D_3 = 744.39620968e12;
-const.f_table.g_2_3P_2.e_5_3D_2 = 744.39622889e12;
-const.f_table.g_2_3P_2.e_5_3D_1 = 744.39651246e12; 
-% Singlet-triplet transitions
-const.f_table.g_2_3P_2.e_5_1S_0 = 1e9*const.c/406.8886971706;
-const.f_table.g_2_3P_2.e_5_1P_1 = 1e9*const.c/402.322271224483;
-const.f_table.g_2_3P_2.e_5_1D_2 = 744.43034335e12; % 402.7nm
-
-%Fitted valuse for the 5^3D's
-const.f_table.g_2_3P_2.e_5_3D_3 = 744.39620836e12;
-const.f_table.g_2_3P_2.e_5_3D_2 = 744.39622758e12;
-const.f_table.g_2_3P_2.e_5_3D_1 = 744.39651114e12;
-
+opts.lv.dir = opts.dir;
+opts.lv.out_dir = opts.out_dir;
+opts.lv.plots = true;
 
 %% Analog import
 opts.ai.num_files = nan;
@@ -81,36 +62,39 @@ opts.ai.cache_single.path_directions={1,'dir'};
 opts.ai.args_single.cmp_multiplier_disp=50; %multiplier to display the compressed data better
 
 
-opts.ai.pd.diff_thresh=0.1;
-opts.ai.pd.std_thresh=0.1;
-opts.ai.pd.time_start=0.2;
-opts.ai.pd.time_stop=2;
-opts.ai.sfp.num_checks=20; %how many places to check that the laser is single mode
-opts.ai.sfp.thresh_cmp_peak=20e-3; %theshold on the compressed signal to be considered a peak
-opts.ai.sfp.peak_dist_min_pass=4.5;%minimum (min difference)between peaks for the laser to be considered single mode
-opts.ai.plot.all=false;
-opts.ai.plot.failed=false;
-opts.ai.time_match_valid=8; %how close the predicted start of the shot is to the actual
-opts.ai.scan_time=1/20; %fast setting 1/100hz %estimate of the sfp scan time,used to set the window and the smoothing
-%because im only passing the ai feild to aviod conflicts forcing a reimport i need to coppy these feilds
-opts.ai.trig_ai_in=opts.trig_ai_in;
-opts.ai.trig_dld=opts.trig_dld;
-opts.ai.dld_aquire=opts.dld_aquire;
-opts.ai.aquire_time=opts.dld_aquire;
-opts.ai.tdc_override=1;
-opts.wm_tolerance = 2;
-opts.cutoff_thresh = 0.1;
-opts.smooth_width = 15;
-opts.saturation_threshold = 0.975;
-opts.peaks.plot = true;
+% opts.ai.pd.diff_thresh=0.1;
+% opts.ai.pd.std_thresh=0.1;
+% opts.ai.pd.time_start=0.2;
+% opts.ai.pd.time_stop=2;
+% opts.ai.sfp.num_checks=20; %how many places to check that the laser is single mode
+% opts.ai.sfp.thresh_cmp_peak=20e-3; %theshold on the compressed signal to be considered a peak
+% opts.ai.sfp.peak_dist_min_pass=4.5;%minimum (min difference)between peaks for the laser to be considered single mode
+% opts.ai.plot.all=false;
+% opts.ai.plot.failed=false;
+% opts.ai.time_match_valid=8; %how close the predicted start of the shot is to the actual
+% opts.ai.scan_time=1/20; %fast setting 1/100hz %estimate of the sfp scan time,used to set the window and the smoothing
+% %because im only passing the ai feild to aviod conflicts forcing a reimport i need to coppy these feilds
+% opts.ai.trig_ai_in=opts.trig_ai_in;
+% opts.ai.trig_dld=opts.trig_dld;
+% opts.ai.dld_aquire=opts.dld_aquire;
+% opts.ai.aquire_time=opts.dld_aquire;
+% opts.ai.tdc_override=1;
+% opts.wm_tolerance = 2;
+% opts.cutoff_thresh = 0.1;
+% opts.smooth_width = 15;
+% opts.saturation_threshold = 0.975;
 
 
-%% Wavemeter log
+
+%% Wavemeter log importing
 opts.wm.dir=opts.dir;
 opts.wm.out_dir = opts.out_dir;
 opts.wm.force_reimport=false;
 opts.wm.num_logs = nan;
 opts.wm.plots = true;
+opts.wm.plot_all=1;
+opts.wm.plot_failed=false;
+
 
 wm_log_name='log_wm_';
 wm_logs=dir([opts.wm.dir,wm_log_name,'*.txt']);
@@ -126,20 +110,14 @@ opts.wm.plot_all=true;
 opts.wm.plot_failed=false;
 opts.wm.force_reimport=false;
 
-opts.wm.time_pd_padding=4; %check this many s each side of probe
-opts.wm.time_blue_padding=1; %check this many seconde each side of probe
-opts.wm.time_probe=3;
-opts.wm.ecd_volt_thresh=0.5;
-
-opts.wm.red_sd_thresh=50; %allowable standard deviation in MHz
-opts.wm.red_range_thresh=50; %allowable range deviation in MHz
-opts.wm.rvb_thresh=20; %allowable value of abs(2*red-blue)
-
-%% LV import
-
-opts.lv.dir = opts.dir;
-opts.lv.out_dir = opts.out_dir;
-opts.lv.plots = true;
+% opts.wm.time_pd_padding=4; %check this many s each side of probe
+% opts.wm.time_blue_padding=1; %check this many seconde each side of probe
+% opts.wm.time_probe=3;
+% opts.wm.ecd_volt_thresh=0.5;
+% 
+% opts.wm.red_sd_thresh=50; %allowable standard deviation in MHz
+% opts.wm.red_range_thresh=50; %allowable range deviation in MHz
+% opts.wm.rvb_thresh=20; %allowable value of abs(2*red-blue)
 
 
 %% TDC import
@@ -160,24 +138,58 @@ opts.tdc.txylim=[tlim;tmp_xlim;tmp_ylim];
 
 opts.max_runtime=inf;%inf%cut off the data run after some number of hours, should bin included as its own logic not applied to the atom number ok
 
-opts.aom_freq=0;%190*1e6;%Hz %set to zero for comparison with previous data runs
+
+%% Error handling
+opts.check.wm_tolerance = 2;
+opts.check.num_cal_bins = 20;
+
+%% Peak detection
+opts.peak.plot = true;
+opts.peak.cutoff_thresh = peak_cutoff_thresh;
+opts.peak.smooth_width = peak_smooth_width;
+opts.peak.saturation_threshold = peak_saturation_threshold;
 
 
 %% Plotting
-opts.cutoff_thresh = 0.1;
-opts.smooth_width = 15;
-opts.saturation_threshold = 0.975;
 
 
-opts.tr.plot = 1; 
-opts.tr.out_dir = opts.out_dir;
-opts.tr.pred_freq = opts.pred_freq;
-opts.tr.pred_wl = opts.pred_wl;
-opts.tr.num_cal_bins = 50;
-opts.tr.wm_tolerance = 10; %MHz
-opts.tr.num_freq_bins = 30; %MHz
-opts.tr.freq_bin_size = 0.25;
-opts.tr.aom_freq = 189; %MHz, blue
+%% Physical constants
+
+const.mu = 9.27e-28; %J/G
+const.h = 6.63e-34;
+const.hbar = const.h/(2*pi);
+const.f_mu = const.mu/const.h;
+const.w_mu = const.mu/const.hbar;
+const.c = 299792458;
+% Notation & lookup
+const.terms = {'S','P','D','F','G'};
+%% Reference values
+const.f_table.g_2_3P_2.e_5_3S_1 = 727.3032446e12;
+% Misc transitions - what do the stars mean?
+const.f_table.g_2_3P_2.e_5_3P_0 = 1e9*const.c/404.628937550957;
+const.f_table.g_2_3P_2.e_5_3P_1 = 1e9*const.c/404.629844755577;
+const.f_table.g_2_3P_2.e_5_3P_2 = 1e9*const.c/404.629918705477; 
+% Historically controversial transitions
+const.f_table.g_2_3P_2.e_5_3D_3 = 744.39620968e12;
+const.f_table.g_2_3P_2.e_5_3D_2 = 744.39622889e12;
+const.f_table.g_2_3P_2.e_5_3D_1 = 744.39651246e12; 
+% Singlet-triplet transitions
+const.f_table.g_2_3P_2.e_5_1S_0 = 1e9*const.c/406.8886971706;
+const.f_table.g_2_3P_2.e_5_1P_1 = 1e9*const.c/402.322271224483;
+const.f_table.g_2_3P_2.e_5_1D_2 = 744.43034335e12; % 402.7nm
+
+%Fitted valuse for the 5^3D's
+const.f_table.g_2_3P_2.e_5_3D_3 = 744.39620836e12;
+const.f_table.g_2_3P_2.e_5_3D_2 = 744.39622758e12;
+const.f_table.g_2_3P_2.e_5_3D_1 = 744.39651114e12;
+
+
+%% Experimental constants
+const.fall_time=0.417;
+const.global.qe=0.09;
+
+%% Append to options
+opts.const = const;
 
 
 end
@@ -186,14 +198,7 @@ end
 
 function const = init_constants()
 
-        const.mu = 9.27e-28; %J/G
-        const.h = 6.63e-34;
-        const.hbar = const.h/(2*pi);
-        const.f_mu = const.mu/const.h;
-        const.w_mu = const.mu/const.hbar;
-        const.c = 299792458;
-        % Notation & lookup
-        const.terms = {'S','P','D','F','G'};
+
 
 end
 

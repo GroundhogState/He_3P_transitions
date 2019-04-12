@@ -21,7 +21,7 @@ function sync_data = match_timestamps(data,opts)
     mid_setpt = mean(lv_set_range); 
     
     if isfield(opts,'ignorefiles')
-       warning('Manually ignoring %u of %u files!!! Check opts.tr.filemask',length(opts.ignorefiles),length(file_idxs))
+       warning('Manually ignoring %u of %u files!!! Check opts.filemask',length(opts.ignorefiles),length(file_idxs))
        file_idxs = setdiff(file_idxs,opts.ignorefiles);
        num_files = length(file_idxs); %filemask is a list of shots to drop
     else
@@ -52,7 +52,7 @@ function sync_data = match_timestamps(data,opts)
 %             sync_shots.wm_blue(idx) = data.wm.blue_freq.value(this_wm_idx);
 %         end
         % CORRECT FOR AOM OFFSET
-        sync_shots.probe_set(idx) = 2*sync_shots.wm_setpt(idx) - opts.tr.aom_freq;
+        sync_shots.probe_set(idx) = 2*sync_shots.wm_setpt(idx) - opts.aom_freq;
         [~,this_tdc_idx] = closest_value(tdc_time,this_time+25);
         sync_shots.tdc_time(idx) = tdc_time(this_tdc_idx);
         sync_shots.N_atoms(idx) = data.tdc.N_atoms(this_tdc_idx)';
@@ -66,11 +66,11 @@ function sync_data = match_timestamps(data,opts)
     %% Masking for laser setpt errors
     sync_shots.wm_set_err = sync_shots.wm_setpt - sync_shots.lv_set/1e6; % Error in MHz
     sync_shots.wm_set_err = sync_shots.lv_set/1e6 - sync_shots.wm_setpt;
-    wm_set_mask = abs(sync_shots.wm_set_err) < opts.wm_tolerance;
+    wm_set_mask = abs(sync_shots.wm_set_err) < opts.check.wm_tolerance;
     wm_msr_mask = ~isnan(sync_shots.wm_set_err);
 %     wm_msr_mask = (abs(sync_shots.wm_set_err(wm_set_mask)-wm_err_mean) < opts.wm_tolerance)';
     if sum(wm_msr_mask) >0
-        sprintf('Wavemeter set exceeds %.2f MHz in %u measurement shots',opts.wm_tolerance, length(ctrl_mask)-sum(wm_msr_mask))
+        sprintf('Wavemeter set exceeds %.2f MHz in %u measurement shots',opts.check.wm_tolerance, length(ctrl_mask)-sum(wm_msr_mask))
     end
   
     % Performing safety checks
@@ -103,10 +103,10 @@ function sync_data = match_timestamps(data,opts)
     
     %% Plot diagnostics
     
-    [cal_hist,cal_bin_edges]= histcounts(sync_cal.N_atoms,opts.tr.num_cal_bins);
+    [cal_hist,cal_bin_edges]= histcounts(sync_cal.N_atoms,opts.check.num_cal_bins);
     cal_bin_cents = 0.5*(cal_bin_edges(1:end-1)+cal_bin_edges(2:end));
     
-    [wm_hist,cal_wm_bin_edges] = histcounts(sync_shots.wm_set_err(wm_msr_mask),opts.tr.num_cal_bins);
+    [wm_hist,cal_wm_bin_edges] = histcounts(sync_shots.wm_set_err(wm_msr_mask),opts.check.num_cal_bins);
     wm_bin_cents = 0.5*(cal_wm_bin_edges(1:end-1)+cal_wm_bin_edges(2:end));
     
     f2=sfigure(500);
@@ -137,7 +137,7 @@ function sync_data = match_timestamps(data,opts)
     title('Recorded timestamps')
     legend('WM','TDC','LV')
     
-    filename1 = fullfile(opts.tr.out_dir,'timestamp_match');
+    filename1 = fullfile(opts.out_dir,'timestamp_match');
     saveas(f2,[filename1,'.fig']);
     saveas(f2,[filename1,'.png'])
     

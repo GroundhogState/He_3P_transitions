@@ -1,15 +1,15 @@
 function peaks = find_spectral_peaks(spec,opts)
 header({0,'Finding peaks...'})
     signal = 1-spec.signal;
-    satch_mask = signal > opts.saturation_threshold;
+    satch_mask = signal > opts.peak.saturation_threshold;
     sig_satch = signal;
     sig_satch(satch_mask) = 1;
     freq_cut = spec.freq;
 
     df = mean(diff(spec.freq));
     
-    smooth_out = smoothdata(sig_satch,'gaussian',opts.smooth_width);
-    smooth_cut = smooth_out.*(smooth_out>opts.cutoff_thresh);    
+    smooth_out = smoothdata(sig_satch,'gaussian',opts.peak.smooth_width);
+    smooth_cut = smooth_out.*(smooth_out>opts.peak.cutoff_thresh);    
     % Values, indices, widths, prominences
     [pks,locs,w,p] = findpeaks(smooth_cut); %
     

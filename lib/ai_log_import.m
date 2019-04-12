@@ -1,18 +1,18 @@
 
-function out_ai=ai_log_import(opts_ai)
+function out_ai=ai_log_import(opts)
 
 fwtext('IMPORTING DATA')
 
-if opts_ai.verbose > 0
-    sprintf('Importing analog logs from ',opts_ai.dir)
+if opts.ai.verbose > 0
+    sprintf('Importing analog logs from ',opts.ai.dir)
 end
 %a simple wrapper for the below ai_log_import that uses the matlab function cache
-cache_opts=opts_ai.cache_import;
+cache_opts=opts.ai.cache_import;
 
 %limit the scope but retain the structure
 data_sub = [];
 
-out_ai=simple_function_cache(cache_opts,@ai_log_import_core,{opts_ai,data_sub});
+out_ai=simple_function_cache(cache_opts,@ai_log_import_core,{opts,data_sub});
 
 
 % Kind of violates the concept of this being a 'pure' import script, so could compute this
@@ -20,19 +20,19 @@ out_ai=simple_function_cache(cache_opts,@ai_log_import_core,{opts_ai,data_sub});
 % later... But for the sake of component testing, this is here. 
 % Could be abstracted further  “¯\_(?)_/¯“
 if ~isempty(out_ai.file_names)
-    if isfield(opts_ai,'post_fun')
+    if isfield(opts.ai,'post_fun')
         header({2,'Post-processing...'})
-        out_ai = opts_ai.post_fun(opts_ai,out_ai);
+        out_ai = opts.ai.post_fun(opts.ai,out_ai);
         header({2,'Done'})
 
         % Can be slow to plot large imports, but a) not likely to be enabled often and b) only called once
         % per import
-        if opts_ai.plots % Add clause so this automatically disabled if reloading from cache?        
-            ai_diagnostic_plots(out_ai,opts_ai)
+        if opts.ai.plots % Add clause so this automatically disabled if reloading from cache?        
+            ai_diagnostic_plots(out_ai,opts.ai)
         end
     end
 
-    if opts_ai.verbose > 0
+    if opts.ai.verbose > 0
         header({1,'Done!'})
     end
 else
@@ -42,11 +42,11 @@ else
 end
 end
 
-function ai_log_out=ai_log_import_core(opts_ai,data)
+function ai_log_out=ai_log_import_core(opts,data)
 %ai_log_import - imports analog input log and checks if the probe beam pd signal is ok and that the laser is single
 %mode by measuring the distance (in pzt voltage) between the scanning FP pd peaks
 %results are placed into a convenient strucure with mat file cache
-%will load data from a cashed version if opts_ai has not changed
+%will load data from a cashed version if opts.ai has not changed
 %the output is a well aranged structure to be added into the data structure
 %the data structure is not included in the save to prevent double saving of the data
 %at the end of the import or load cashe the approapriate feilds are added to data
@@ -67,28 +67,28 @@ function ai_log_out=ai_log_import_core(opts_ai,data)
 
 %estimate of the sfp scan time,used to set the window and the smoothing
 
-args_single=opts_ai.args_single;
+args_single=opts.ai.args_single;
 
 %------------- BEGIN CODE --------------
 
-dir_read=dir([opts_ai.dir,opts_ai.log_name,'*.txt']);
+dir_read=dir([opts.ai.dir,opts.ai.log_name,'*.txt']);
 ai_log_out.file_names={dir_read.name};
 
 %set up for the ai_log_single 
-args_single.dir=opts_ai.dir;
+args_single.dir=opts.ai.dir;
 
-cache_opts = opts_ai.cache_single;
+cache_opts = opts.ai.cache_single;
 
 
 iimax=size(ai_log_out.file_names,2); %the number of ai logs that have been identified
 % Manual setting for number of files to import 
-if ~isnan(opts_ai.num_files)
-    iimax = min(iimax,opts_ai.num_files);
+if ~isnan(opts.ai.num_files)
+    iimax = min(iimax,opts.ai.num_files);
 end
 %initalize outputs
 %loop over all the ai_logs
 
-if opts_ai.cache_single_import
+if opts.ai.cache_single_import
     fprintf('Caching all imports, may be slow.\n')
 else
     fprintf('Caching only after import.\n')
@@ -114,7 +114,7 @@ for ii=1:iimax
 %   cache outputs is massive, so you may want to disable this option and just cache the entire
 %   input instead of single calls. 
 
-    if opts_ai.cache_single_import
+    if opts.ai.cache_single_import
         ai_log_out.data{ii}=simple_function_cache(cache_opts,@ai_log_single,{args_single});    
     else
         ai_log_out.data{ii}=ai_log_single(args_single);

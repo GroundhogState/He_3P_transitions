@@ -42,7 +42,7 @@ hebec_constants
 % initialize variables
 
 opts = master_transition_config();
-opts = transition_config_51D2(opts);
+% opts = transition_config_51D2(opts);
 
 % opts = transition_config_53D3();
 
@@ -52,14 +52,13 @@ header({1,'Done.'})
 %%%%%%%%%%%%%%%%%%%%%%%%%% IMPORTING DATA
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Import the analog log files
-data.ai = ai_log_import(opts.ai);
+data.ai = ai_log_import(opts);
 %% Import LabView log
-data.lv = import_lv_log(opts.lv);
+data.lv = import_lv_log(opts);
 %% Import wavemeter logs
-data.wm = wm_log_import(opts.wm);
+data.wm = wm_log_import(opts);
 %% Import TDC files
-data.tdc = import_mcp_tdc(opts.tdc);
-
+data.tdc = import_mcp_tdc(opts);
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%% PROCESSING DATA
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -85,7 +84,7 @@ data.sync = match_timestamps(data,opts);
 % data.check = check_error_logs(data,opts);
 
 %% Create a calibration model
-data.sync.msr.calib = make_calibration_model(data,opts.tr);
+data.sync.msr.calib = make_calibration_model(data,opts);
 
 %% Break data into categories
 data.cat = categorize_shots(data,opts);
@@ -108,57 +107,58 @@ data = bin_by_wavelength(data,opts);
 
 
 %%
-figure(1)
-clf
-zeeman_structured()
-f_offset = 3e6;
-B_vals = [17.8,10];
-B_err = [1.5,1];
-% B_vals = [17.8,11.951];
-%B_vals = [14.5,8.65];
-peak_idxs = [1,2,3,4,5;
-            1,3,4,4,5];
+% figure(1)
+% clf
+% zeeman_structured()
+% f_offset = 3e6;
+% B_vals = [17.8,10];
+% B_err = [1.5,1];
+% % B_vals = [17.8,11.951];
+% %B_vals = [14.5,8.65];
 % peak_idxs = [1,2,3,4,5;
 %             1,3,4,4,5];
-X = [];
-Y = [];
-Y_err = [];
-X_err = [];
-for cat_idx = 1:numel(data.cat)
-%     X = [X,B_vals(cat_idx)*ones(size(data.cat{cat_idx}.peaks.freqs))];
+% % peak_idxs = [1,2,3,4,5;
+% %             1,3,4,4,5];
+% X = [];
+% Y = [];
+% Y_err = [];
+% X_err = [];
+% for cat_idx = 1:numel(data.cat)
+% %     X = [X,B_vals(cat_idx)*ones(size(data.cat{cat_idx}.peaks.freqs))];
+% %     X_err = [X_err,B_err(cat_idx)*[1,1,1,1,1]'];
+% %     Y = [Y,data.cat{cat_idx}.peaks.freqs*1e6+f_offset];
+% %     Y_err = [Y_err,1e6*[5,10,5,5,5]'];
+%     X = B_vals(cat_idx)*ones(size(data.cat{cat_idx}.peaks.freqs));
 %     X_err = [X_err,B_err(cat_idx)*[1,1,1,1,1]'];
-%     Y = [Y,data.cat{cat_idx}.peaks.freqs*1e6+f_offset];
-%     Y_err = [Y_err,1e6*[5,10,5,5,5]'];
-    X = B_vals(cat_idx)*ones(size(data.cat{cat_idx}.peaks.freqs));
-    X_err = [X_err,B_err(cat_idx)*[1,1,1,1,1]'];
-    Y = data.cat{cat_idx}.peaks.freqs*1e6+f_offset;
-    plot(X',Y','kx')
-    hold on
-end
-Y = [
-     154.46,176.78
-     187.50,187.27
-     187.50,201.50
-     216.99,218.98
-    ];
-Y = (Y + 744396000).*1e6+f_offset;
-X = ones(size(Y,1),2).*B_vals;
-plot(X',Y','k*')
-Y = [189.73,201.75
-     218.77,223.78
-     233.98,223.78
-    ];
-Y = (Y + 744396000).*1e6+f_offset;
-X = ones(size(Y,1),2).*B_vals;
-plot(X',Y','r+')
-title('Combining theory and data')
+%     Y = data.cat{cat_idx}.peaks.freqs*1e6+f_offset;
+%     plot(X',Y','kx')
+%     hold on
+% end
+% Y = [
+%      154.46,176.78
+%      187.50,187.27
+%      187.50,201.50
+%      216.99,218.98
+%     ];
+% Y = (Y + 744396000).*1e6+f_offset;
+% X = ones(size(Y,1),2).*B_vals;
+% plot(X',Y','k*')
+% Y = [189.73,201.75
+%      218.77,223.78
+%      233.98,223.78
+%     ];
+% Y = (Y + 744396000).*1e6+f_offset;
+% X = ones(size(Y,1),2).*B_vals;
+% plot(X',Y','r+')
+% title('Combining theory and data')
 
 %% Fit the peaks
 % data.fits = fit_found_peaks(data,opts);
 %% Save to output
 header({0,'Saving output...'})
-out_data = data.cat;
-filename = fullfile(opts.out_dir,'output.m');
+out_data.data = data.cat;
+out_data.options = opts;
+filename = fullfile(opts.out_dir,'output_and_options.m');
 save(filename,'out_data','-v7.3')
 header({1,'Done!'})
 

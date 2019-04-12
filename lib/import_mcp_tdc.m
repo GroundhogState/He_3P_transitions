@@ -1,42 +1,39 @@
-function data_tdc = import_mcp_tdc(opts_tdc)
+function data_tdc = import_mcp_tdc(opts)
     header({0,'Importing TDC data'})
     
     cache_opts=[];
     cache_opts.verbose=1;
 
-    if ~isfield(opts_tdc,'force_load_save')
-        opts_tdc.force_load_save=false;
+    if ~isfield(opts.tdc,'force_load_save')
+        opts.tdc.force_load_save=false;
     end
-    cache_opts.force_cache_load=opts_tdc.force_load_save;
-    opts_tdc=rmfield(opts_tdc,'force_load_save');
+    cache_opts.force_cache_load=opts.tdc.force_load_save;
+    opts.tdc=rmfield(opts.tdc,'force_load_save');
 
-    if ~isfield(opts_tdc,'force_forc')
-        opts_tdc.force_forc=false;
-    end
-
-    % if ~isfield(opts_tdc,'no_save')
-    %     %to be completed, requires modification to function_cache
-    % end
-
-    if opts_tdc.force_forc %if force_forc then have to skip the cache
-        opts_tdc.force_reimport=true;
+    if ~isfield(opts.tdc,'force_forc')
+        opts.tdc.force_forc=false;
     end
 
-    if ~isfield(opts_tdc,'force_reimport')
-        opts_tdc.force_reimport=false;
+    if opts.tdc.force_forc %if force_forc then have to skip the cache
+        opts.tdc.force_reimport=true;
     end
-    cache_opts.force_recalc=opts_tdc.force_reimport;
-    opts_tdc=rmfield(opts_tdc,'force_reimport');
 
-    outputs=function_cache(cache_opts,@mcp_tdc_import_core,{opts_tdc});
-    data_tdc=outputs{1};
+    if ~isfield(opts.tdc,'force_reimport')
+        opts.tdc.force_reimport=false;
+    end
+    cache_opts.force_recalc=opts.tdc.force_reimport;
+    opts.tdc=rmfield(opts.tdc,'force_reimport');
+
+    data_tdc=simple_function_cache(cache_opts,@mcp_tdc_import_core,{opts});
+%     data_tdc=outputs{1};
     
-%     data_tdc = mcp_tdc_import_core(opts_tdc);
     
-%     if isfield(opts_tdc,mcp_post_fun)
-        data_tdc = mcp_post_fun(data_tdc,opts_tdc);
-%     end
-    if opts_tdc.plots
+    if isfield(opts.tdc,'mcp_post_fun')
+        data_tdc = opts.tdc.mcp_post_fun(data_tdc,opts);
+    else
+        data_tdc = mcp_post_fun(data_tdc,opts);
+    end
+    if opts.tdc.plots
         f = sfigure(400);
         
         subplot(2,2,1)
@@ -54,7 +51,7 @@ function data_tdc = import_mcp_tdc(opts_tdc)
         suptitle('DLD import diagnostics')
         
         
-        filename = fullfile(opts_tdc.out_dir,sprintf('%s_log',mfilename));
+        filename = fullfile(opts.tdc.out_dir,sprintf('%s_log',mfilename));
         saveas(f,[filename,'.fig']);
         saveas(f,[filename,'.png']);
         
@@ -64,7 +61,7 @@ function data_tdc = import_mcp_tdc(opts_tdc)
 end
 
 
-function data_tdc = mcp_post_fun(data_tdc,opts_tdc)
+function data_tdc = mcp_post_fun(data_tdc,opts)
 
     % Don't need anything else yet...
     data_tdc.N_atoms = data_tdc.num_counts';
@@ -72,14 +69,14 @@ function data_tdc = mcp_post_fun(data_tdc,opts_tdc)
 end
 
 
-function mcp_tdc_data = mcp_tdc_import_core(opts_tdc)
-    opts_tdc.shot_num=find_data_files(opts_tdc);
-    %opts_tdc.shot_num= opts_tdc.shot_num(1:10); %debuging
-    out.dir = opts_tdc.dir;
+function mcp_tdc_data = mcp_tdc_import_core(opts)
+    opts.tdc.shot_num=find_data_files(opts.tdc);
+    %opts.tdc.shot_num= opts.tdc.shot_num(1:10); %debuging
+    out.dir = opts.tdc.dir;
     %start up the diary of stdout
     diary([out.dir,'anal.txt'])
     %import the data
-    [mcp_tdc_data,opts_tdc]=import_mcp_tdc_data(opts_tdc);
+    [mcp_tdc_data,opts.tdc]=import_mcp_tdc_data(opts.tdc);
 
 end
 

@@ -32,7 +32,8 @@ header({0,'Binning data for presentation'})
            
        end
     end
-%     freq_stat_mask = abs(freq_stats.freq) > 0;
+    freq_stat_mask = abs(freq_stats.freq) > 0;
+    freq_stats = struct_mask(freq_stats,freq_stat_mask);
     freq_stats.freq_err = freq_stats.freq_std./sqrt(freq_stats.num_shots);
     freq_stats.sig_err = freq_stats.sig_std./sqrt(freq_stats.num_shots);
     

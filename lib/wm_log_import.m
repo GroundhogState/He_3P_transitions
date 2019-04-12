@@ -1,14 +1,14 @@
-function wm=wm_log_import(opts_wm)
+function wm=wm_log_import(opts)
 
 header({0,'Importing WM data'})
 
-cache_opts = opts_wm.cache_import;
+cache_opts = opts.wm.cache_import;
 cache_opts.verbose = 1;
-opts_wm.force_recalc = false;
-wm=simple_function_cache(cache_opts,@wm_log_import_core,{opts_wm});
+opts.wm.force_recalc = false;
+wm=simple_function_cache(cache_opts,@wm_log_import_core,{opts});
 
 
-if opts_wm.plots
+if opts.wm.plots
     wm_time = wm.feedback.posix_time;
     t0 = min(wm_time);
     wm_set = wm.feedback.setpt;
@@ -34,7 +34,7 @@ if opts_wm.plots
     suptitle('WM import diagnostics')
     
     
-    filename = fullfile(opts_wm.out_dir,sprintf('%s_log',mfilename));
+    filename = fullfile(opts.wm.out_dir,sprintf('%s_log',mfilename));
     saveas(f,[filename,'.fig']);
     saveas(f,[filename,'.png']);
 end
@@ -43,7 +43,7 @@ header({1,'Done'})
 
 end
 
-function wm_log=wm_log_import_core(opts_wm)
+function wm_log=wm_log_import_core(opts)
 %read the json formated wm-laser logfile
 %the json is formated as {"posix_time":num,"iso_time":"2018-08-25T20:07:01.763","oper":{operation a structure}}
 %want to ingest into a structure
@@ -56,10 +56,10 @@ function wm_log=wm_log_import_core(opts_wm)
 %with wm_log.feedback.time wm_log.feedback.set_wav
 wm_log=struct();
 add_to_struct=true;
-fprintf('Importing %u wavemeter-laser feedback log files',size(opts_wm.names,2))
-iimax=size(opts_wm.names,2);
+fprintf('Importing %u wavemeter-laser feedback log files',size(opts.wm.names,2))
+iimax=size(opts.wm.names,2);
 for ii=1:iimax
-    path=strcat(opts_wm.dir,opts_wm.names{ii});
+    path=strcat(opts.wm.dir,opts.wm.names{ii});
     fid = fopen(path,'r');
     wm_log_file_cells=textscan(fid,'%s','Delimiter','\n');
     fclose(fid);
@@ -67,8 +67,8 @@ for ii=1:iimax
     fprintf('\nFile %03u/%03u importing %03uk lines:%03uk',ii,iimax,round(size(wm_log_file_cells{1},1)*1e-3),0)
     %now process these lines and place the entries into a feild of the wm_log struct depending on the operation performed
     jjmax=size(wm_log_file_cells{1},1);
-    if ~isnan(opts_wm.num_logs)
-        jjmax = min(jjmax, opts_wm.num_logs);
+    if ~isnan(opts.wm.num_logs)
+        jjmax = min(jjmax, opts.wm.num_logs);
     end
     for jj=1:jjmax
         if mod(jj,1e4)==0,fprintf('\b\b\b\b%03uk',round(jj*1e-3)),end  %fprintf('\b\b\b\b%04u',jj)
