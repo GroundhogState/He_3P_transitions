@@ -736,3 +736,7 @@ Double trouble overnight: Seed laser offset drifted and killed BEC. Also, double
 		* wp_angle
 		* transition_level
 		* Other custom settings
+
+## 2019-04-12
+
+RF spectroscopy sequence c:\remote\settings201912Apr120122.xml

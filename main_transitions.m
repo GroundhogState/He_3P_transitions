@@ -40,9 +40,12 @@ header({0,'Setting up configs...'})
 % Declare useful constants
 hebec_constants
 % initialize variables
+
 opts = master_transition_config();
 opts = transition_config_51D2(opts);
+
 % opts = transition_config_53D3();
+
 header({1,'Done.'})
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
