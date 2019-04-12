@@ -4,7 +4,8 @@
 % S, L, J, and m_J specify a state
 
 %% OK, this is pretty functional!
-% Take a break to get the analysis working. Then revisit this and consider what you want to pull from it.
+% Take a break to get the analysis working. 
+% Then revisit this and consider what you want to pull from it.
 
 %% init
 disp('=== Zeeman splittings ===')
@@ -49,7 +50,8 @@ opt.mg_range = 2;%0:2;
 B = linspace(0,30,50);
 g_level = '2_3P_2';
 g_state = '2_3P_2_2';
-e_term = '5_1D_2';
+
+e_term = '5_1D';
 e_manifold  = e_term(1:3);
 % Generate the lookup table
 lines = z_level2manifold(B,g_level,e_manifold,const);

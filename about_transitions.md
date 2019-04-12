@@ -637,3 +637,106 @@ Obviously, quite a lot happened on the weekend, so I'm going to take a chunk of 
 		* So let's find out! Take a few quick scans over a peak with varying intensity and see how the peak height varies.Probably the best data to take now, and quite quick too. 
 		* Code could do with a general tidy & better documentation
 		* Good luck and happy science!
+
+## 2019-04-09
+Measured offset of  -3.00047796169917 p\m 0.8 MHz AM
+					-0.823342±0.001718 PM
+
+Setting up WM stability analysis;
+LOCKED to f_cs_2p_6SF3_8SF3 = 364507238.363 MHz
+	Calibrate WM 364.5072384THZ @ 1940
+	Left to run overnight.
+	IN MORNING
+		* Stash WM logs
+		* Measure 2p transition f_cs_2p_6SF3_8SF3, AND at least two others, record offsets.
+		* Calibrate if drift is real bad
+		* Go about your day :)
+
+## 2019-04-10
+Overnight wm loggs stashed
+Measured offset f_cs_2p_6SF3_8SF3: 1.181198±0.001235
+Measured offset f_cs_2p_6SF4_8SF4: 2.330434±0.005532
+
+c:\remote\settings201910Apr100304.xml
+
+Stage 1: c:\remote\settings201910Apr100911.xml (old c:\remote\settings201909Apr182710.xml)
+c:\remote\settings201910Apr123035.xml
+TO DO:
+5_3D1 signal stregth with qwp angle
+Table of B fields for all stages
+Cs Calibration around 804 nm
+Prove there's only one peak for 5_3D1
+Good scan for the 5_3D1 peak
+
+
+Updated in-trap cooling settings settings201910Apr160535
+### Setting up for RF spectroscopy 
+	* Targets: Measure the minimal trap splitting at equivalent settings to the first and second stages of in-trap cooling:
+		* Stage 1: Shunt 10V,  quad 5.25V
+		* Stage 2: Shunt 5.5V, quad 7.2V
+	* Starting from BEC settings, pretty cold but only ~10k, settings201910Apr160535, start building slow ramp up to final field value
+		* settings201910Apr161812 quad field ramps to 5.25V in 1sec after evap, AL attn maxed during pulse
+			* Nothing seen; RF shield left on during ramp, probably killing BEC 
+		* Ok, nothing reappears when RF shield disabled. May as well work towards target incrementally then, if sudden change doesn't work.
+		* settings201910Apr162901 1sec ramp to quad=3.6V
+		* 
+	* NB: PAL centred on 1.739MHz, and our estimates from trap sim/AOM/observed Zeeman shifts put the field values at around 10 and 14 Gauss (plus or minus two in each case), so we can begin our sweeps centred at 14 and 25MHz, respectively.
+	* Atom number crashed pretty hard, had to realign some optics. Back to approx 45k atoms no sweat, super chill. TRY AGAIN TOMORROW
+	* Tune laser to 3D1 transition on first stage, hits it right away. Let's see what we can do with the waveplate.
+	* Signal saturates with waveplate at 146 degrees, vanishes at 236 degrees!
+	* Therefore we ascertain the handedness; 236 degrees is sigma+, 146 is sigma-. Signal barely under saturation when set to midpoint 190 degrees.
+	* Let's double-check our initial state overnight. Set the waveplate to 190 degrees, so hopefully a gross mixture of light. 
+		* Oh, laser was set by Tenma the whole time, so massively overexposed and broadened for sure. So, return to LV set point.
+		* Signal at about half full dynamic range when at 190 degrees, perfect
+	* Predicted lines from the 2^3P_2_mj_1 state appear between 744.396440 THz and 744.396500 THz, giving a 60MHz scan range in the blue either side of the mean 744.396470. Including the m_g=0 state we predict transitions up to 744.396530 THz, so I set up a scan 45MHz either side of 744.396485 MHz. In 1MHz steps (blue), that's 90 steps per scan, 2 measurement & 1 cal = 1.8 hours per scan. 
+	* If BEC number hold up, we should have a good half dozen scans by the morning which should let us pin down even little peaks
+	* WM not calibrated because this isn't really a 'measurement' run, just a hypothesis test.
+	* Scan started at 1930
+
+
+## 2019-04-11
+
+Double trouble overnight: Seed laser offset drifted and killed BEC. Also, doubler had a hard time locking after about an hour.
+	* Tune up etalon and cavity lock error signal after rebooting control unit (modulated noise on etalon lock error). 
+	* Offset barely lasted an hour, goddamn. BEC comes back when offset retuned... 
+	* Alright fine, let's run again, but stay to babysit. During runtime, we should fix up the code to:
+		* Check whether blue laser is locked
+			* Reject shots with too great a difference between the blue and 2x red, or if WM error too great
+		* Check photodiode voltage & reject if too noisy. For the moment, we can log act/set value and then scale signal, until linearity verified
+		* Reject if atom number too low
+	* Misc code jobs:
+		* Fix caching?!
+		* Implement SLOGS
+		* Break config into master/slave
+
+ * CHECKLIST FOR GOODLY DATA RUNS
+ 	* Logging
+ 		* WM
+ 			* WM receiving blue & red light
+ 			* WM_main has useblue enabled
+ 		* Analog import
+ 			* Analog USB input is running
+ 			* AI trigger is 100ms before the probe AOM switches on
+ 			* Analog USB capture time 200ms longer than exposure time
+		* Hardware setup
+			* Probe output & lock signals optimized at centre of scan range
+			* Probe aligned to reach at least 20% above desired setpoint
+			* Measure probe power before second post-fibre beamcube 
+ 	* Calibrate wavemeter & measure nearby transitions
+ 	* Restart DLD acquistion & clear DLD output directory
+ 	* hit auto-run & free run
+ 	* Babysit to ensure:
+ 		* Analog import updating
+ 		* Probe sequence changing between cal/stage 1/stage 2
+			* WM set point updating
+			* Atom number stable
+	* Create local_config.m with fields
+		* pd_setpoint
+		* pd_delay = 100
+		* wp_angle
+		* transition_level
+		* Other custom settings
+
+## 2019-04-12
+
+RF spectroscopy sequence c:\remote\settings201912Apr120122.xml

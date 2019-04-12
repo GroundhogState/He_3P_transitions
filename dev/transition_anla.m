@@ -30,6 +30,7 @@ const.f_table.g_2_3P_2.e_5_3D_2 = 744.39622758e12;
 const.f_table.g_2_3P_2.e_5_3D_1 = 744.39651114e12;
 g_state = '2_3P_2_2';
 % ITC 1         ITC 2
+
 % data ={744396158380000,744396180286000,'5_3D_3_1'
 %            744396191764000,744396205362000,'5_3D_2_1'
 %            744396220906000,744396225174000,'5_3D_2_2'
@@ -56,6 +57,7 @@ for ii =1:size(data,1)
     else
         B = 10.5;
     end
+
     
     f_measure = data{ii,1};
     lines = zeeman_state2state(B,g_state,e_state,const);
