@@ -4,7 +4,7 @@ function out_ai=ai_log_import(opts_ai)
 fwtext('IMPORTING DATA')
 
 if opts_ai.verbose > 0
-    header({0,'Importing analog logs from %s',opts_ai.dir})
+    sprintf('Importing analog logs from ',opts_ai.dir)
 end
 %a simple wrapper for the below ai_log_import that uses the matlab function cache
 cache_opts=opts_ai.cache_import;

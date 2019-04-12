@@ -36,7 +36,7 @@ function calib  = make_calibration_model(data,opts)
     plot(plot_raw_T,plot_mdl_Y,'.')
     xlabel('Time elapsed')
     ylabel('N ratio')
-    title('Model-calibrated signal')    
+    title('Calibrated time series')    
 %     suptitle('Calibration model')
     
     
@@ -49,7 +49,7 @@ function calib  = make_calibration_model(data,opts)
     xlabel(sprintf('f (MHz)'))
     ylabel('N ratio')
     ylim([-0.1,1.1])
-    title('Calibrated spectral data')    
+    title('Calibrated spectra')    
 %     suptitle('Calibration model')
 %     
 %     filename2 = fullfile(opts.out_dir,sprintf('%s_diagnostic',mfilename));

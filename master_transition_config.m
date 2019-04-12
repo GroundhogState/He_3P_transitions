@@ -1,21 +1,23 @@
-function opts = transition_config(opts)
+function opts = master_transition_config()
 
-opts.dir = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\20190401_singlet_5^1D2_fine_scan\';
-% opts.dir = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\20190405_5^1D_2_cal_qwp_236_stage_1_ITC\';
-opts.dir = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\20190411_51D2_null_search\';
-opts.dir = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\20190412_5_1D2_wide_search\';
-opts.transition = '5^1D_2';
-opts.tr.tr_name = opts.transition;
 
+
+opts.dir = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\20190404_5^3S_1_after_calibration_qwp_150\'
+% Find the local config
+
+% Extract the transition name
+opts.tr_name = '5^3D_3';
+
+
+% opts.ignorefiles = 1028:1305;
 opts.probe_set_pt=0.4;
-opts.ritz_wl = 402.7151538; % NIST Ritz wavelength, nm
+opts.ritz_wl = 402.73238109; % NIST Ritz wavelength, nm
 opts.ritz_freq = 299792458/opts.ritz_wl; %GHz
-opts.obs_wl = 412.1978; %NIST observed vacuum wl, nm
+opts.obs_wl = 402.73292; %NIST observed vacuum wl, nm
 opts.obs_freq = 299792458/opts.obs_wl; %GHz
 
 opts.pred_wl = opts.ritz_wl;
-opts.pred_freq = opts.ritz_freq+2.29;
-%opts.pred_freq = 744.396188e3;
+opts.pred_freq = opts.ritz_freq;
 
 opts.global.fall_time=0.417;
 opts.global.qe=0.09;
@@ -35,6 +37,26 @@ if (exist([opts.dir,'out'], 'dir') == 0), mkdir([opts.dir,'out']); end
 opts.out_dir=sprintf('%sout\\%s\\',...
     opts.dir,datestr(datetime('now'),'yyyymmddTHHMMSS'));
 if (exist(opts.out_dir, 'dir') == 0), mkdir(opts.out_dir); end
+
+%% Reference values
+const.f_table.g_2_3P_2.e_5_3S_1 = 727.3032446e12;
+% Misc transitions - what do the stars mean?
+const.f_table.g_2_3P_2.e_5_3P_0 = 1e9*const.c/404.628937550957;
+const.f_table.g_2_3P_2.e_5_3P_1 = 1e9*const.c/404.629844755577;
+const.f_table.g_2_3P_2.e_5_3P_2 = 1e9*const.c/404.629918705477; 
+% Historically controversial transitions
+const.f_table.g_2_3P_2.e_5_3D_3 = 744.39620968e12;
+const.f_table.g_2_3P_2.e_5_3D_2 = 744.39622889e12;
+const.f_table.g_2_3P_2.e_5_3D_1 = 744.39651246e12; 
+% Singlet-triplet transitions
+const.f_table.g_2_3P_2.e_5_1S_0 = 1e9*const.c/406.8886971706;
+const.f_table.g_2_3P_2.e_5_1P_1 = 1e9*const.c/402.322271224483;
+const.f_table.g_2_3P_2.e_5_1D_2 = 744.43034335e12; % 402.7nm
+
+%Fitted valuse for the 5^3D's
+const.f_table.g_2_3P_2.e_5_3D_3 = 744.39620836e12;
+const.f_table.g_2_3P_2.e_5_3D_2 = 744.39622758e12;
+const.f_table.g_2_3P_2.e_5_3D_1 = 744.39651114e12;
 
 
 %% Analog import
@@ -76,6 +98,11 @@ opts.ai.trig_dld=opts.trig_dld;
 opts.ai.dld_aquire=opts.dld_aquire;
 opts.ai.aquire_time=opts.dld_aquire;
 opts.ai.tdc_override=1;
+opts.wm_tolerance = 2;
+opts.cutoff_thresh = 0.1;
+opts.smooth_width = 15;
+opts.saturation_threshold = 0.975;
+opts.peaks.plot = true;
 
 
 %% Wavemeter log
@@ -134,18 +161,14 @@ opts.tdc.txylim=[tlim;tmp_xlim;tmp_ylim];
 opts.max_runtime=inf;%inf%cut off the data run after some number of hours, should bin included as its own logic not applied to the atom number ok
 
 opts.aom_freq=0;%190*1e6;%Hz %set to zero for comparison with previous data runs
-opts.wm_tolerance = 2;
-opts.cutoff_thresh = 0.1;
-opts.smooth_width = 15;
-opts.saturation_threshold = 0.975;
 
-opts.wm_tolerance = 2;
-opts.cutoff_thresh = 0.1;
-opts.smooth_width = 15;
-opts.saturation_threshold = 0.975;
-opts.peaks.plot = true;
 
 %% Plotting
+opts.cutoff_thresh = 0.1;
+opts.smooth_width = 15;
+opts.saturation_threshold = 0.975;
+
+
 opts.tr.plot = 1; 
 opts.tr.out_dir = opts.out_dir;
 opts.tr.pred_freq = opts.pred_freq;
@@ -158,3 +181,19 @@ opts.tr.aom_freq = 189; %MHz, blue
 
 
 end
+
+
+
+function const = init_constants()
+
+        const.mu = 9.27e-28; %J/G
+        const.h = 6.63e-34;
+        const.hbar = const.h/(2*pi);
+        const.f_mu = const.mu/const.h;
+        const.w_mu = const.mu/const.hbar;
+        const.c = 299792458;
+        % Notation & lookup
+        const.terms = {'S','P','D','F','G'};
+
+end
+

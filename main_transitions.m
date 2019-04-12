@@ -40,7 +40,8 @@ header({0,'Setting up configs...'})
 % Declare useful constants
 hebec_constants
 % initialize variables
-opts = transition_config_5_3D2_3D3_qwp_236();
+opts = master_transition_config();
+opts = transition_config_51D2(opts);
 % opts = transition_config_53D3();
 header({1,'Done.'})
 
@@ -48,7 +49,7 @@ header({1,'Done.'})
 %%%%%%%%%%%%%%%%%%%%%%%%%% IMPORTING DATA
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Import the analog log files
-%data.ai = ai_log_import(opts.ai);
+data.ai = ai_log_import(opts.ai);
 %% Import LabView log
 data.lv = import_lv_log(opts.lv);
 %% Import wavemeter logs
@@ -76,6 +77,9 @@ num_files = length(lv_time);
 
 %% Match the timestamps    
 data.sync = match_timestamps(data,opts);
+% 
+% %% Ignore shots with errors
+% data.check = check_error_logs(data,opts);
 
 %% Create a calibration model
 data.sync.msr.calib = make_calibration_model(data,opts.tr);
@@ -88,15 +92,17 @@ data = auto_peak_detect(data,opts);
 
 %% Fitting goes here
 
-%% Grouping by wavelength 
-data = bin_by_wavelength(data,opts);
-
 %% Fit the detected peaks
 data = fit_detected_peaks(data,opts);
 
-
+%% Grouping by wavelength 
+data = bin_by_wavelength(data,opts);
 
 %% Try looking for hidden peaks
+
+%% Zeeman analysis
+
+
 
 %%
 figure(1)

@@ -33,16 +33,18 @@ header({0,'Finding peaks...'})
     end
     sfigure(fnum);
     clf;
-    plot(spec.freq,signal,'g.')
+    plot(spec.freq,signal,'bo-')
     hold on
-    plot(spec.freq,sig_satch,'b.')
+    plot(spec.freq,sig_satch,'g.')
     plot(freq_cut,smooth_out,'k.')
-    plot(freq_cut,smooth_cut,'ro')    
+    plot(freq_cut,smooth_cut,'rx')    
     for pidx = 1:length(pks)
         loc = spec.freq(locs(pidx));
-       plot(loc.*[1,1],[0,-0.1],'k-','LineWidth',1.0) 
-       plot(loc.*[1,1]+0.5*peaks.widths(pidx)*[-1,1],[-0.05,-0.05],'k-','LineWidth',1.0) 
+        val = peaks.vals(pidx);
+        plot(loc.*[1,1],[val,-0.1],'k-','LineWidth',1.0) 
+        plot(loc.*[1,1]+0.5*peaks.widths(pidx)*[-1,1],0.5*val*[1,1],'k-','LineWidth',1.0) 
     end
+
     legend('Raw signal','forced saturation','Smoothed signal','Thresholded signal','Peak locations') 
     title('Automatic peak detection')    
 header({1,'Done.'})    

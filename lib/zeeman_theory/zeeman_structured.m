@@ -46,7 +46,7 @@ opt.prm = [];
 B = linspace(0,30,50);
 g_level = '2_3P_2';
 g_state = '2_3P_2_2';
-e_term = '5_3D';
+e_term = '5_1D';
 e_manifold  = e_term(1:3);
 % Generate the lookup table
 lines = z_level2manifold(B,g_level,e_manifold,const);

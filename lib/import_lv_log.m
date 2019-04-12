@@ -2,7 +2,7 @@ function data = import_lv_log(opts_lv)
     header({0,'Importing LV log...'})
     lv_log=[];
     lv_log.dir = strcat(opts_lv.dir,'log_LabviewMatlab.txt');
-    fid = fopen(lv_log.dir );
+    fid = fopen(lv_log.dir);
     lv_log.cell=textscan(fid,'%s','Delimiter','\n');
     fclose(fid);
     lv_log.cell=lv_log.cell{1};

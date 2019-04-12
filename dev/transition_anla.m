@@ -6,17 +6,22 @@ data ={744396158380000,744396180286000,'5_3D_3_1'
            744396220906000,744396225174000,'5_3D_2_2'
            744396235218000,744396225174000,'5_3D_3_3'
            744396448622000,744396473900000,'5_3D_1_1'};
-B_exp = [16.5,10.5];
-sfigure(404);
+B= [17.86,10.5];%the three stages
+figure(404);
 clf
-B_plot = B_exp.*ones(size(data,1),2);
+B_plot = B.*ones(size(data,1),2);
 for ii =1:size(data,1)
     hold on
     plot(B_plot(ii,:),cell2mat(data(ii,1:2)))
-end
-B=linspace(0,20);       
-e_state = '5_3D_3_1';
-lines = zeeman_state2state(B,g_state,e_state,const);
 
+    
+e_state = '5_3D_3_1';
+g_state = data{ii,3};
+f_measure = cell2mat(data(ii,1:2));
+lines = zeeman_state2state(B,g_state,e_state,const);
+f_adj = f_measure+lines.df;
+f_0 = nanmean(f_adj);
+f_mdl = fitlm(B,f_measure);
+end
 xlabel('Magnetic field strength (G)')
 ylabel('Frequency (Hz)')

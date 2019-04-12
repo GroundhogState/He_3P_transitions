@@ -2,8 +2,8 @@ function state_lines = zeeman_state2state(B,g_state,e_state,const)
     % Calculate g-factors
     g_level = g_state(1:6);
     e_level = e_state(1:6);
-    g_e = lande_sg(g_level,const);
-    g_g = lande_sg(e_level,const);
+    g_e = lande_sg(e_level,const);
+    g_g = lande_sg(g_level,const);
     m_g = str2num(strrep(strrep(g_state(end-1:end),'_',''),'n','-'));
     m_e = str2num(strrep(strrep(e_state(end-1:end),'_',''),'n','-'));
     % Compute the absolute & differential energies & frequencies
