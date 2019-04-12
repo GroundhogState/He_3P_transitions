@@ -43,13 +43,13 @@ const.f_table.g_2_3P_2.e_5_3D_1 = 744.39651114e12;
 
 
 
-opt.mg_range = 0:2;
+opt.mg_range = 2;%0:2;
 
 % Parameters
 B = linspace(0,30,50);
 g_level = '2_3P_2';
 g_state = '2_3P_2_2';
-e_term = '5_3D';
+e_term = '5_1D_2';
 e_manifold  = e_term(1:3);
 % Generate the lookup table
 lines = z_level2manifold(B,g_level,e_manifold,const);
@@ -76,6 +76,8 @@ function const = init_constants()
         const.f_mu = const.mu/const.h;
         const.w_mu = const.mu/const.hbar;
         const.c = 299792458;
+        const.eps = 8.854*10^(-12);
+        const.e = 1.6021e-19;
         % Notation & lookup
         const.terms = {'S','P','D','F','G'};
 
