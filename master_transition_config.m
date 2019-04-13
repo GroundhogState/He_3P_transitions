@@ -2,14 +2,6 @@ function [opts,const] = master_transition_config()
 
 %% Frequently adjusted quantities
 
-
-opts.dir = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\20190404_5^3S_1_after_calibration_qwp_150\'
-% Import the local config
-
-% Extract the transition name
-opts.tr_name = '5^3D_3';
-
-
 % These variables are set here for quick access to quantities passed to
 % functions in fields defined later in this code
 % opts.ignorefiles = 1028:1305;
@@ -27,23 +19,16 @@ opts.aquire_time=4;
 opts.aom_freq=189;%190*1e6;%Hz %set to zero for comparison with previous data runs
 % Experimental constants
 
-%% Generate output directory
-%set up an output dir %https://gist.github.com/ferryzhou/2269380
-if (exist([opts.dir,'out'], 'dir') == 0), mkdir([opts.dir,'out']); end
-%make a subfolder with the ISO timestamp for that date
-opts.out_dir=sprintf('%sout\\%s\\',...
-    opts.dir,datestr(datetime('now'),'yyyymmddTHHMMSS'));
-if (exist(opts.out_dir, 'dir') == 0), mkdir(opts.out_dir); end
+
 %% LabView import
 
-opts.lv.dir = opts.dir;
-opts.lv.out_dir = opts.out_dir;
+
+
 opts.lv.plots = true;
 
 %% Analog import
 opts.ai.num_files = nan;
-opts.ai.dir=opts.dir;
-opts.ai.out_dir = opts.out_dir;
+
 % opts.ai.force_recalc_import = true;
 opts.ai.log_name='log_analog_in_';
 opts.ai.verbose = 1;
@@ -57,38 +42,15 @@ opts.ai.cache_import.force_recalc=false;
 opts.ai.cache_single_import = false;
 opts.ai.cache_single.verbose=0;
 opts.ai.cache_single.force_recalc=false;
-opts.ai.cache_single.mock_working_dir=opts.dir;
 opts.ai.cache_single.path_directions={1,'dir'};
 opts.ai.args_single.cmp_multiplier_disp=50; %multiplier to display the compressed data better
 
 
-% opts.ai.pd.diff_thresh=0.1;
-% opts.ai.pd.std_thresh=0.1;
-% opts.ai.pd.time_start=0.2;
-% opts.ai.pd.time_stop=2;
-% opts.ai.sfp.num_checks=20; %how many places to check that the laser is single mode
-% opts.ai.sfp.thresh_cmp_peak=20e-3; %theshold on the compressed signal to be considered a peak
-% opts.ai.sfp.peak_dist_min_pass=4.5;%minimum (min difference)between peaks for the laser to be considered single mode
-% opts.ai.plot.all=false;
-% opts.ai.plot.failed=false;
-% opts.ai.time_match_valid=8; %how close the predicted start of the shot is to the actual
-% opts.ai.scan_time=1/20; %fast setting 1/100hz %estimate of the sfp scan time,used to set the window and the smoothing
-% %because im only passing the ai feild to aviod conflicts forcing a reimport i need to coppy these feilds
-% opts.ai.trig_ai_in=opts.trig_ai_in;
-% opts.ai.trig_dld=opts.trig_dld;
-% opts.ai.dld_aquire=opts.dld_aquire;
-% opts.ai.aquire_time=opts.dld_aquire;
-% opts.ai.tdc_override=1;
-% opts.wm_tolerance = 2;
-% opts.cutoff_thresh = 0.1;
-% opts.smooth_width = 15;
-% opts.saturation_threshold = 0.975;
 
 
 
 %% Wavemeter log importing
-opts.wm.dir=opts.dir;
-opts.wm.out_dir = opts.out_dir;
+
 opts.wm.force_reimport=false;
 opts.wm.num_logs = nan;
 opts.wm.plots = true;
@@ -96,13 +58,11 @@ opts.wm.plot_all=1;
 opts.wm.plot_failed=false;
 
 
-wm_log_name='log_wm_';
-wm_logs=dir([opts.wm.dir,wm_log_name,'*.txt']);
-opts.wm.names={wm_logs.name};
+opts.wm.wm_log_name='log_wm_';
 
 opts.wm.cache_import.verbose=0;
 opts.wm.cache_import.force_recalc=0;
-opts.wm.cache_import.mock_working_dir=opts.dir;
+
 opts.wm.cache_import.save_compressed=true;%needed otherwise save takes a very long time
 opts.wm.cache_import.path_directions={1,'dir'};
 
@@ -110,20 +70,11 @@ opts.wm.plot_all=true;
 opts.wm.plot_failed=false;
 opts.wm.force_reimport=false;
 
-% opts.wm.time_pd_padding=4; %check this many s each side of probe
-% opts.wm.time_blue_padding=1; %check this many seconde each side of probe
-% opts.wm.time_probe=3;
-% opts.wm.ecd_volt_thresh=0.5;
-% 
-% opts.wm.red_sd_thresh=50; %allowable standard deviation in MHz
-% opts.wm.red_range_thresh=50; %allowable range deviation in MHz
-% opts.wm.rvb_thresh=20; %allowable value of abs(2*red-blue)
 
 
 %% TDC import
 
-opts.tdc.dir = opts.dir;
-opts.tdc.out_dir = opts.out_dir;
+
 opts.tdc.plots = true;
 opts.tdc.file_name='d';
 opts.tdc.force_load_save=false;   %takes precidence over force_reimport
@@ -145,9 +96,9 @@ opts.check.num_cal_bins = 20;
 
 %% Peak detection
 opts.peak.plot = true;
-opts.peak.cutoff_thresh = peak_cutoff_thresh;
-opts.peak.smooth_width = peak_smooth_width;
-opts.peak.saturation_threshold = peak_saturation_threshold;
+opts.peak.cutoff_thresh = .15;
+opts.peak.smooth_width = 15;
+opts.peak.saturation_threshold = 0.975;
 
 
 %% Plotting
@@ -195,10 +146,4 @@ opts.const = const;
 end
 
 
-
-function const = init_constants()
-
-
-
-end
 

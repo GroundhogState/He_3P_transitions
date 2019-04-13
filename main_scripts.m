@@ -27,10 +27,15 @@ clear all;
 %%%%%%%%%%%%%%%%%%%%%%%%%% GETTING STARTED
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % add all subfolders to the path
+
+data_dir = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\20190405_5^1D_2_cal_qwp_146_stage_1_ITC\';
+
 this_folder = fileparts(which(mfilename));
 core_folder = fullfile(fileparts(this_folder),'Core_BEC_Analysis\');
+zeeman_folder = fullfile(fileparts(this_folder),'Zeeman_\');
 addpath(genpath(this_folder));
 addpath(genpath(core_folder));
+addpath(genpath(zeeman_folder));
 fwtext('')
 fwtext('STARTING ANALYSIS')
 fwtext('')
@@ -42,10 +47,7 @@ hebec_constants
 % initialize variables
 
 opts = master_transition_config();
-% opts = transition_config_51D2(opts);
-
-% opts = transition_config_53D3();
-
+opts = dir_config(opts,data_dir);
 header({1,'Done.'})
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -100,11 +102,9 @@ data = fit_detected_peaks(data,opts);
 %% Grouping by wavelength 
 data = bin_by_wavelength(data,opts);
 
-%% Try looking for hidden peaks
+%% Try looking for hidden peaks?
 
 %% Zeeman analysis
-
-
 
 %%
 % figure(1)
@@ -160,7 +160,7 @@ out_data.data = data.cat;
 out_data.options = opts;
 filename = fullfile(opts.out_dir,'output_and_options.m');
 save(filename,'out_data','-v7.3')
-header({1,'Done!'})
+fwtext('All Done!')
 
 %% Plotting
 
@@ -224,18 +224,5 @@ header({1,'Done!'})
 %%%%%%%%%%%%%%%%%%%%%%%%%% SAVE RESULTS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Commented out for now; eventually the fit parameters & uncerts can be written out also
-% header({0,'Saving output'})
-% out_struct.data = data;
-% out_struct.opts = opts;
-% 
-% % Trim the raw data
-% out_struct.data.tdc = rmfield(out_struct.data.tdc,'counts_txy');
-% % WM and AI logs would be huge
-% out_struct.data = rmfield(out_struct.data,'wm');
-% out_struct.data = rmfield(out_struct.data,'ai');
-% outfilename = fullfile(opts.out_dir,['results_',datestr(datetime('now'),'yyyymmddTHHMMSS'),'.mat']);
-% save(outfilename,'out_struct','-v7.3')
-% header({0,'Saved'})
-% fwtext('ALL DONE!!!')
 %% Settings
 
