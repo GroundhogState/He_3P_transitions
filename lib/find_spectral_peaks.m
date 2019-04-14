@@ -41,10 +41,10 @@ header({0,'Finding peaks...'})
     for pidx = 1:length(pks)
         loc = spec.freq(locs(pidx));
         val = peaks.vals(pidx);
-        plot(loc.*[1,1],[val,-0.1],'k-','LineWidth',1.0) 
+        plot(loc.*[1,1],[val,-0],'k-','LineWidth',1.0) 
         plot(loc.*[1,1]+0.5*peaks.widths(pidx)*[-1,1],0.5*val*[1,1],'k-','LineWidth',1.0) 
     end
-
+%     xtickformat('%u')
     legend('Raw signal','forced saturation','Smoothed signal','Thresholded signal','Peak locations') 
     title('Automatic peak detection')    
 header({1,'Done.'})    

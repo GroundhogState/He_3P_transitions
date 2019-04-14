@@ -28,7 +28,7 @@ clear all;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % add all subfolders to the path
 
-data_dir = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\20190405_5^1D_2_cal_qwp_146_stage_1_ITC\';
+data_dir = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\20190413_53D1_qwp_146\';
 
 this_folder = fileparts(which(mfilename));
 core_folder = fullfile(fileparts(this_folder),'Core_BEC_Analysis\');
@@ -91,6 +91,9 @@ data.sync.msr.calib = make_calibration_model(data,opts);
 %% Break data into categories
 data.cat = categorize_shots(data,opts);
 
+
+%% Grouping by wavelength 
+data = bin_by_wavelength(data,opts);
 %% Peak detection
 data = auto_peak_detect(data,opts);
 
@@ -99,8 +102,7 @@ data = auto_peak_detect(data,opts);
 %% Fit the detected peaks
 data = fit_detected_peaks(data,opts);
 
-%% Grouping by wavelength 
-data = bin_by_wavelength(data,opts);
+
 
 %% Try looking for hidden peaks?
 

@@ -96,8 +96,8 @@ opts.check.num_cal_bins = 20;
 
 %% Peak detection
 opts.peak.plot = true;
-opts.peak.cutoff_thresh = .15;
-opts.peak.smooth_width = 15;
+opts.peak.cutoff_thresh = .05;
+opts.peak.smooth_width = 5;
 opts.peak.saturation_threshold = 0.975;
 
 

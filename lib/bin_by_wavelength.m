@@ -37,7 +37,8 @@ header({0,'Binning data for presentation'})
     freq_stats.freq_err = freq_stats.freq_std./sqrt(freq_stats.num_shots);
     freq_stats.sig_err = freq_stats.sig_std./sqrt(freq_stats.num_shots);
     
-%     data.cat{cidx}.freq_stats = struct_mask(freq_stats,logical(freq_stat_mask));
+   
+    data.cat{cidx}.freq_stats = struct_mask(freq_stats,logical(freq_stat_mask));
     header({1,'Done.'})
     
     X = freq_stats.freq;

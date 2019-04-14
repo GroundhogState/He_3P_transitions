@@ -739,4 +739,13 @@ Double trouble overnight: Seed laser offset drifted and killed BEC. Also, double
 
 ## 2019-04-12
 
-RF spectroscopy sequence c:\remote\settings201912Apr120122.xml
+RF spectroscopy sequence c:\remote\settings201912Apr121027.xml
+
+c:\remote\settings201912Apr135548.xml
+
+c:\remote\settings201912Apr144045.xml
+
+c:\remote\settings201912Apr145344.xml
+
+next version using the synth c:\remote\settings201912Apr160418.xml
+
