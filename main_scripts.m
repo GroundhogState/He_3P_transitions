@@ -28,7 +28,8 @@ clear all;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % add all subfolders to the path
 
-data_dir = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\20190413_53D1_qwp_146\';
+data_dir = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\20190418_overnight_search_for_quadrupole\';
+% data_dir = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\20190416_5^1D2_mj_1_itc_both_qwp_146_good_run\';
 
 this_folder = fileparts(which(mfilename));
 core_folder = fullfile(fileparts(this_folder),'Core_BEC_Analysis\');

@@ -723,8 +723,8 @@ Double trouble overnight: Seed laser offset drifted and killed BEC. Also, double
 			* Probe aligned to reach at least 20% above desired setpoint
 			* Measure probe power before second post-fibre beamcube 
  	* Calibrate wavemeter & measure nearby transitions
- 	* Restart DLD acquistion & clear DLD output directory
- 	* hit auto-run & free run
+ 	* Restart DLD acquistion & clear DLD output director
+y 	* hit auto-run & free run
  	* Babysit to ensure:
  		* Analog import updating
  		* Probe sequence changing between cal/stage 1/stage 2
@@ -749,3 +749,7 @@ c:\remote\settings201912Apr145344.xml
 
 next version using the synth c:\remote\settings201912Apr160418.xml
 
+## 2019-04-15 WM error curve
+cs_2p_6SF3_8SF3: Running mean 1.529590±0.007065 (se), sd 0.035323
+cs_2p_6SF4_8SF4: Running mean 2.834866±0.000963 (se), sd 0.004814
+cs_6SF3_6PF2co3: very large (can't observe)

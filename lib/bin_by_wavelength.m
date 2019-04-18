@@ -5,19 +5,30 @@ header({0,'Binning data for presentation'})
     sync_msr = data.cat{cidx}.data;
     
     all_setpts = unique(data.lv.setpoint);
-    min_set = min(sync_msr.probe_set);%2*min(all_setpts);
-    max_set = max(sync_msr.probe_set);%2*max(all_setpts);
+    all_setpts = all_setpts(~isnan(all_setpts));
+    min_set = min(sync_msr.probe_set);
+    max_set = max(sync_msr.probe_set);
+    
     
     num_freq_bins = round(range(all_setpts/1e6));
+    freq_bin_size = 1;%mean(diff(sort_setpt));
+    fbin_edges = linspace(min_set-freq_bin_size,max_set+freq_bin_size,num_freq_bins+1);%/1e6 %MHz
     if isfield(opts,'num_freq_bins')
         if ~isnan(opts.num_freq_bins) 
             num_freq_bins = opts.num_freq_bins;
         end
     end
-    freq_gap = 0;%mean(diff(sort_setpt));
-    fbin_edges = linspace(min_set-freq_gap,max_set+freq_gap,num_freq_bins+1);%/1e6 %MHz
+    if isfield(opts,'freq_bin_size')
+        if ~isnan(opts.freq_bin_size) 
+            freq_bin_size = opts.freq_bin_size;
+            fbin_edges = min_set-freq_bin_size:freq_bin_size:max_set+freq_bin_size;%/1e6 %MHz
+            num_freq_bins = length(fbin_edges)-1;
+        end
+    end
+    
+    
     [msr_setpts ,msr_set_id]= sort(sync_msr.probe_set);
-
+    
     for ii=1:num_freq_bins
        fmask_temp = msr_setpts > fbin_edges(ii) & msr_setpts < fbin_edges(ii+1);
        if sum(fmask_temp) >0
@@ -32,13 +43,17 @@ header({0,'Binning data for presentation'})
            
        end
     end
-    freq_stat_mask = abs(freq_stats.freq) > 0;
+    if isfield(freq_stats,'sig_err')
+        freq_stats = rmfield(freq_stats,'sig_err');
+        freq_stats = rmfield(freq_stats,'freq_err');
+    end
+    freq_stat_mask = freq_stats.freq > 0;
     freq_stats = struct_mask(freq_stats,freq_stat_mask);
     freq_stats.freq_err = freq_stats.freq_std./sqrt(freq_stats.num_shots);
     freq_stats.sig_err = freq_stats.sig_std./sqrt(freq_stats.num_shots);
     
    
-    data.cat{cidx}.freq_stats = struct_mask(freq_stats,logical(freq_stat_mask));
+    data.cat{cidx}.freq_stats = freq_stats;
     header({1,'Done.'})
     
     X = freq_stats.freq;
@@ -47,10 +62,17 @@ header({0,'Binning data for presentation'})
     Y_err = freq_stats.sig_err;
     
     sfigure(2347+cidx);
+    subplot(2,1,1)
+%     plot(
 %     plot(data.cat{cidx}.freq_stats.freq,data.cat{cidx}.freq_stats.sig_cal,'ko-')
+    plot(sync_msr.probe_set,sync_msr.N_atoms./sync_msr.calib,'kx-')
+    xlabel('Frequency (MHz)')
+    ylabel('N/N_0')
+    title('Raw spectral data')
 %     errorbar(
+    subplot(2,1,2)
     errorbar(X,Y,Y_err,Y_err,X_err,X_err)
-    suptitle('Spectrum with 1MHz bins')
+    title(sprintf('Spectrum with %.1fMHz bins',freq_bin_size))
     xlabel('Frequency (MHz)')
     ylabel('N/N_0')
 end
