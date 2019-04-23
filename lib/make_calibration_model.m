@@ -33,8 +33,8 @@ function calib  = make_calibration_model(data,opts)
     
     
     subplot(3,1,2)
-    plot(plot_raw_T,plot_mdl_Y,'.')
-    xlabel('Time elapsed')
+    plot(plot_mdl_Y,'.')
+    xlabel('Shot number')
     ylabel('N ratio')
     title('Calibrated time series')    
 %     suptitle('Calibration model')

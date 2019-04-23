@@ -23,12 +23,12 @@
 
 clear all;
 
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%% GETTING STARTED
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% add all subfolders to the path
 
-data_dir = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\20190417_5^1D2_mj_1_itc_both_qwp_146_overnight\';
+
+% add all subfolders to the path
+%% Setting up
+data_dir = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\20190423_5^3D_good_scan\';
+% data_dir = 'Z:\EXPERIMENT-DATA\2019_He_transitions\20190409_5^3D2_3D3_qwp_146_two_stage\';
 
 this_folder = fileparts(which(mfilename));
 core_folder = fullfile(fileparts(this_folder),'Core_BEC_Analysis\');
@@ -40,7 +40,9 @@ fwtext('')
 fwtext('STARTING ANALYSIS')
 fwtext('')
 
-%% Setting up
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%% GETTING STARTED
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 header({0,'Setting up configs...'})
 % Declare useful constants
 hebec_constants
@@ -91,24 +93,20 @@ data.sync.msr.calib = make_calibration_model(data,opts);
 %% Break data into categories
 data.cat = categorize_shots(data,opts);
 
-
 %% Grouping by wavelength 
 data = bin_by_wavelength(data,opts);
 %% Peak detection
 data = auto_peak_detect(data,opts);
 
-%% Fitting goes here
 
 %% Fit the detected peaks
 data = fit_detected_peaks(data,opts);
 
-%% Presentation plot
 
 
+%% Presentation plots
 
-%% Try looking for hidden peaks?
 
-%% Zeeman analysis
 
 %%
 % figure(1)

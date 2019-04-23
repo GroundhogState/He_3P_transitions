@@ -29,7 +29,7 @@ header({0,'Finding peaks...'})
     header({2,'%u peaks found.',length(locs)})
     fnum = 50123;
     if isfield(opts,'fig_idx')
-        fnum = fnum + opts.fig_idx;
+        fnum = fnum + 10*opts.fig_idx
     end
     sfigure(fnum);
     clf;
