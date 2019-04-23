@@ -4,11 +4,11 @@ function [opts,const] = master_transition_config()
 
 % These variables are set here for quick access to quantities passed to
 % functions in fields defined later in this code
-opts.ignorefiles = 500:2273;
-peak_cutoff_thresh = 0.1;
+% opts.ignorefiles = 500:2273;
+peak_cutoff_thresh = 0.15;
 peak_smooth_width = 15;
 peak_saturation_threshold = 0.975;
-
+opts.freq_bin_size = 2;
 
 % Experimental parameters
 opts.probe_set_pt=0.4;
@@ -97,12 +97,12 @@ opts.check.num_cal_bins = 20;
 %% Peak detection
 opts.peak.plot = true;
 opts.peak.cutoff_thresh = .05;
-opts.peak.smooth_width = 5;
+opts.peak.smooth_width = 10;
 opts.peak.saturation_threshold = 0.975;
 
 
 %% Plotting
-opts.freq_bin_size = 0.2;
+
 opts.num_freq_bins = 30;
 
 %% Physical constants

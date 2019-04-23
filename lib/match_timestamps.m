@@ -123,9 +123,18 @@ function sync_data = match_timestamps(data,opts)
     title('Probe setpt')
     
     subplot(2,4,3)
-    area(wm_bin_cents,wm_hist)
-    xlabel('Value [MHz]')
-    title(sprintf('Laser setpoint error, N=%u',length(sync_shots.wm_set_err(wm_set_mask))))
+%     area(wm_bin_cents,wm_hist)
+%     xlabel('Value [MHz]')
+%     title(sprintf('Laser setpoint error, N=%u',length(sync_shots.wm_set_err(wm_set_mask))))
+    
+%     subplot(2,4,5)
+    plot(sync_shots.lv_time-start_time,sync_shots.lv_set/1e6-data.wm.feedback.actual,'x');
+%     hold on
+%     plot(wm_time-start_time,data.wm.feedback.actual,'x');
+    legend('2*LV set point','WM blue setpt')  
+    xlabel('Time elapsed')
+    title('Raw channel inputs')
+    
     
     subplot(2,4,4)
     plot(wm_time,'.')

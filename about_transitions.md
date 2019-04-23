@@ -753,3 +753,54 @@ next version using the synth c:\remote\settings201912Apr160418.xml
 cs_2p_6SF3_8SF3: Running mean 1.529590±0.007065 (se), sd 0.035323
 cs_2p_6SF4_8SF4: Running mean 2.834866±0.000963 (se), sd 0.004814
 cs_6SF3_6PF2co3: very large (can't observe)
+
+## 2019-04-18
+
+Short day, starts at 1500.
+Goals for today & tomorrow
+* Polish code to presentation plots
+* Look for calibration lines
+* Analyse linearity data
+* Fine up ITC spectroscopy
+* Final scans of 5^3D and 5^1S
+* Search for new transitions overnight
+* Compute expected gain for forbidden transition
+* Lock to Cs and record WM stability over the weekend
+
+Goals for after weekend:
+* Go straight for Forbidden transition, we're running out of time
+
+* LabView being strange... Uh-oh.
+In the meantime, I'll try this calibration business. Don't need LV for that.
+Pre-calibration measurements
+
+transition 			Offset
+cs_2p_6SF4_8SF4 	300kHz 
+CALIBRATED
+
+Looking for others:
+transition 			Offset
+cs_2p_6SF3_8SF3 	-1.35 MHz
+cs_2p_6SF4_8SF4 	-54kHz
+Can't find others, and adding all these switch cases is unwieldy. I'll make the Cs transitions into an easily navigable struct, then call it a day and crush out some goodness tomorrow. 
+Left laser locked to cs_2p_6SF4_8SF4, will examine log in the morning (assuming it stays locked oops)
+
+## 2019-04-19
+
+WM offset on the F4-F4 transition is  1.03 MHz
+WM offset on the F3-F3 transition is -0.41 MHz
+Try a few others, can't spot 'em...
+	* Power too low?
+	* Cell alignment lost when retuning etalon?
+Perhaps calibrate and leave measure running over weekend to look at long-term wm drift
+Moving on to measuring stuff...
+BEC happy :) 50k counts
+Look for 5^3D1 and 5^3S today
+
+Scanning over 5^3D1
+Stage 2 power: 0.15V/5.19mW after PD cube, beam fully defocused (use previous estimate of radius)
+Stage 1 power: 0.1V/3.4mW
+qwp 146 degrees
+Data collected, 667 shots
+Argh, was only running stage 1.
+Set up again to scan over both, then will leave overnight. Will likely die over the weekend. RIP
