@@ -4,11 +4,18 @@ clear all;
 % Remove old data dirs from path
 
 
+
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%% GETTING STARTED
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-data_dir = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\';
-e_state = '5^3D_1';
+
+
+% add all subfolders to the path
+% % Setting up
+data_dir = 'Y:\TDC_user\ProgramFiles\my_read_tdc_gui_v1.0.1\dld_output\20190423_5^3D_good_scan\';
+% data_dir = 'Z:\EXPERIMENT-DATA\2019_He_transitions\20190409_5^3D2_3D3_qwp_146_two_stage\';
+
+
 this_folder = fileparts(which(mfilename));
 core_folder = fullfile(fileparts(this_folder),'Core_BEC_Analysis\');
 zeeman_folder = fullfile(fileparts(this_folder),'Zeeman_splitting\');
@@ -69,6 +76,7 @@ data = auto_peak_detect(data,opts);
 %% Fit the detected peaks
 data = fit_detected_peaks(data,opts);
 
+
 %% Zeeman shift correction
 % data = zeeman_correction(data,opts);
 % zeeman_structured
@@ -80,6 +88,7 @@ data = fit_detected_peaks(data,opts);
 %     plot(Bval,freqs,'kx')
 % end
     
+
 
 %% Presentation plots
 

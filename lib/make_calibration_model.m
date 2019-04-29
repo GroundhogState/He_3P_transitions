@@ -60,9 +60,11 @@ function calib  = make_calibration_model(data,opts)
     
     
     subplot(3,1,3)
-    plot(plot_mdl_X,plot_mdl_Y,'.')
-    hold on
 
+    plot(plot_mdl_X,plot_mdl_Y,'.')
+
+    hold on
+    
     xlabel(sprintf('f (MHz)'))
     ylabel('N ratio')
 
