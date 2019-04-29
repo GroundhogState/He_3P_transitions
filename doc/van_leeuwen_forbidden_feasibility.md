@@ -22,8 +22,13 @@ High-order QED corrections to the Helium spectrum are the strongest for low-lyin
 Refer to a 10kHz disagreement in fine structure mesaurements of the 2^3P states, calling for verification
 "As the charge radius of 4He is the most accurately known of all nuclei (including the proton), isotope shifts measure the charge radius of the other nucleus involved"
 
+
 ## Approach
 
+Assumning a rate constant of 9e-8 s^-1 from Pachucki, and following the same formalism as applied to the metastable transition (ref 23):
+
+Note the loss channel from the excited (2^1S_0) state is dominated by two-photon loss to the ground state with rate Gamma_2 = 51 s^-1.
+One starts with the optical Bloch equations, coupling the transition states 1 and 2, but ignoring the true ground state (loss channel) 0.
 
 ## Contribution
 

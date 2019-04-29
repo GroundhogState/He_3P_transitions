@@ -1,10 +1,11 @@
 function peaks = find_spectral_peaks(spec,opts)
 header({0,'Finding peaks...'})
-    signal = 1-spec.signal;
-    satch_mask = signal > opts.peak.saturation_threshold;
-    sig_satch = signal;
-    sig_satch(satch_mask) = 1;
+    signal = spec.signal;
+%     satch_mask = signal < opts.peak.saturation_threshold;
+%     sig_satch = signal;
+%     sig_satch(satch_mask) = 1;
     freq_cut = spec.freq;
+    sig_satch = signal;
 
     df = mean(diff(spec.freq));
     
@@ -29,15 +30,15 @@ header({0,'Finding peaks...'})
     header({2,'%u peaks found.',length(locs)})
     fnum = 50123;
     if isfield(opts,'fig_idx')
-        fnum = fnum + opts.fig_idx;
+        fnum = fnum + 10*opts.fig_idx;
     end
-    sfigure(fnum);
+    f1=sfigure(fnum);
     clf;
-    plot(spec.freq,signal,'bo-')
+    plot(spec.freq,signal,'k.:')
     hold on
-    plot(spec.freq,sig_satch,'g.')
-    plot(freq_cut,smooth_out,'k.')
-    plot(freq_cut,smooth_cut,'rx')    
+%     plot(spec.freq,sig_satch,'g.')
+    plot(freq_cut,smooth_out,'b*-')
+    plot(freq_cut,smooth_cut,'ro')    
     for pidx = 1:length(pks)
         loc = spec.freq(locs(pidx));
         val = peaks.vals(pidx);
@@ -45,8 +46,12 @@ header({0,'Finding peaks...'})
         plot(loc.*[1,1]+0.5*peaks.widths(pidx)*[-1,1],0.5*val*[1,1],'k-','LineWidth',1.0) 
     end
 %     xtickformat('%u')
-    legend('Raw signal','forced saturation','Smoothed signal','Thresholded signal','Peak locations') 
+    legend('Raw signal','Smoothed signal','Thresholded signal','Peak locations') 
     title('Automatic peak detection')    
+    
+    filename1 = fullfile(opts.out_dir,'peak_detection');
+    saveas(f1,[filename1,'.fig']);
+    saveas(f1,[filename1,'.png'])
 header({1,'Done.'})    
     
 end
