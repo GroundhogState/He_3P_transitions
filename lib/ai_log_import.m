@@ -4,7 +4,7 @@ function out_ai=ai_log_import(opts)
 fwtext('IMPORTING DATA')
 
 if opts.ai.verbose > 0
-    sprintf('Importing analog logs from ',opts.ai.dir)
+    sprintf('Importing analog logs from %s\n',opts.ai.dir)
 end
 %a simple wrapper for the below ai_log_import that uses the matlab function cache
 cache_opts=opts.ai.cache_import;
@@ -22,14 +22,14 @@ out_ai=simple_function_cache(cache_opts,@ai_log_import_core,{opts,data_sub});
 if ~isempty(out_ai.file_names)
     if isfield(opts.ai,'post_fun')
         header({2,'Post-processing...'})
-        out_ai = opts.ai.post_fun(opts.ai,out_ai);
+        out_ai = transition_post_ai(opts.ai,out_ai);
         header({2,'Done'})
 
         % Can be slow to plot large imports, but a) not likely to be enabled often and b) only called once
         % per import
-        if opts.ai.plots % Add clause so this automatically disabled if reloading from cache?        
-            ai_diagnostic_plots(out_ai,opts.ai)
-        end
+%         if opts.ai.plots % Add clause so this automatically disabled if reloading from cache?        
+%             ai_diagnostic_plots(out_ai,opts.ai)
+%         end
     end
 
     if opts.ai.verbose > 0
@@ -37,7 +37,7 @@ if ~isempty(out_ai.file_names)
     end
 else
     warning('No analog log files found!')
-    out_ai.error = 'No record';
+    out_ai.error = 'No_record';
     out_ai.data = [];
 end
 end

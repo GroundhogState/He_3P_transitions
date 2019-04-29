@@ -23,7 +23,7 @@ function data = auto_peak_detect(data,opts)
             fprintf('Centre frequency           %.3f\n',peaks.freqs(pidx));
             fprintf('FWHM                       %.3f\n',peaks.widths(pidx));
             fprintf('Relative strength          %.2f\n',peaks.vals(pidx));
-        end
+%         end
     end
     
 %     if opts.peaks.plot

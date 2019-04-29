@@ -3,7 +3,6 @@ num_cats = numel(data.cat);
 for cidx = 1:num_cats
 header({0,'Binning data for presentation'})
     sync_msr = data.cat{cidx}.data;
-    
     all_setpts = unique(data.lv.setpoint);
     all_setpts = all_setpts(~isnan(all_setpts));
     min_set = min(sync_msr.probe_set);
@@ -37,9 +36,10 @@ header({0,'Binning data for presentation'})
            freq_stats.num_shots(ii) = sum(fmask_temp);
            freq_stats.freq(ii) = nanmean(shots_temp.probe_set);
            freq_stats.freq_std(ii) = nanstd(shots_temp.probe_set);
-           freq_stats.sig(ii) = nanmean(shots_temp.N_atoms);
-           freq_stats.sig_cal(ii) = nanmean(shots_temp.N_atoms./shots_temp.calib);
-           freq_stats.sig_std(ii) = nanstd(shots_temp.N_atoms./shots_temp.calib);
+           freq_stats.sig_cal(ii) = nanmean(shots_temp.signal);
+%            sig_temp = shots_temp.calib-shots_temp.N_atoms;
+%            freq_stats.sig_cal(ii) = nanmean(sig_temp);
+           freq_stats.sig_std(ii) = nanstd(shots_temp.signal);
            
        end
     end
@@ -61,11 +61,11 @@ header({0,'Binning data for presentation'})
     X_err =  freq_stats.freq_err;
     Y_err = freq_stats.sig_err;
     
-    sfigure(2347+cidx);
+    f1=sfigure(2347+cidx);
     subplot(2,1,1)
 %     plot(
 %     plot(data.cat{cidx}.freq_stats.freq,data.cat{cidx}.freq_stats.sig_cal,'ko-')
-    plot(sync_msr.probe_set,sync_msr.N_atoms./sync_msr.calib,'kx-')
+    plot(sync_msr.probe_set,sync_msr.signal,'k.-')
     xlabel('Frequency (MHz)')
     ylabel('N/N_0')
     title('Raw spectral data')
@@ -75,5 +75,9 @@ header({0,'Binning data for presentation'})
     title(sprintf('Spectrum with %.1fMHz bins',freq_bin_size))
     xlabel('Frequency (MHz)')
     ylabel('N/N_0')
+    
+    filename1 = fullfile(opts.out_dir,'binned_spectrum');
+    saveas(f1,[filename1,'.fig']);
+    saveas(f1,[filename1,'.png'])
 end
 end

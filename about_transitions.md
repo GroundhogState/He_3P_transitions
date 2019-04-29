@@ -804,3 +804,169 @@ qwp 146 degrees
 Data collected, 667 shots
 Argh, was only running stage 1.
 Set up again to scan over both, then will leave overnight. Will likely die over the weekend. RIP
+
+
+## 2019-04-23
+
+Setting up for overnight run of the 5^3D transitions
+Run over the weekend had setpoints up in the 700THz regime so unlocked early on and died :(
+Kieran tweaked up atom number and recorded WM offsets
+Jacob takes over
+	Calibrate wavemeter on F4-F4
+	Can't measure F3_F3, laser keeps unlocking
+	Restart control unit after finding that etalon lock error offset incorrect
+	Tune laser back to operating region
+	At 0.1V set point, power delivered is 4.85mW
+
+Tasks for Wednesday:
+	* Look for Cesium reference lines
+		* Turn on PMT and roll through Cs transitions to spot as many as we can find. 
+	* Check independence from probe beam parameters
+		* Scan reference peak (say, 5^3S1?)
+		* Repeat for pump power & detuning
+			* Adjust ITC power/freq as much as possible while retaining BEC
+				* Measure IT cooling power if practical. If not, measure pre-ND filter and use that to normalize
+			* Measure difference in power/freq
+			* Re-scan peak
+	* Set up for overnight scan
+	* 
+
+## 2019-04-24
+The run taken after resetting the offset last night shows some nice looking peaks around the D_2, D_3 region, but very small. Goes to show their relative strengths are quite different. For the same intensity, the D_1 is barely visible, so perhaps we'll have to run them separately after all.
+Some issues with the code to fix:
+	* Number culling DONE
+	* Probe setpoint check
+		* Serves as proxy for ECD lock check also
+	* Implemented, but it's pretty rough atm
+		There is an AC background (5kHz?) which has not been subtracted
+		Amplitude is approx 5mV so artificially increases PD range by about 10mV
+		Data is smoothed almost immediately, so leads to some error in calculating on-time
+		Offset on photodiode signal implies that power is not linear wrt. absolute voltage
+	* Probably sufficient for now, let's move on to other tasks
+Calibration curve revisited
+	Measuring WM offsets:
+		F4-F4 -0.696162±0.006263 (se), sd 0.031313
+		F3-F3 -2.519053±0.026838 (se), sd 0.134191
+	Calibrate to F3
+		F4-F4 1.907405±0.002462 (se), sd 0.012308
+		F3-F3 0.410344±0.001532 (se), sd 0.007659 <- expected, error less than precision of calibration
+
+
+Sight no more. Return more deliberately another time.
+
+FINALLY get a good scan of the 5^3D_1, with tightly focused lens and a mere 10ms exposure time. 
+Signal is about half of full dynamic range, ideal to explore a few dependencies. The transition is pretty narrow so scans should be pretty quick.
+PLAN
+* Take fast scan around 5^3D_1, stage 1 ITC
+* Adjust ITC detuning and re-scan
+* Adjust ITC power and re-scan
+* Adjust probe power and re-scan
+* Retake original scan to check drift
+
+Hm, can't find spectrum analyser!!
+However, do have measurements of AO offset from magnetic field calibrations:
+	138MHz and 133.6MHz during first stages of ITC, which have voltages approx 8.5 and 7.9. 
+		Therefore estimate dependence of approx 7.6MHz/V.
+			Annoyingly, we can't really move the ITC this much! 
+	Oops, initial scan had steps too large to be practical.
+	So I'll come in tomorrow (ANZAC) and finish this up.
+	Meantime, may as well take the real good scan.
+
+## 2019-04-25
+Made a few improvements to code
+	analog checks now implemented
+	Local configurations now set in local_opts.m file in data directory
+	Zeeman correction implemented kinda roughly
+		Should functionalize and accept a string labeling excited state, then calculating automatically
+	Changed signal to atom number loss, but pretty easy to reconfigure to use ratio (see calibration section)
+	Text output now a bit more complete
+	output saves automatically and more figures saved
+
+As at 2141:
+F3-F3 offset -0.030973±0.005948 (se), sd 0.029742
+F4-F4 offset 1.519872±0.007246 (se), sd 0.036231
+Reinstalled waveplate to allow WM to record blue WL & maintain blue lock
+10.8mW post-PD cube
+Large beam
+Testing linearity/probe stark
+250ms exposure time, 4cm beam waist
+set point 	Post-PD power 	peak centre 			peak height 	peak ratio 		Peak width (MHz)
+0.10V 		3.31mW			744396451.59(0.33) MHz  12508 			0.36			1.67(0.48)
+0.15V 		5.14mW 			744396452.43(0.25) MHz 	19248			0.62			2.20(0.41)
+0.20v 		6.5mW  			744396452.56(0.13) MHz	18604 			0.74			2.28(0.16)
+0.25V 		8.9mW  			744396451.18(0.18)		23202			0.84			2.37(0.35)
+All peaks heights are differences in atom number
+Peak ratios are normalized: 1-(calibration-N_atom_probe_on)/calibration
+All within wavemeter accuracy, and I've seen bigger centre variations between successive Cs measurements. 
+Conclusion: No observable shifts. Running at high power is good.
+	Notice that the WM lock is a bit noisier? Even when running with the blue lock disabled. 
+	1: Need to stabilize, perhaps reboot laser
+	2: Take a more detailed look at the WM set determination; perhaps average over the period where the probe is high
+
+OK, what else? 
+Need good run of 5^3D_1, 5^3D_2,3, 5^3S_1 (?), look for 4^1D_2 (4^1P_1?)
+- The run we now have of the 5^1D_2 with 1MHZ steps looks great; Zeeman corrected values agree to 0.7MHz
+So I'm happy to call that done.
+- So, try to get a nice picture of the D_2 and D_3, then tomorrow:
+
+## 2019-04-26
+Tasks:
+	* Ensure that overnight run went OK
+	* Try to change pump detuning by at least a MHz, and see whether this shift a peak. That is;
+		* Pick a nice peak (5^3D_1?) and take a pretty coarse scan. I found that scan_range = 6 and stepsize 0.5MHz (red) is pretty quick and provides a good fit, and it's easy to operate near saturation.
+		* Kick the ITC settings around. You can try to calculate the expected shift in probe freq to get started, but eventually it must be measured with the spectrum analyser. 
+			* The ITC intensity might be too hard to measure directly, but you could measure the power before the ND filter and just note the proportional power throughput. Try measuring at the trap anyhow, that'd be nice to know.
+	* In the end, we have to try these, but they might be impractical, which we'll have to live with.
+	* Fine scan of 5^3S_1
+	* Look for 4^1* lines/set up scan
+	* Figure out why WM lock is so unstable now?! There's a worrying amount of drift in between updates
+		* Can  remedy by more detailed checking of WM set point in code, but should fix the problem at the root too!
+Goal: These transitions DONE by monday. Next week, forbidden search. 
+
+
+Oh yeah, Bryce and student are doing ZS velocity distribution measurements today, so not a lot of opportunity to take data.
+
+Last night's run worked OK, but I forgot to include the second stage probe, oops... 
+Good news is that the side peaks are JUST visible, and could fit to them, but they're real small. Nice and distinct too. I think we can take another scan with more power, presuming the atom number can be bolstered a bit (just saturated overnight), or just live with a saturated main peak to bring out the rest. 
+
+
+More detailed WM log retrieval:
+AI log written at end of recording period
+LV log written at start of run
+So, probe_on_time = ai_time - (ai_duration - pd_delay)
+all computable from ai log, then passes a posix interval to wm log which is sampled & averaged
+
+## 2019-04-28
+	Leaving temp control unit unplugged overnight seems to fix the problem, laser now nice and stable again
+	Running with large beam, 0.25V set point, 8.45mW after PD cube, 60k atoms yea yea
+	Cs transitions;
+	cs_2p_6SF3_8SF3 	-3.041977±0.004047 (se), sd 0.008095
+	cs_2p_6SF4_8SF4 	-1.554317±0.001144 (se), sd 0.003433
+	Calibrated to F4
+	cs_2p_6SF4_8SF4 	0.062275±0.002331 (se), sd 0.011653
+	cs_2p_6SF3_8SF3 	-1.342083±0.000165 (se), sd 0.000827
+	Would be interesting to observe effect of calibration on transition peak centres....
+
+
+* Oops, saturated. Well, at least we'll get a look at where the peaks are. Can re-scan if really necessary. 
+* I ran at 250mV, which I reckon might not have saturated had the number stayed steady. Oh well.
+
+Some things to do;
+	* Run local_opts in master_config instead of adding stacks of files to the path
+	* Pepper some comments through code
+	* Fix caching...
+	* Cull points that are too far outside LV set bounds, presumably in bin_by_wavelength
+		* WTF is with those errand points if the bins are too small?
+
+
+	* Transition final checklist:
+		name 		Directory
+		5^3D_1 		20190425_5^3D1_overnight (No analog logs... but beautiful!)
+		5^3D_2,3	20190429_cal_5^3D_2_3_qwp_142
+		5^1D_2 		20190417_5^1D2_mj_1_itc_both_qwp_146_overnight (also no analog logs, but very pretty...)
+		5^3S_1 		20190429_5^3S_1_qwp_146_both_stage   		7.2mW
+		4^1D_2 		
+		4^3D_?
+
+	Plus have a lot of prelim stuff (without full logging) to bolster stat precision, but there's not much to win there
+	Tune laser back to 824nm, obtain 14.3mW power post-PD at 680mV (20dB gain, has been for ages)

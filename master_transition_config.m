@@ -1,14 +1,11 @@
-function [opts,const] = master_transition_config()
+function [opts,const] = master_transition_config(data_dir)
 
 %% Frequently adjusted quantities
 
 % These variables are set here for quick access to quantities passed to
 % functions in fields defined later in this code
-% opts.ignorefiles = 500:2273;
-peak_cutoff_thresh = 0.15;
-peak_smooth_width = 15;
-peak_saturation_threshold = 0.975;
-opts.freq_bin_size = 2;
+opts.ignorefiles = nan; %Index of shot after import (i.e. chronological position, NOT TDC number
+opts.freq_bin_size = 1;
 
 % Experimental parameters
 opts.probe_set_pt=0.4;
@@ -22,8 +19,6 @@ opts.aom_freq=189;%190*1e6;%Hz %set to zero for comparison with previous data ru
 
 %% LabView import
 
-
-
 opts.lv.plots = true;
 
 %% Analog import
@@ -33,6 +28,15 @@ opts.ai.num_files = nan;
 opts.ai.log_name='log_analog_in_';
 opts.ai.verbose = 1;
 opts.ai.plots=1;
+
+% Default values, should be overriden by local
+opts.ai.num_files = nan;
+opts.ai.pd_offset = -0.065;
+opts.ai.high_thresh = 8e-3;
+opts.ai.srate = 20000.00;
+opts.ai.exposure = 0.95*0.15;
+opts.ai.pd_setpoint = .043;
+
 opts.ai.post_fun = @transition_post_ai;
 % Options for global import
 opts.ai.cache_import.verbose=0;
@@ -91,21 +95,24 @@ opts.max_runtime=inf;%inf%cut off the data run after some number of hours, shoul
 
 
 %% Error handling
+opts.check.min_counts = 2e4;
 opts.check.wm_tolerance = 2;
 opts.check.num_cal_bins = 20;
 
 %% Peak detection
 opts.peak.plot = true;
-opts.peak.cutoff_thresh = .05;
-opts.peak.smooth_width = 10;
+opts.peak.cutoff_thresh = 5e3;
+opts.peak.smooth_width = 3;
 opts.peak.saturation_threshold = 0.975;
-
+opts.peak.fitwidth = 15;
 
 %% Plotting
 
 opts.num_freq_bins = 30;
 
 %% Physical constants
+opts.Bfield = [18.25,11.43]; % Gauss
+
 
 const.mu = 9.27e-28; %J/G
 const.h = 6.63e-34;
@@ -142,9 +149,32 @@ const.global.qe=0.09;
 
 %% Append to options
 opts.const = const;
-
-
+lopt_file = fullfile(data_dir,'local_opts.m');
+if exist(lopt_file,'file')==2
+    addpath(data_dir)
+    opts = local_opts(opts,data_dir);
+    rmpath(data_dir)
 end
 
+   %set up an output dir %https://gist.github.com/ferryzhou/2269380
+    opts.dir = data_dir;
+    if (exist([opts.dir,'out'], 'dir') == 0), mkdir([opts.dir,'out']); end
+    %make a subfolder with the ISO timestamp for that date
+    opts.out_dir=sprintf('%sout\\%s\\',...
+        opts.dir,datestr(datetime('now'),'yyyymmddTHHMMSS'));
+    if (exist(opts.out_dir, 'dir') == 0), mkdir(opts.out_dir); end
+    opts.lv.dir = opts.dir;
+    opts.lv.out_dir = opts.out_dir;
+    opts.ai.dir=opts.dir;
+    opts.ai.out_dir = opts.out_dir;
+    opts.wm.dir=opts.dir;
+    opts.wm.out_dir = opts.out_dir;
+    opts.tdc.dir = opts.dir;
+    opts.tdc.out_dir = opts.out_dir;
+    opts.ai.cache_single.mock_working_dir=opts.dir;
+    opts.wm.cache_import.mock_working_dir=opts.dir;
+    wm_logs=dir([opts.wm.dir,opts.wm.wm_log_name,'*.txt']);
+    opts.wm.names={wm_logs.name};
+end
 
 
