@@ -1,5 +1,5 @@
 function data_tdc = import_mcp_tdc(opts)
-    header({0,'Importing TDC data'})
+    cli_header({0,'Importing TDC data'})
     
     cache_opts=[];
     cache_opts.verbose=1;
@@ -57,7 +57,7 @@ function data_tdc = import_mcp_tdc(opts)
         
         
     end
-    header({1,'Done.'})
+    cli_header({1,'Done.'})
 end
 
 

@@ -1,5 +1,5 @@
 function peaks = find_spectral_peaks(spec,opts)
-header({0,'Finding peaks...'})
+cli_header({0,'Finding peaks...'})
     signal = spec.signal;
 %     satch_mask = signal < opts.peak.saturation_threshold;
 %     sig_satch = signal;
@@ -27,7 +27,7 @@ header({0,'Finding peaks...'})
     
     %% Verbose output
     
-    header({2,'%u peaks found.',length(locs)})
+    cli_header({2,'%u peaks found.',length(locs)})
     fnum = 50123;
     if isfield(opts,'fig_idx')
         fnum = fnum + 10*opts.fig_idx;
@@ -52,6 +52,6 @@ header({0,'Finding peaks...'})
     filename1 = fullfile(opts.out_dir,'peak_detection');
     saveas(f1,[filename1,'.fig']);
     saveas(f1,[filename1,'.png'])
-header({1,'Done.'})    
+cli_header({1,'Done.'})    
     
 end

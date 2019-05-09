@@ -1,6 +1,6 @@
 function calib  = make_calibration_model(data,opts)    
     
-    header({0,'Making calibration model'})
+    cli_header({0,'Making calibration model'})
     calib = data.sync.msr;
 
     % Plotting the calibration model
@@ -74,6 +74,6 @@ function calib  = make_calibration_model(data,opts)
     saveas(f1,[filename2,'.fig']);
     saveas(f1,[filename2,'.png'])
 
-    header({1,'Done.'})
+    cli_header({1,'Done.'})
 
     end

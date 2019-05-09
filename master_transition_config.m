@@ -1,5 +1,10 @@
 function [opts,const] = master_transition_config(data_dir)
 
+
+if ~strcmp(data_dir(end),filesep)
+    data_dir = [data_dir,filesep];
+end
+
 %% Frequently adjusted quantities
 
 % These variables are set here for quick access to quantities passed to
@@ -42,6 +47,7 @@ opts.ai.post_fun = @transition_post_ai;
 opts.ai.cache_import.verbose=0;
 opts.ai.cache_import.force_cache_load=false;
 opts.ai.cache_import.force_recalc=false;
+opts.ai.cache_import.dir = data_dir;
 % Options for single imports (unnecessary unless they're cached, ill-advised usually)
 opts.ai.cache_single_import = false;
 opts.ai.cache_single.verbose=0;
@@ -66,7 +72,7 @@ opts.wm.wm_log_name='log_wm_';
 
 opts.wm.cache_import.verbose=0;
 opts.wm.cache_import.force_recalc=0;
-
+opts.wm.cache_import.dir = data_dir;
 opts.wm.cache_import.save_compressed=true;%needed otherwise save takes a very long time
 opts.wm.cache_import.path_directions={1,'dir'};
 
@@ -85,6 +91,7 @@ opts.tdc.force_load_save=false;   %takes precidence over force_reimport
 opts.tdc.force_reimport=false;
 opts.tdc.force_forc=false;
 opts.tdc.dld_xy_rot=0.61;
+opts.tdc.cache_import.dir = data_dir;
 %Should probably try optimizing these
 tmp_xlim=[-30e-3, 30e-3];     %tight XY lims to eliminate hot spot from destroying pulse widths
 tmp_ylim=[-30e-3, 30e-3];
@@ -112,7 +119,9 @@ opts.num_freq_bins = 30;
 
 %% Physical constants
 opts.Bfield = [18.25,11.43]; % Gauss
-
+opts.Bfield_f_unc = [1,1]; %MHz. From memory, this is about 2% unc
+% So temp set this manually:
+opts.Bfield_unc = opts.Bfield./[51,32]; % Gauss
 
 const.mu = 9.27e-28; %J/G
 const.h = 6.63e-34;
@@ -149,12 +158,7 @@ const.global.qe=0.09;
 
 %% Append to options
 opts.const = const;
-lopt_file = fullfile(data_dir,'local_opts.m');
-if exist(lopt_file,'file')==2
-    addpath(data_dir)
-    opts = local_opts(opts,data_dir);
-    rmpath(data_dir)
-end
+
 
    %set up an output dir %https://gist.github.com/ferryzhou/2269380
     opts.dir = data_dir;
@@ -171,10 +175,32 @@ end
     opts.wm.out_dir = opts.out_dir;
     opts.tdc.dir = opts.dir;
     opts.tdc.out_dir = opts.out_dir;
-    opts.ai.cache_single.mock_working_dir=opts.dir;
-    opts.wm.cache_import.mock_working_dir=opts.dir;
+%     opts.ai.cache_single.mock_working_dir=opts.dir;
+%     opts.wm.cache_import.mock_working_dir=opts.dir;
     wm_logs=dir([opts.wm.dir,opts.wm.wm_log_name,'*.txt']);
     opts.wm.names={wm_logs.name};
+%     
+%         %set up an output dir %https://gist.github.com/ferryzhou/2269380
+%     lopts.dir = data_dir;
+%     if (exist([lopts.dir,'out'], 'dir') == 0), mkdir([lopts.dir,'out']); end
+%     %make a subfolder with the ISO timestamp for that date
+%     lopts.out_dir=sprintf('%sout\\%s\\',...
+%         lopts.dir,datestr(datetime('now'),'yyyymmddTHHMMSS'));
+%     if (exist(lopts.out_dir, 'dir') == 0), mkdir(lopts.out_dir); end
+%     lopts.lv.dir = lopts.dir;
+%     lopts.lv.out_dir = lopts.out_dir;
+%     lopts.ai.dir=lopts.dir;
+%     lopts.ai.out_dir = lopts.out_dir;
+%     lopts.wm.dir=lopts.dir;
+%     lopts.wm.out_dir = lopts.out_dir;
+%     lopts.tdc.dir = lopts.dir;
+%     lopts.tdc.out_dir = lopts.out_dir;
+%     lopts.ai.cache_single.mock_working_dir=lopts.dir;
+%     lopts.wm.cache_import.mock_working_dir=lopts.dir;
+%     wm_logs=dir([lopts.wm.dir,lopts.wm.wm_log_name,'*.txt']);
+%     lopts.wm.names={wm_logs.name};
+%     
+    
 end
 
 

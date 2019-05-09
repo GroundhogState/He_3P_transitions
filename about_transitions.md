@@ -56,7 +56,7 @@ Todo
 * Fix set point DONE
 	* Switched PID and RF Attenuator to new PSU. Tried running separately but PID appears bunk on exiting PSU (now on test bench). Should test later; leftmost unit was failing to produce voltage when in run mode, even when all other devices disconnected. Currently running below PID spec voltage to stay within spec of the RF attenuator, but loop appears to be working ok. Outstanding issue: Terrible coupling efficiency
 * coupling efficiency FIXED
-	* Performed some open-heart surgery on the cavity while measuring power at fibre input. Looks like beam was clipping on the case lid on the way out! Shuffling it a couple mm provided a beautiful beam spot and a nice high power throughput. Some alignment later and we have fibre coupling of 7.5/18 = 42% at low power, up to 80/220 (36%) at high power
+	* Performed some open-heart surgery on the cavity while measuring power at fibre input. Looks like beam was clipping on the case lid on the way out! Shuffling it a couple mm provided a beautiful beam spot and a nice high power throughput. Some alignment later and we have fibre coupling of 7.5/18 = 42# at low power, up to 80/220 (36#) at high power
 
 Setting up for overnight scan:
 * Adjusted power monitor HWP to give steady voltage reading 750-800mW
@@ -301,8 +301,8 @@ c:\remote\settings201925Mar151532.xml
 
 New Settings for transition:
 calibration_file = 'c:\remote\settings201925Mar141613.xml';
-interrogation_file = 'c:\remote\settings201925Mar151532.xml'; %1.4 V
-interrogation_file = 'c:\remote\settings201925Mar155504.xml'; %0.7 V
+interrogation_file = 'c:\remote\settings201925Mar151532.xml'; #1.4 V
+interrogation_file = 'c:\remote\settings201925Mar155504.xml'; #0.7 V
 
 ## 2019-03-26
 
@@ -720,7 +720,7 @@ Double trouble overnight: Seed laser offset drifted and killed BEC. Also, double
  			* Analog USB capture time 200ms longer than exposure time
 		* Hardware setup
 			* Probe output & lock signals optimized at centre of scan range
-			* Probe aligned to reach at least 20% above desired setpoint
+			* Probe aligned to reach at least 20# above desired setpoint
 			* Measure probe power before second post-fibre beamcube 
  	* Calibrate wavemeter & measure nearby transitions
  	* Restart DLD acquistion & clear DLD output director
@@ -892,10 +892,12 @@ Large beam
 Testing linearity/probe stark
 250ms exposure time, 4cm beam waist
 set point 	Post-PD power 	peak centre 			peak height 	peak ratio 		Peak width (MHz)
-0.10V 		3.31mW			744396451.59(0.33) MHz  12508 			0.36			1.67(0.48)
-0.15V 		5.14mW 			744396452.43(0.25) MHz 	19248			0.62			2.20(0.41)
-0.20v 		6.5mW  			744396452.56(0.13) MHz	18604 			0.74			2.28(0.16)
-0.25V 		8.9mW  			744396451.18(0.18)		23202			0.84			2.37(0.35)
+0.10V 		3.31mW			744396515.790(0.264) MHz  12508 			0.36			1.67(0.48)
+0.15V 		5.14mW 			744396516.282(0.180) MHz 	19248			0.62			2.20(0.41)
+0.20v 		6.5mW  			744396516.508(0.128) MHz	18604 			0.74			2.28(0.16)
+0.25V 		8.9mW  			744396515.106(0.157) MHz	23202			0.84			2.37(0.35)
+Recorded PD ranges: [0.0475,0.06450.0817,0.099] resp, with '0' reading 0.011
+
 All peaks heights are differences in atom number
 Peak ratios are normalized: 1-(calibration-N_atom_probe_on)/calibration
 All within wavemeter accuracy, and I've seen bigger centre variations between successive Cs measurements. 
@@ -971,4 +973,77 @@ Some things to do;
 
 	Plus have a lot of prelim stuff (without full logging) to bolster stat precision, but there's not much to win there
 	Tune laser back to 824nm, obtain 14.3mW power post-PD at 680mV (20dB gain, has been for ages)
+
+
+
+## 2019-05-09
+
+### Stat errors   
+Level				mean MHz 					theory diff MHz 	Past value (them-us)
+5^1D2 	 			744430345.471(0.047)		2.121				N/A
+5^3S1 				727303247.812(0.143)		3.212				727316960(13713)
+5^3D1  				744396515.588(0.224)    	4.448				744410090(13575)
+5^3D3 	            744396204.115(0.341)       -4.245               744410090(13886)
+5^3D2 				???!?
+
+Note that past expt could not distinguish between the lines between P2,1 and D1,2,3!
+Nor the P2,1 andand 3S1 lines
+
+Error includes fit error and Zeeman error
+Does not include setpt err (laser noise)
+
+### Sys error budget
+
+Probe power 	2MHz ultra conservative
+WM drift 		
+WM accuracy 	20MHz :(
+
+
+
+Uncertainty in freq set point?
+Quick notes on final measurements
+name 	 power 	 		last WM cal offset (F3, F4) 			 theory difference		
+5^1D2 	 				1.529590±0.007065,2.834866±0.000963      
+											300kHz next day
+5^3S1 	 7.2mW?			-1.342083±0.000165,0.062275±0.002331
+5^3D1 	                -0.030973±0.005948, 1.519872±0.007246
+5^3D2,3	 8.45mW			-1.342083±0.000165,0.062275±0.002331
+
+Powers for first two: Reload LV settings and check set points, then use power measurements to ballpark
+Beam radius for 5^1D is small
+
+#### Probe power dep
+From analysis (see power_dependence.m), dependence apparently swamped by drift
+WORST CASE analysis: assume WM steady and fit trend to lower points => 0.225MHz/mW
+.225MHz/mW, or 852 Hz/(mW/cm^2). 
+Should remake plot with new ZS analysis
+Calculate in terms of intensity and estimate worst case for 5^1D
+#### Zeeman error
+Can go back and find splittings more accurately
+In the meantime, error in freq(1MHz) => fractional error in B => fractional error in calculated Z shift 
+
+
+Systematics:
+	Pump effects => Too delicate to measure, disadvantage of technique
+	WM error 	 => last calibration + drift analysis
+			 	 => Ultimately, manufacturer spec... **20MHz** in blue!
+
+
+How to interpred the D2,3 data?
+
+Peaks stage 1:
+[744396159.014 744396190.235 744396221.123]
+stage 2:
+[744396180.504 744396204.973 744396222.922]
+
+Hm, puzzling when compared to theory. Looks like two sigma- transitions. But the other; pi or sigma+?
+
+The WP was actually set to 142 degrees, but that's still not much sigma+. 
+Ok, well, if the transitions are strong enough, we can't have seen sigma+ anywhere else
+And there's no trace of pi in the other observation (though it was weak af); did we scan far enough?
+At least in some, yeah... Soo what if we leave that peak alone and just treat the ones we understand?
+Target states in ascending freq order:
+5^3D_3_2, 5^3D_2_1, 5^3D_3_3?!
+
+Welp. Maybe even the middle peak is hokum, but we can get something for the 3D_3. The others, well, we can use the 3D_2 to fix the expected 
 

@@ -1,6 +1,6 @@
 function wm=wm_log_import(opts)
 
-header({0,'Importing WM data'})
+cli_header({0,'Importing WM data'})
 
 cache_opts = opts.wm.cache_import;
 cache_opts.verbose = 1;
@@ -39,7 +39,7 @@ if opts.wm.plots
     saveas(f,[filename,'.png']);
 end
 
-header({1,'Done'})
+cli_header({1,'Done'})
 
 end
 
@@ -58,12 +58,21 @@ wm_log=struct();
 add_to_struct=true;
 fprintf('Importing %u wavemeter-laser feedback log files',size(opts.wm.names,2))
 iimax=size(opts.wm.names,2);
+ndigits = floor(log10(iimax));
+% zero_string = '';
+% for p=1:ndigits
+%     zero_string = [zero_string,'0']
+% end
+% fprintf(['Importing file ',zero_string,'/',iimax,'\n'])
 for ii=1:iimax
     path=strcat(opts.wm.dir,opts.wm.names{ii});
     fid = fopen(path,'r');
     wm_log_file_cells=textscan(fid,'%s','Delimiter','\n');
     fclose(fid);
-
+%     for p=1:ndigits+1
+%         fprintf('\b\b')
+%     end
+    fprintf(['%u/%u\n',ii,iimax])
     fprintf('\nFile %03u/%03u importing %03uk lines:%03uk',ii,iimax,round(size(wm_log_file_cells{1},1)*1e-3),0)
     %now process these lines and place the entries into a feild of the wm_log struct depending on the operation performed
     jjmax=size(wm_log_file_cells{1},1);
@@ -71,7 +80,7 @@ for ii=1:iimax
         jjmax = min(jjmax, opts.wm.num_logs);
     end
     for jj=1:jjmax
-        if mod(jj,1e4)==0,fprintf('\b\b\b\b%03uk',round(jj*1e-3)),end  %fprintf('\b\b\b\b%04u',jj)
+%         if mod(jj,1e4)==0,fprintf('\b\b\b\b%03uk',round(jj*1e-3)),end  %fprintf('\b\b\b\b%04u',jj)
         if ~isempty(wm_log_file_cells{1}{jj})
             try
                 line_tmp=wm_log_file_cells{1}{jj};

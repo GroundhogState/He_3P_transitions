@@ -21,7 +21,7 @@ function post_ai = transition_post_ai(opts_ai,data_ai)
     post_ai.pd_range = range(pd_smooth);
     iso_to_posix = @(x) posixtime(datetime(x,'InputFormat','yyyyMMdd''T''HHmmss'));
     post_ai.timestamp = cell2mat(nucellf(@(x) iso_to_posix(x.ISO_time_start_aq),data_ai.data));
-    post_ai.t0 = min(post_ai.timestamp);
+%     post_ai.t0 = min(post_ai.timestamp);
 
     up_idx = zeros(size(high_mask,2),2);
     for shot = 1:length(up_idx)

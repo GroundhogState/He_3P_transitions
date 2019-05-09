@@ -1,6 +1,0 @@
-[submodule "Core_BEC_Analysis"]
-	path = Core_BEC_Analysis
-	url = https://github.com/brycehenson/Core_BEC_Analysis
-[submodule "Core_BEC_analysis"]
-	path = Core_BEC_analysis
-	url = https://github.com/brycehenson/Core_BEC_analysis
