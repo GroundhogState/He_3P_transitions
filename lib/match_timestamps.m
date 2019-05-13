@@ -64,7 +64,7 @@ function sync_data = match_timestamps(data,opts)
                 this_ai_idx = idx;
             end
             if abs(this_ai_time - (this_time-21)) > 10 % files too far apart
-                disp('Analog input too far from nearest shot')
+                fprintf('Analog input %u too far from nearest shot\n',this_ai_idx)
                 continue
             else
 

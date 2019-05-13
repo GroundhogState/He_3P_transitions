@@ -11,8 +11,8 @@ if (exist(fullfile(opts.dir,'out'), 'dir') == 0), mkdir(fullfile(opts.dir,'out')
 %make a subfolder with the ISO timestamp for that date
 opts.out_dir=sprintf('%sout\\%s\\', opts.dir,datestr(datetime('now'),'yyyymmddTHHMMSS'));
 if (exist(opts.out_dir, 'dir') == 0), mkdir(opts.out_dir); end
-opts.cache_dir=fullfile(opts.dir,'cache');
-if (exist(opts.cache_dir, 'dir') == 0), mkdir(opts.cache_dir); end
+opts.cache_dir=sprintf('%sout\\%s\\', opts.dir,datestr(datetime('now'),'yyyymmddTHHMMSS'));
+if (exist(opts.out_dir, 'dir') == 0), mkdir(opts.out_dir); end
 %% Frequently adjusted quantities
 
 % These variables are set here for quick access to quantities passed to
@@ -56,7 +56,7 @@ opts.ai.post_fun = @transition_post_ai;
 opts.ai.cache_import.verbose=0;
 opts.ai.cache_import.force_cache_load=false;
 opts.ai.cache_import.force_recalc=false;
-opts.ai.cache_import.dir = opts.cache_dir;
+opts.ai.cache_import.dir = data_dir;
 % Options for single imports (unnecessary unless they're cached, ill-advised usually)
 opts.ai.cache_single_import = false;
 opts.ai.cache_single.verbose=0;
@@ -81,7 +81,7 @@ opts.wm.wm_log_name='log_wm_';
 
 opts.wm.cache_import.verbose=0;
 opts.wm.cache_import.force_recalc=0;
-opts.wm.cache_import.dir = opts.cache_dir;
+opts.wm.cache_import.dir = data_dir;
 opts.wm.cache_import.save_compressed=true;%needed otherwise save takes a very long time
 opts.wm.cache_import.path_directions={1,'dir'};
 
@@ -90,11 +90,9 @@ opts.wm.plot_failed=false;
 opts.wm.force_reimport=false;
 
 
-
-
-opts.wm.dir=opts.dir;
 wm_logs=dir([opts.wm.dir,opts.wm.wm_log_name,'*.txt']);
 opts.wm.names={wm_logs.name};
+opts.wm.dir=opts.dir;
 opts.wm.out_dir = opts.out_dir;
 %% TDC import
 
@@ -105,10 +103,9 @@ opts.tdc.force_load_save=false;   %takes precidence over force_reimport
 opts.tdc.force_reimport=false;
 opts.tdc.force_forc=false;
 opts.tdc.dld_xy_rot=0.61;
+opts.tdc.cache_import.dir = data_dir;
 opts.tdc.dir = opts.dir;
 opts.tdc.out_dir = opts.out_dir;
-
-opts.tdc.cache_opts.dir = opts.cache_dir;
 
 %Should probably try optimizing these
 tmp_xlim=[-30e-3, 30e-3];     %tight XY lims to eliminate hot spot from destroying pulse widths
@@ -147,7 +144,6 @@ const.hbar = const.h/(2*pi);
 const.f_mu = const.mu/const.h;
 const.w_mu = const.mu/const.hbar;
 const.c = 299792458;
-const.q = 1.602e-19;
 % Notation & lookup
 const.terms = {'S','P','D','F','G'};
 %% Reference values

@@ -2,6 +2,9 @@ f_exp = [744396159.014 744396190.235 744396221.123 % stage 1
     744396180.504 744396204.973 744396222.922]; % stage 2
 f_add = [744396159.014 744396179 744396190.235 744396221.123 % stage 1
     744396180.504 744396190 744396204.973 744396222.922]; % stage 2
+f_single = [744396190,;744396204];
+w_single = [4.90,4.83];
+
 f_err = [0.21,0.16,0.16;0.14,0.13,0.16];
 w_exp = [3.44,8.56,3.67;4.34,7.33,4.75];
 B_exp = [18.25,11.43]; %Gauss;
@@ -40,7 +43,8 @@ sfigure(123);
 clf;
 plot_level2term(lines,g_level,e_term,const,opt)
 hold on
-errorbar(B_exp'.*ones(size(f_exp)),1e6*f_exp,1e6*(w_exp+f_err),'kx')
+% errorbar(B_exp'.*ones(size(f_exp)),1e6*f_exp,1e6*(w_exp+f_err),'kx')
+errorbar(B_exp'.*ones(size(f_single)),1e6*f_single,1e6*(w_single),'kx')
 % plot(B_exp,1e6*f_add,'kx')
 
 xlabel('Magnetic field strength (G)')

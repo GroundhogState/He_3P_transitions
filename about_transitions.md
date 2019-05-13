@@ -979,15 +979,16 @@ Some things to do;
 ## 2019-05-09
 
 ### Stat errors   
-Level				mean MHz 					theory diff MHz 	Past value (them-us)
+Level				mean MHz 					theory diff MHz 	Past value (them-us) THz
 5^1D2 	 			744430345.471(0.047)		2.121				N/A
-5^3S1 				727303247.812(0.143)		3.212				727316960(13713)
-5^3D1  				744396515.588(0.224)    	4.448				744410090(13575)
-5^3D3 	            744396204.115(0.341)       -4.245               744410090(13886)
-5^3D2 				???!?
+5^3S1 				727303247.812(0.143)		3.212				727.31696(.013713)
+5^3D1  				744396515.588(0.224)    	4.448				744.41009(.013575)
+5^3D3 	            744396204.115(0.341)       -4.245               744.41009(.013886)
+					744396202.6225(0.6) 	   -5.737				Including all 4 peaks
+5^3D2 				744396235.844(0.282) 		8.264 				744.41009(.013855)
 
 Note that past expt could not distinguish between the lines between P2,1 and D1,2,3!
-Nor the P2,1 andand 3S1 lines
+Nor the P2,1 and 3S1 lines
 
 Error includes fit error and Zeeman error
 Does not include setpt err (laser noise)
@@ -1047,3 +1048,19 @@ Target states in ascending freq order:
 
 Welp. Maybe even the middle peak is hokum, but we can get something for the 3D_3. The others, well, we can use the 3D_2 to fix the expected 
 
+Pump beam detunings:
+g_g = 2
+g_e = 1.5
+d_mg = 1
+mu = 1.4MHz/G
+
+So in stage 1, cooling transition is split 25.55 MHz, and 16.002 in stage 2
+Therefore the beams are (ish) detuned 0.5 and 2MHz respectively
+
+Ok. So peak figures are pretty well at acceptable draft level, but need to be combined into one for display, probably. 
+Next thing to do is write a post-process function that imports results and fig data, then combines them nicely.
+
+Other figure to-do:
+	* Level diagram
+	* Expt setup
+	
