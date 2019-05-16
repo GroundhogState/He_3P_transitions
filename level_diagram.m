@@ -47,7 +47,7 @@ Lmax = max(lvls.Ls);
 
 nstates = numel(lvls.states);
 
-sfigure(29746);
+figure(29746);
 clf;
 set(gcf,'color','w');
 sector_split = ((Lmax+0.5)*l_spacing);
@@ -98,7 +98,7 @@ text(1*l_spacing+sector_split+1,18.5,'Parahelium \uparrow\uparrow','FontSize',se
 annotation('textarrow',[0.2,0.2],[0.3,0.15],'String','Ground state 20eV that way!','FontSize',12)
 text([4,4],[20,20],'Cooling transition 1083.331nm')
 xlim([-1,7])
-ylim([18,26])
+ylim([-1,26])
 suptitle('Helium level diagram')
 
 
