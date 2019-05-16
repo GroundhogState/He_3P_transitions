@@ -1,8 +1,14 @@
 %% Making a level diagram
 % Set up
-clear all
-this_folder = fileparts(which(mfilename));
-addpath(genpath(this_folder));
+% clear all
+profile on
+% this_folder = fileparts(which(mfilename));
+% addpath(genpath(this_folder));
+% core_folder = fullfile(fileparts(this_folder),'Core_BEC_Analysis\');
+% addpath(genpath(core_folder));
+% zeeman_folder = fullfile(fileparts(this_folder),'Zeeman_splitting\');
+% addpath(genpath(zeeman_folder));
+
 opts = master_transition_config('null');
 const = opts.const;
 % Define starting information
@@ -11,8 +17,10 @@ cool_gap = const.c/cooling_wl; %Hz
 metastable_gap = 19.8*const.q/const.h; %Hz
 
 e_states = {'5^3S_1','5^3D_1','5^3D_2','5^3D_3','5^1D_2'};
-lvls.labels = {'1^1S_0','2^3S_1','2^3P_2',e_states{:}};
-lvls.states = cellfun(@(x) strrep(x,'^','_'),lvls.labels,'uni',0);
+% e_states = {'5^3S_1','5^3D_1','5^1D_2'};
+labels = {'1^1S_0','2^3S_1','2^3P_2',e_states{:}};
+lvls.labels = cellfun(@(x) x(1:4), labels,'uni',0);
+lvls.states = cellfun(@(x) strrep(x,'^','_'),labels,'uni',0);
 
 transitions.ends{1} = {'2_3S_1','2_3P_2'};
 transitions.ends{2} = {'2_3P_2','5_3S_1'};
@@ -66,43 +74,48 @@ for n = 1:nstates
 end
 
 % Plot the transition lines
-for m=1:ntrans
-   s_low = find(strcmp(transitions.ends{m}{1},lvls.states));
-   L_low = lvls.Ls(s_low);
-   spin_shift_low = lvls.S(s_low)*(1+Lmax)*l_spacing;
-   x0 = L_low*l_spacing+spin_shift_low;
-   
-   s_hi = find(strcmp(transitions.ends{m}{2},lvls.states));
-   L_hi = lvls.Ls(s_hi);
-   spin_shift_hi= lvls.S(s_hi)*(1+Lmax)*l_spacing;
-   x1 = L_hi*l_spacing+spin_shift_hi;
-   
-   if x0>x1 % moving left
-       x0 = x0 - 0.5*l_jitter*l_width;
-       x1 = x1 + 0.5*l_jitter*l_width;
-   else
-       x0 = x0 + 0.5*l_jitter*l_width;
-       x1 = x1 - 0.5*l_jitter*l_width;
-   end
-   
-   y0 = lvls.levels(s_low);
-   y1 = lvls.levels(s_hi);
-   
-   plot([x0,x1],[y0,y1],'k')
-    
-end
-
-text(1*l_spacing,18.5,'Orthohelium \uparrow\downarrow','FontSize',sector_labelsize)
+% for m=1:ntrans
+%    s_low = find(strcmp(transitions.ends{m}{1},lvls.states));
+%    L_low = lvls.Ls(s_low);
+%    spin_shift_low = lvls.S(s_low)*(1+Lmax)*l_spacing;
+%    x0 = L_low*l_spacing+spin_shift_low;
+%    
+%    s_hi = find(strcmp(transitions.ends{m}{2},lvls.states));
+%    L_hi = lvls.Ls(s_hi);
+%    spin_shift_hi= lvls.S(s_hi)*(1+Lmax)*l_spacing;
+%    x1 = L_hi*l_spacing+spin_shift_hi;
+%    
+%    if x0>x1 % moving left
+%        x0 = x0 - 0.5*l_jitter*l_width;
+%        x1 = x1 + 0.5*l_jitter*l_width;
+%    else
+%        x0 = x0 + 0.5*l_jitter*l_width;
+%        x1 = x1 - 0.5*l_jitter*l_width;
+%    end
+%    
+%    y0 = lvls.levels(s_low);
+%    y1 = lvls.levels(s_hi);
+%    
+%    plot([x0,x1],[y0,y1],'k')
+%     
+% end
+%%
+text(0.3*l_spacing,18.5,'Orthohelium \uparrow\downarrow','FontSize',sector_labelsize)
 text(1*l_spacing+sector_split+1,18.5,'Parahelium \uparrow\uparrow','FontSize',sector_labelsize)
 
-annotation('textarrow',[0.2,0.2],[0.3,0.15],'String','Ground state 20eV that way!','FontSize',12)
-text([4,4],[20,20],'Cooling transition 1083.331nm')
-xlim([-1,7])
-ylim([18,26])
-suptitle('Helium level diagram')
+% annotation('textarrow',[0.25,0.25],[0.3,0.15],'String','Ground state 20eV that way!','FontSize',12)
+text([3.5,3.5],[20.2,20.2],'Cooling transition 1083.331nm')
+xlim([4.5,5.5])
+ylim([24.0260175,24.02602])
+xticks([])
+% yyaxis right
+% ylabel('Test')
+% yticks([18:2:26])
+% suptitle('Helium level diagram')
 
-
-
+box off
+profile off
+% profile viewer
 
 
 

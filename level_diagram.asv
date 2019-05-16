@@ -1,8 +1,14 @@
 %% Making a level diagram
 % Set up
-clear all
-this_folder = fileparts(which(mfilename));
-addpath(genpath(this_folder));
+% clear all
+profile on
+% this_folder = fileparts(which(mfilename));
+% addpath(genpath(this_folder));
+% core_folder = fullfile(fileparts(this_folder),'Core_BEC_Analysis\');
+% addpath(genpath(core_folder));
+% zeeman_folder = fullfile(fileparts(this_folder),'Zeeman_splitting\');
+% addpath(genpath(zeeman_folder));
+
 opts = master_transition_config('null');
 const = opts.const;
 % Define starting information
@@ -10,8 +16,10 @@ cooling_wl = 1083.331e-9; %nm
 cool_gap = const.c/cooling_wl; %Hz
 metastable_gap = 19.8*const.q/const.h; %Hz
 
-e_states = {'5^3S_1','5^3D_1','5^3D_2','5^3D_3','5^1D_2'};
-lvls.labels = {'1^1S_0','2^3S_1','2^3P_2',e_states{:}};
+% e_states = {'5^3S_1','5^3D_1','5^3D_2','5^3D_3','5^1D_2'};
+e_states = {'5^3S_1','5^3D_1','5^1D_2'};
+labels = {'1^1S_0','2^3S_1','2^3P_2',e_states{:}};
+lvls.labels = cellfun(@(x) x(1:4)
 lvls.states = cellfun(@(x) strrep(x,'^','_'),lvls.labels,'uni',0);
 
 transitions.ends{1} = {'2_3S_1','2_3P_2'};
@@ -27,7 +35,7 @@ l_width = 0.8;
 l_jitter = 0.75;
 lbl_offset = 0.3;
 lv_labelsize = 12;
-sector_labelsize = 15;
+sector_labelsize = 18;
 
 
 %% MAKE FIGURE
@@ -49,6 +57,7 @@ nstates = numel(lvls.states);
 
 sfigure(29746);
 clf;
+set(gcf,'color','w');
 sector_split = ((Lmax+0.5)*l_spacing);
 plot(sector_split*[1,1],[0,25],'k:') % divide the spin sectors
 hold on
@@ -90,15 +99,19 @@ for m=1:ntrans
    plot([x0,x1],[y0,y1],'k')
     
 end
-
+%%
 text(1*l_spacing,18.5,'Orthohelium \uparrow\downarrow','FontSize',sector_labelsize)
 text(1*l_spacing+sector_split+1,18.5,'Parahelium \uparrow\uparrow','FontSize',sector_labelsize)
-xlim([-1,6])
+
+annotation('textarrow',[0.25,0.25],[0.3,0.15],'String','Ground state 20eV that way!','FontSize',12)
+text([3.5,3.5],[20.2,20.2],'Cooling transition 1083.331nm')
+xlim([-1,7])
 ylim([18,26])
+% suptitle('Helium level diagram')
 
-
-
-
+box off
+profile off
+% profile viewer
 
 
 
