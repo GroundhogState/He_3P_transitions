@@ -103,14 +103,12 @@ end
 text(0.3*l_spacing,18.5,'Orthohelium \uparrow\downarrow','FontSize',sector_labelsize)
 text(1*l_spacing+sector_split+1,18.5,'Parahelium \uparrow\uparrow','FontSize',sector_labelsize)
 
-% annotation('textarrow',[0.25,0.25],[0.3,0.15],'String','Ground state 20eV that way!','FontSize',12)
-text([3.5,3.5],[20.2,20.2],'Cooling transition 1083.331nm')
-xlim([4.5,5.5])
-% ylim([24.0260175,24.02602])
-% xticks([])
-% yyaxis right
-% ylabel('Test')
-yticks([18:2:26])
+
+annotation('textarrow',[0.2,0.2],[0.3,0.15],'String','Ground state 20eV that way!','FontSize',12)
+text([4,4],[20,20],'Cooling transition 1083.331nm')
+xlim([-1,7])
+ylim([-1,26])
+
 suptitle('Helium level diagram')
 
 box off
