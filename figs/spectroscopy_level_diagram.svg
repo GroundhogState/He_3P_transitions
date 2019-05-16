@@ -12,7 +12,7 @@
    height="532"
    version="1.1"
    id="svg406"
-   sodipodi:docname="level_diagram.svg"
+   sodipodi:docname="spectroscopy_level_diagram.svg"
    inkscape:version="0.92.3 (2405546, 2018-03-11)">
   <metadata
      id="metadata410">
@@ -22,6 +22,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -38,9 +39,9 @@
      inkscape:window-height="1017"
      id="namedview408"
      showgrid="false"
-     inkscape:zoom="2"
-     inkscape:cx="447.56821"
-     inkscape:cy="281.89022"
+     inkscape:zoom="1.4142136"
+     inkscape:cx="509.9356"
+     inkscape:cy="274.80311"
      inkscape:window-x="-8"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
