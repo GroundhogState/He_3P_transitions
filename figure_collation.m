@@ -21,12 +21,13 @@ data_dirs = {"20190417_5^1D2_mj_1_itc_both_qwp_146_overnight"
 data_paths =  cellfun(@(x) fullfile(root_dir,x),data_dirs);
 out_file = "output_and_options.mat";
 n_dirs = numel(data_dirs);
-for p=1:1
+for p=2:5
     dpath = data_paths{p};
     opts = master_transition_config(dpath);
+    opts.fidx = p;
+    opts.font = 'Times';
     if exist(lopt_file,'file')==2
         addpath(dpath)
-        fprintf('Applying local overrides...\n')
         opts = local_opts(opts,dpath);
         rmpath(dpath)
     end
@@ -34,7 +35,7 @@ for p=1:1
     lopt_file = fullfile(dpath,'local_opts.m');
     data.cat = old_data.out_data.data;
     opts.out_dir = "C:\Users\jacob\Documents\Projects\He_3P_transitions\figs\";
-    combo_plots(data,opts)
+    combo_plots(data,opts);
 end
 
 
@@ -63,7 +64,6 @@ function loaded_data=get_last_output(varargin)
             fprintf('Data loaded from %s\n',this_dir)
             break
         else
-            fprintf('File not found in %s\n',this_dir)
         end 
     end
 end

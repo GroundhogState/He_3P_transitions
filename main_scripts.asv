@@ -1,6 +1,9 @@
 %% Data analysis for Helium spectroscopy
 
+% clear all;
+% Remove old data dirs from path
 
+data = [];
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%% GETTING STARTED
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
