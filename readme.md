@@ -6,7 +6,7 @@ This is a MATLAB suite for analysis of metrological data from the ANU He* lab, b
 ### Prerequisites
 
 This code is written for MATLAB >= R2018a.
-You'll need the Core BEC analysis library and my Zeeman library. These should be cloned into the same directory for ease of use.
+You'll need the [Core BEC analysis](https://github.com/brycehenson/Core_BEC_Analysis) library, which should be cloned into the same directory for ease of use.
 
 ### Installing
 
