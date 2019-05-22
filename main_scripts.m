@@ -17,8 +17,6 @@ this_folder = fileparts(which(mfilename));
 addpath(genpath(this_folder));
 core_folder = fullfile(fileparts(this_folder),'Core_BEC_Analysis\');
 addpath(genpath(core_folder));
-zeeman_folder = fullfile(fileparts(this_folder),'Zeeman_splitting\');
-addpath(genpath(zeeman_folder));
 
 addpath(data_dir)
 fwtext('')
