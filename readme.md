@@ -12,7 +12,9 @@ You'll need the [Core BEC analysis](https://github.com/brycehenson/Core_BEC_Anal
 
 Clone into the directory of your choice, along with the required libraries.
 
+### Getting started
 
+The core program is main_scripts, which calls a series of functions to import, condition, and process data stored in our archive as comma-delimited .txt files. One day, this may become publically available.
 
 ## Contributing
 
