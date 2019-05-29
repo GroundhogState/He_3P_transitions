@@ -892,7 +892,7 @@ Large beam
 Testing linearity/probe stark
 250ms exposure time, 4cm beam waist
 set point 	Post-PD power 	peak centre 			peak height 	peak ratio 		Peak width (MHz)
-0.10V 		3.31mW			744396515.790(0.264) MHz  12508 			0.36			1.67(0.48)
+0.10V 		3.31mW			744396515.790(0.264) MHz    12508 			0.36			1.67(0.48)
 0.15V 		5.14mW 			744396516.282(0.180) MHz 	19248			0.62			2.20(0.41)
 0.20v 		6.5mW  			744396516.508(0.128) MHz	18604 			0.74			2.28(0.16)
 0.25V 		8.9mW  			744396515.106(0.157) MHz	23202			0.84			2.37(0.35)
@@ -1063,4 +1063,3 @@ Next thing to do is write a post-process function that imports results and fig d
 Other figure to-do:
 	* Level diagram
 	* Expt setup
-	

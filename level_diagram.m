@@ -48,7 +48,8 @@ for nstate = 1:numel(e_states)
     Ss(nstate) = 0.5*(str2num(s_upper(3))-1);
 end
 
-lvls.levels = [0,metastable_gap,cool_gap+metastable_gap,gaps]*const.h/const.q; %eV
+% lvls.levels = [0,metastable_gap,cool_gap+metastable_gap,gaps]*const.h/const.q; %eV
+lvls.levels = [0,metastable_gap,cool_gap+metastable_gap,gaps]/1e12; %THz
 lvls.Ls = [0,0,1,Ls];
 lvls.S = [0,1,1,Ss];
 Lmax = max(lvls.Ls);
@@ -107,7 +108,7 @@ text(1*l_spacing+sector_split+1,18.5,'Parahelium \uparrow\uparrow','FontSize',se
 annotation('textarrow',[0.2,0.2],[0.3,0.15],'String','Ground state 20eV that way!','FontSize',12)
 text([4,4],[20,20],'Cooling transition 1083.331nm')
 xlim([-1,7])
-ylim([-1,26])
+% ylim([-1,26])
 
 suptitle('Helium level diagram')
 
@@ -140,7 +141,7 @@ xticks([])
 
 %%
 P_wnum = 100*[169087.8309,169086.8430,169086.7666]; %m^-1
-P_lvl = const.hbar*const.c*P_wnum/const.q;
+P_lvl = const.c*P_wnum/1e12;
 figure(246)
 clf
 set(gcf,'color','w');
