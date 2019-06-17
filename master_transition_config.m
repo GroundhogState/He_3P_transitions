@@ -33,8 +33,8 @@ opts.aom_freq=189;%190*1e6;%Hz %set to zero for comparison with previous data ru
 %% LabView import
 
 opts.lv.plots = true;
-    opts.lv.dir = opts.dir;
-    opts.lv.out_dir = opts.out_dir;
+opts.lv.dir = opts.dir;
+opts.lv.out_dir = opts.out_dir;
 %% Analog import
 opts.ai.num_files = nan;
 
@@ -132,7 +132,6 @@ opts.peak.saturation_threshold = 0.975;
 opts.peak.fitwidth = 15;
 
 %% Plotting
-
 opts.num_freq_bins = 30;
 
 %% Physical constants
