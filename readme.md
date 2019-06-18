@@ -31,7 +31,7 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 ## Acknowledgments
 
 * A substantial amount of prior work was done by [**Bryce Henson**](https://github.com/brycehenson).
-* Thanks to [**Kieran Thomas**](https:/github.com/KFThomas) for assistance during data collection.
+* Thanks to [**Kieran Thomas**](https:/github.com/KF-Thomas) for assistance during data collection.
 
 ### Built With
 * PurpleBooth's [readme template](https://gist.github.com/PurpleBooth/109311bb0361f32d87a2)
