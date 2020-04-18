@@ -1,0 +1,391 @@
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 2.9.7300 64-bit) (preloaded format=pdflatex 2020.3.1)  5 MAR 2020 18:26
+entering extended mode
+**./splitting_writeup.tex
+(splitting_writeup.tex
+LaTeX2e <2020-02-02> patch level 5
+L3 programming layer <2020-02-25>
+("C:\Users\jaker\AppData\Local\Programs\MiKTeX 2.9\tex/latex/base\article.cls"
+Document Class: article 2019/12/20 v1.4l Standard LaTeX document class
+("C:\Users\jaker\AppData\Local\Programs\MiKTeX 2.9\tex/latex/base\size10.clo"
+File: size10.clo 2019/12/20 v1.4l Standard LaTeX file (size option)
+)
+\c@part=\count167
+\c@section=\count168
+\c@subsection=\count169
+\c@subsubsection=\count170
+\c@paragraph=\count171
+\c@subparagraph=\count172
+\c@figure=\count173
+\c@table=\count174
+\abovecaptionskip=\skip47
+\belowcaptionskip=\skip48
+\bibindent=\dimen134
+)
+("C:\Users\jaker\AppData\Local\Programs\MiKTeX 2.9\tex/latex/amsmath\amsmath.st
+y"
+Package: amsmath 2020/01/20 v2.17e AMS math features
+\@mathmargin=\skip49
+
+For additional information on amsmath, use the `?' option.
+
+("C:\Users\jaker\AppData\Local\Programs\MiKTeX 2.9\tex/latex/amsmath\amstext.st
+y"
+Package: amstext 2000/06/29 v2.01 AMS text
+
+("C:\Users\jaker\AppData\Local\Programs\MiKTeX 2.9\tex/latex/amsmath\amsgen.sty
+"
+File: amsgen.sty 1999/11/30 v2.0 generic functions
+\@emptytoks=\toks15
+\ex@=\dimen135
+))
+("C:\Users\jaker\AppData\Local\Programs\MiKTeX 2.9\tex/latex/amsmath\amsbsy.sty
+"
+Package: amsbsy 1999/11/29 v1.2d Bold Symbols
+\pmbraise@=\dimen136
+)
+("C:\Users\jaker\AppData\Local\Programs\MiKTeX 2.9\tex/latex/amsmath\amsopn.sty
+"
+Package: amsopn 2016/03/08 v2.02 operator names
+)
+\inf@bad=\count175
+LaTeX Info: Redefining \frac on input line 227.
+\uproot@=\count176
+\leftroot@=\count177
+LaTeX Info: Redefining \overline on input line 389.
+\classnum@=\count178
+\DOTSCASE@=\count179
+LaTeX Info: Redefining \ldots on input line 486.
+LaTeX Info: Redefining \dots on input line 489.
+LaTeX Info: Redefining \cdots on input line 610.
+\Mathstrutbox@=\box45
+\strutbox@=\box46
+\big@size=\dimen137
+LaTeX Font Info:    Redeclaring font encoding OML on input line 733.
+LaTeX Font Info:    Redeclaring font encoding OMS on input line 734.
+\macc@depth=\count180
+\c@MaxMatrixCols=\count181
+\dotsspace@=\muskip16
+\c@parentequation=\count182
+\dspbrk@lvl=\count183
+\tag@help=\toks16
+\row@=\count184
+\column@=\count185
+\maxfields@=\count186
+\andhelp@=\toks17
+\eqnshift@=\dimen138
+\alignsep@=\dimen139
+\tagshift@=\dimen140
+\tagwidth@=\dimen141
+\totwidth@=\dimen142
+\lineht@=\dimen143
+\@envbody=\toks18
+\multlinegap=\skip50
+\multlinetaggap=\skip51
+\mathdisplay@stack=\toks19
+LaTeX Info: Redefining \[ on input line 2859.
+LaTeX Info: Redefining \] on input line 2860.
+)
+("C:\Users\jaker\AppData\Local\Programs\MiKTeX 2.9\tex/latex/graphics\graphicx.
+sty"
+Package: graphicx 2019/11/30 v1.2a Enhanced LaTeX Graphics (DPC,SPQR)
+
+("C:\Users\jaker\AppData\Local\Programs\MiKTeX 2.9\tex/latex/graphics\keyval.st
+y"
+Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
+\KV@toks@=\toks20
+)
+("C:\Users\jaker\AppData\Local\Programs\MiKTeX 2.9\tex/latex/graphics\graphics.
+sty"
+Package: graphics 2019/11/30 v1.4a Standard LaTeX Graphics (DPC,SPQR)
+
+("C:\Users\jaker\AppData\Local\Programs\MiKTeX 2.9\tex/latex/graphics\trig.sty"
+Package: trig 2016/01/03 v1.10 sin cos tan (DPC)
+)
+("C:\Users\jaker\AppData\Local\Programs\MiKTeX 2.9\tex/latex/graphics-cfg\graph
+ics.cfg"
+File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
+)
+Package graphics Info: Driver file: pdftex.def on input line 105.
+
+("C:\Users\jaker\AppData\Local\Programs\MiKTeX 2.9\tex/latex/graphics-def\pdfte
+x.def"
+File: pdftex.def 2018/01/08 v1.0l Graphics/color driver for pdftex
+))
+\Gin@req@height=\dimen144
+\Gin@req@width=\dimen145
+)
+("C:\Users\jaker\AppData\Local\Programs\MiKTeX 2.9\tex/latex/tools\bm.sty"
+Package: bm 2019/07/24 v1.2d Bold Symbol Support (DPC/FMi)
+\symboldoperators=\mathgroup4
+\symboldletters=\mathgroup5
+\symboldsymbols=\mathgroup6
+LaTeX Font Info:    Redeclaring math alphabet \mathbf on input line 141.
+LaTeX Info: Redefining \bm on input line 209.
+)
+("C:\Users\jaker\AppData\Local\Programs\MiKTeX 2.9\tex/latex/pdfpages\pdfpages.
+sty"
+Package: pdfpages 2020/01/28 v0.5q Insert pages of external PDF documents (AM)
+
+("C:\Users\jaker\AppData\Local\Programs\MiKTeX 2.9\tex/latex/base\ifthen.sty"
+Package: ifthen 2014/09/29 v1.1c Standard LaTeX ifthen package (DPC)
+)
+("C:\Users\jaker\AppData\Local\Programs\MiKTeX 2.9\tex/latex/tools\calc.sty"
+Package: calc 2017/05/25 v4.3 Infix arithmetic (KKT,FJ)
+\calc@Acount=\count187
+\calc@Bcount=\count188
+\calc@Adimen=\dimen146
+\calc@Bdimen=\dimen147
+\calc@Askip=\skip52
+\calc@Bskip=\skip53
+LaTeX Info: Redefining \setlength on input line 80.
+LaTeX Info: Redefining \addtolength on input line 81.
+\calc@Ccount=\count189
+\calc@Cskip=\skip54
+)
+("C:\Users\jaker\AppData\Local\Programs\MiKTeX 2.9\tex/latex/eso-pic\eso-pic.st
+y"
+Package: eso-pic 2018/04/12 v2.0h eso-pic (RN)
+
+("C:\Users\jaker\AppData\Local\Programs\MiKTeX 2.9\tex/generic/atbegshi\atbegsh
+i.sty"
+Package: atbegshi 2019/12/05 v1.19 At begin shipout hook (HO)
+
+("C:\Users\jaker\AppData\Local\Programs\MiKTeX 2.9\tex/generic/infwarerr\infwar
+err.sty"
+Package: infwarerr 2019/12/03 v1.5 Providing info/warning/error messages (HO)
+)
+("C:\Users\jaker\AppData\Local\Programs\MiKTeX 2.9\tex/generic/ltxcmds\ltxcmds.
+sty"
+Package: ltxcmds 2019/12/15 v1.24 LaTeX kernel commands for general use (HO)
+)
+("C:\Users\jaker\AppData\Local\Programs\MiKTeX 2.9\tex/generic/iftex\iftex.sty"
+Package: iftex 2019/11/07 v1.0c TeX engine tests
+))
+("C:\Users\jaker\AppData\Local\Programs\MiKTeX 2.9\tex/latex/xcolor\xcolor.sty"
+Package: xcolor 2016/05/11 v2.12 LaTeX color extensions (UK)
+
+("C:\Users\jaker\AppData\Local\Programs\MiKTeX 2.9\tex/latex/graphics-cfg\color
+.cfg"
+File: color.cfg 2016/01/02 v1.6 sample color configuration
+)
+Package xcolor Info: Driver file: pdftex.def on input line 225.
+Package xcolor Info: Model `cmy' substituted by `cmy0' on input line 1348.
+Package xcolor Info: Model `hsb' substituted by `rgb' on input line 1352.
+Package xcolor Info: Model `RGB' extended on input line 1364.
+Package xcolor Info: Model `HTML' substituted by `rgb' on input line 1366.
+Package xcolor Info: Model `Hsb' substituted by `hsb' on input line 1367.
+Package xcolor Info: Model `tHsb' substituted by `hsb' on input line 1368.
+Package xcolor Info: Model `HSB' substituted by `hsb' on input line 1369.
+Package xcolor Info: Model `Gray' substituted by `gray' on input line 1370.
+Package xcolor Info: Model `wave' substituted by `hsb' on input line 1371.
+))
+\AM@pagewidth=\dimen148
+\AM@pageheight=\dimen149
+
+("C:\Users\jaker\AppData\Local\Programs\MiKTeX 2.9\tex/latex/pdfpages\pppdftex.
+def"
+File: pppdftex.def 2020/01/28 v0.5q Pdfpages driver for pdfTeX (AM)
+)
+\AM@pagebox=\box47
+\AM@global@opts=\toks21
+\AM@pagecnt=\count190
+\AM@toc@title=\toks22
+\c@AM@survey=\count191
+\AM@templatesizebox=\box48
+)
+("C:\Users\jaker\AppData\Local\Programs\MiKTeX 2.9\tex/latex/l3backend\l3backen
+d-pdfmode.def"
+File: l3backend-pdfmode.def 2020-02-23 L3 backend support: PDF mode
+\l__kernel_color_stack_int=\count192
+\l__pdf_internal_box=\box49
+) (splitting_writeup.aux)
+\openout1 = `splitting_writeup.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 10.
+LaTeX Font Info:    ... okay on input line 10.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 10.
+LaTeX Font Info:    ... okay on input line 10.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 10.
+LaTeX Font Info:    ... okay on input line 10.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 10.
+LaTeX Font Info:    ... okay on input line 10.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 10.
+LaTeX Font Info:    ... okay on input line 10.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 10.
+LaTeX Font Info:    ... okay on input line 10.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 10.
+LaTeX Font Info:    ... okay on input line 10.
+
+("C:\Users\jaker\AppData\Local\Programs\MiKTeX 2.9\tex/context/base/mkii\supp-p
+df.mkii"
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count193
+\scratchdimen=\dimen150
+\scratchbox=\box50
+\nofMPsegments=\count194
+\nofMParguments=\count195
+\everyMPshowfont=\toks23
+\MPscratchCnt=\count196
+\MPscratchDim=\dimen151
+\MPnumerator=\count197
+\makeMPintoPDFobject=\count198
+\everyMPtoPDFconversion=\toks24
+)
+("C:\Users\jaker\AppData\Local\Programs\MiKTeX 2.9\tex/latex/epstopdf-pkg\epsto
+pdf-base.sty"
+Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
+Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
+85.
+)
+\AtBeginShipoutBox=\box51
+
+("C:\Users\jaker\AppData\Local\Programs\MiKTeX 2.9\tex/latex/pdflscape\pdflscap
+e.sty"
+Package: pdflscape 2019/12/05 v0.12 Display of landscape pages in PDF (HO)
+
+("C:\Users\jaker\AppData\Local\Programs\MiKTeX 2.9\tex/latex/graphics\lscape.st
+y"
+Package: lscape 2000/10/22 v3.01 Landscape Pages (DPC)
+)
+Package pdflscape Info: Auto-detected driver: pdftex on input line 81.
+)
+
+LaTeX Warning: No \author given.
+
+<figs/5^3D_3_plot_combo.png, id=1, 421.575pt x 316.0608pt>
+File: figs/5^3D_3_plot_combo.png Graphic file (type png)
+<use figs/5^3D_3_plot_combo.png>
+Package pdftex.def Info: figs/5^3D_3_plot_combo.png  used on input line 24.
+(pdftex.def)             Requested size: 345.0pt x 258.6555pt.
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+[1
+
+{C:/Users/jaker/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}]
+<figs/theory_splitting_work.png, id=14, 721.19438pt x 718.18312pt>
+File: figs/theory_splitting_work.png Graphic file (type png)
+<use figs/theory_splitting_work.png>
+Package pdftex.def Info: figs/theory_splitting_work.png  used on input line 45.
+
+(pdftex.def)             Requested size: 345.0pt x 343.5514pt.
+
+
+LaTeX Warning: Reference `peaktable' on page 2 undefined on input line 52.
+
+[2 <./figs/5^3D_3_plot_combo.png (PNG copy)>] [3 <./figs/theory_splitting_work.
+png (PNG copy)>]
+<doc/20200218_danny_theory_1.pdf, id=22, 614.295pt x 794.97pt>
+File: doc/20200218_danny_theory_1.pdf Graphic file (type pdf)
+<use doc/20200218_danny_theory_1.pdf>
+Package pdftex.def Info: doc/20200218_danny_theory_1.pdf  used on input line 14
+3.
+(pdftex.def)             Requested size: 614.29349pt x 794.96806pt.
+File: doc/20200218_danny_theory_1.pdf Graphic file (type pdf)
+<use doc/20200218_danny_theory_1.pdf>
+Package pdftex.def Info: doc/20200218_danny_theory_1.pdf  used on input line 14
+3.
+(pdftex.def)             Requested size: 614.29349pt x 794.96806pt.
+<doc/20200218_danny_theory_1.pdf, id=25, page=1, 614.295pt x 794.97pt>
+File: doc/20200218_danny_theory_1.pdf Graphic file (type pdf)
+<use doc/20200218_danny_theory_1.pdf, page 1>
+Package pdftex.def Info: doc/20200218_danny_theory_1.pdf , page1 used on input 
+line 143.
+(pdftex.def)             Requested size: 614.29349pt x 794.96806pt.
+File: doc/20200218_danny_theory_1.pdf Graphic file (type pdf)
+<use doc/20200218_danny_theory_1.pdf, page 1>
+Package pdftex.def Info: doc/20200218_danny_theory_1.pdf , page1 used on input 
+line 143.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [4]
+File: doc/20200218_danny_theory_1.pdf Graphic file (type pdf)
+<use doc/20200218_danny_theory_1.pdf, page 1>
+Package pdftex.def Info: doc/20200218_danny_theory_1.pdf , page1 used on input 
+line 143.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: doc/20200218_danny_theory_1.pdf Graphic file (type pdf)
+<use doc/20200218_danny_theory_1.pdf, page 1>
+Package pdftex.def Info: doc/20200218_danny_theory_1.pdf , page1 used on input 
+line 143.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: doc/20200218_danny_theory_1.pdf Graphic file (type pdf)
+<use doc/20200218_danny_theory_1.pdf, page 1>
+Package pdftex.def Info: doc/20200218_danny_theory_1.pdf , page1 used on input 
+line 143.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [5 <./doc/20200218_danny_theory_1.pdf>]
+<doc/20200218_danny_theory_1.pdf, id=102, page=2, 614.295pt x 794.97pt>
+File: doc/20200218_danny_theory_1.pdf Graphic file (type pdf)
+<use doc/20200218_danny_theory_1.pdf, page 2>
+Package pdftex.def Info: doc/20200218_danny_theory_1.pdf , page2 used on input 
+line 143.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: doc/20200218_danny_theory_1.pdf Graphic file (type pdf)
+<use doc/20200218_danny_theory_1.pdf, page 2>
+Package pdftex.def Info: doc/20200218_danny_theory_1.pdf , page2 used on input 
+line 143.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: doc/20200218_danny_theory_1.pdf Graphic file (type pdf)
+<use doc/20200218_danny_theory_1.pdf, page 2>
+Package pdftex.def Info: doc/20200218_danny_theory_1.pdf , page2 used on input 
+line 143.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [6 <./doc/20200218_danny_theory_1.pdf>]
+<doc/20200218_danny_theory_1.pdf, id=121, page=3, 614.295pt x 794.97pt>
+File: doc/20200218_danny_theory_1.pdf Graphic file (type pdf)
+<use doc/20200218_danny_theory_1.pdf, page 3>
+Package pdftex.def Info: doc/20200218_danny_theory_1.pdf , page3 used on input 
+line 143.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: doc/20200218_danny_theory_1.pdf Graphic file (type pdf)
+<use doc/20200218_danny_theory_1.pdf, page 3>
+Package pdftex.def Info: doc/20200218_danny_theory_1.pdf , page3 used on input 
+line 143.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: doc/20200218_danny_theory_1.pdf Graphic file (type pdf)
+<use doc/20200218_danny_theory_1.pdf, page 3>
+Package pdftex.def Info: doc/20200218_danny_theory_1.pdf , page3 used on input 
+line 143.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [7 <./doc/20200218_danny_theory_1.pdf>] [8]
+(splitting_writeup.aux)
+
+LaTeX Warning: There were undefined references.
+
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
+ ) 
+Here is how much of TeX's memory you used:
+ 3456 strings out of 481277
+ 50140 string characters out of 2906528
+ 299412 words of memory out of 3000000
+ 18913 multiletter control sequences out of 15000+200000
+ 542978 words of font info for 60 fonts, out of 3000000 for 9000
+ 1141 hyphenation exceptions out of 8191
+ 40i,18n,46p,945b,431s stack positions out of 5000i,500n,10000p,200000b,50000s
+<C:/Users/jaker/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts
+/cm/cmbx10.pfb><C:/Users/jaker/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/pu
+blic/amsfonts/cm/cmbx12.pfb><C:/Users/jaker/AppData/Local/Programs/MiKTeX 2.9/f
+onts/type1/public/amsfonts/cm/cmex10.pfb><C:/Users/jaker/AppData/Local/Programs
+/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/jaker/AppData/L
+ocal/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi12.pfb><C:/Users/ja
+ker/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi5.pfb>
+<C:/Users/jaker/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/c
+m/cmmi7.pfb><C:/Users/jaker/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/publi
+c/amsfonts/cm/cmmib10.pfb><C:/Users/jaker/AppData/Local/Programs/MiKTeX 2.9/fon
+ts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/jaker/AppData/Local/Programs/Mi
+KTeX 2.9/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Users/jaker/AppData/Local
+/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr17.pfb><C:/Users/jaker/A
+ppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr7.pfb><C:/Us
+ers/jaker/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy
+10.pfb><C:/Users/jaker/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/ams
+fonts/cm/cmsy7.pfb><C:/Users/jaker/AppData/Local/Programs/MiKTeX 2.9/fonts/type
+1/public/amsfonts/cm/cmti10.pfb><C:/Users/jaker/AppData/Local/Programs/MiKTeX 2
+.9/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
+Output written on splitting_writeup.pdf (8 pages, 406239 bytes).
+PDF statistics:
+ 168 PDF objects out of 1000 (max. 8388607)
+ 0 named destinations out of 1000 (max. 500000)
+ 41 words of extra memory for PDF output out of 10000 (max. 10000000)
+

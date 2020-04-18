@@ -1,5 +1,5 @@
 function data_tdc = import_mcp_tdc(opts)
-    cli_header({0,'Importing TDC data'})
+    cli_header(0,'Importing TDC data');
     
     cache_opts=[];
     if isfield(opts.tdc,'cache_opts'), cache_opts=opts.tdc.cache_opts; end
@@ -35,22 +35,31 @@ function data_tdc = import_mcp_tdc(opts)
         data_tdc = mcp_post_fun(data_tdc,opts);
     end
     if opts.tdc.plots
-        f = sfigure(400);
+        f = stfig('DLD import diagnostics');
         
-        subplot(2,2,1)
-        plot(data_tdc.shot_num,data_tdc.num_counts,'.')
+        subplot(2,2,[1,2])
+        plot(data_tdc.shot_num,data_tdc.num_counts,'k.')
         xlabel('Shot number')
         ylabel('Number of atoms')
         title('Hit count trend')
         
-        subplot(2,2,2)
-        plot(data_tdc.shot_num,data_tdc.time_create_write(:,2),'.')
+        subplot(2,2,3)
+        plot(data_tdc.shot_num,data_tdc.time_create_write(:,2),'k.')
+        title('Write time')
+        xlabel('Shot number')
+        ylabel('UNIX Time')
         
-        subplot(2,1,2)
-        plot(data_tdc.time_create_write(:,2),data_tdc.num_counts,'.')
+%         subplot(2,2,3)
+%         plot(data_tdc.time_create_write(:,2),data_tdc.num_counts,'.')
+%         xlabel('Write time')
+%         ylabel('Counts')
+%         suptitle('DLD import diagnostics')
         
+        subplot(2,2,4)
+        plot(data_tdc.time_create_write(:,2)-data_tdc.time_create_write(:,1),'k.')
+        ylabel('Create-Write time')
+        xlabel('Shot number')
         suptitle('DLD import diagnostics')
-        
         
         filename = fullfile(opts.tdc.out_dir,sprintf('%s_log',mfilename));
         saveas(f,[filename,'.fig']);
@@ -58,14 +67,16 @@ function data_tdc = import_mcp_tdc(opts)
         
         
     end
-    cli_header({1,'Done.'})
+    cli_header(1,'Done.');
 end
 
 
 function data_tdc = mcp_post_fun(data_tdc,opts)
 
-    % Don't need anything else yet...
     data_tdc.N_atoms = data_tdc.num_counts';
+%     data_tdc = measure_psd(data_tdc,opts);
+    % Don't need anything else yet...
+%     data_tdc.time_create_write = data_tdc.time_create_write';
 
 end
 function  [mcp_tdc_data,import_opts]=mcp_tdc_import_core(import_opts)
@@ -192,7 +203,7 @@ for ii=1:size(import_opts.shot_num,2)
          end
          %ineffecient to read back what whas just written
          txydata=txy_importer([import_opts.dir,import_opts.file_name],num2str(import_opts.shot_num(ii)));
-         txydata=masktxy(txydata,import_opts.txylim); %mask for counts in the window txylim     
+         txydata=masktxy_square(txydata,import_opts.txylim); %mask for counts in the window txylim     
          %rotate the counts into the trap axis
          alpha=-import_opts.dld_xy_rot;
          mcp_tdc_data.counts_txy{ii}=txydata*[1 0 0;0 cos(alpha) -sin(alpha); 0 sin(alpha) cos(alpha)];

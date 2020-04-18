@@ -1,6 +1,6 @@
 function wm=wm_log_import(opts)
 
-cli_header({0,'Importing WM data'})
+cli_header(0,'Importing WM data');
 
 cache_opts = opts.wm.cache_import;
 cache_opts.verbose = 1;
@@ -14,24 +14,24 @@ if opts.wm.plots
     wm_set = wm.feedback.setpt;
     wm_act = wm.feedback.actual;
     
-    f = sfigure(300);
+    f = stfig('Wavemeter import diagnostics');
     clf
     subplot(2,1,1)
-    plot(wm_time-t0,wm_set,'x')
+    plot(wm_time-t0,wm_set,'k.')
     hold on
-    plot(wm_time-t0,wm_act,'x')
-    xlabel('Time elapsed')
-    ylabel('WM blue setpt')
-    title('WM blue freq')
+    plot(wm_time-t0,wm_act,'r.')
+    legend('Set','Actual')
+    xlabel('Time elapsed (s)')
+    ylabel('WM setpoint (MHz)')
+    title('Blue freq setpoint')
     
     subplot(2,1,2)
-    plot(wm_time-t0,wm_set-wm_act,'x')
+    plot(wm_time-t0,wm_set-wm_act,'k.')
     title('WM error')
     xlabel('Time elapsed')
-    ylabel('Set-actual freq')
+    ylabel('Set-actual freq (MHz)')
     
-    
-    suptitle('WM import diagnostics')
+    suptitle('Wavemeter diagnostics')
     
     
     filename = fullfile(opts.wm.out_dir,sprintf('%s_log',mfilename));
@@ -39,7 +39,7 @@ if opts.wm.plots
     saveas(f,[filename,'.png']);
 end
 
-cli_header({1,'Done'})
+cli_header(1,'Done');
 
 end
 

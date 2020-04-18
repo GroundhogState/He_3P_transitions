@@ -1,0 +1,27 @@
+Prior work:
+
+The drive frequency of the trap AOM is 138MHz and 133.6MHz during the first and second stages of in-trap cooling respectively. The lock offset is 252.9MHz, for respective offsets of 25MHz and 14MHz blue of the field-free resonance. These are consistent with fields of strength 17.8 and 10 Gauss, respectively.
+
+The trap simulation code (with nuller disabled) gives field strengths of 13.993G (39.207MHz) and 8.37G (23.47MHz) at the trap bottom in the first and second stages. The field gradients are less than 1e-4 G/cm in both cases.
+
+We measure a transition to the 53S1
+ state at X MHz. We observe no other peaks within 20MHz, and also observe that the peak vanishes if we flip the handedness of the input light. We infer that we are driving the mj=+2→mj=1 transition with σ− light in the atom frame (σ+ in the lab frame).
+
+If the magnetic fields from the AOM measurements are correct, then we can predict a shift of the absorption peak by 9.3MHz to the blue in the second stage of in-trap cooling. This prediction is independent of the zero-field offset. If the trap simulations are correct, the shift should be 6.45MHz.
+
+I perform this experiment and observe a shift of 8.67MHz±0.48MHz. We therefore conclude that the AO-calculated shifts are accurate. Using the value of 17.8G we predict that the nearest line to the transition should be approx 9MHz to the red of this transition. We do not observe this line, and conclude we are indeed observing a σ− from the pumped mj=+2 state.
+
+By retuning to the 53D3
+ transition, we predict Zeeman shifts of -31.4MHz and 23.1MHz for the σ− and σ+ transitions from the 23P2 state. The predicted 53D2 transition is 21MHz blue of the 53D3, however we should not observe this, but rather the σ+ transition which we predict to be Zeeman shifted by -41.97MHz.
+
+By driving with linearly polarized light, we predict three peaks:
+
+Notable wavelengths, descending order
+Transition				Frequency		Detuning from mean = 744396199.3MHz
+σ+:23P2,mj=2→53D3,mj=3 	744396232.78	33MHz
+σ−:23P2,mj=2→53D3,mj=1	744396178.2		(-)21MHz
+σ−:23P2,mj=2→53D2,mj=1	744396186.92	(-)12MHz
+
+Instead, we find four:
+5^3D 3 spectrum findpeaks qwp 190.png
+To attempt to identify these peaks, we run the same scan but wider and with the quarter wave plate set to 146 degrees for maximum circularity. We lose a peak!

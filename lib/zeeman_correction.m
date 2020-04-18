@@ -1,6 +1,6 @@
 function data = zeeman_correction(data,opts)
     if isfield(opts,'e_state')
-        cli_header({0,'Correcting for Zeeman shift'})
+        cli_header({0,'Correcting for Zeeman shift'});
         
 %         e_state_format=strrep(opts.e_state,'^','_');
         
@@ -59,7 +59,8 @@ function data = zeeman_correction(data,opts)
         end
         
     else
-        cli_header({1,'Zeeman correction bypassed'})
+        cli_header({1,'Zeeman correction bypassed'});
+        
         z_correct = [];
     end
 end

@@ -7,20 +7,26 @@ function data = present_plots(data,opts)
     else
         num_pks = numel(opts.e_state);
     end
-   f1=sfigure(7777);
+    
+    plot_colours = [1,0,0;
+                0,0,1];
+    
+    f1=stfig('Final plot');
    clf;
+   hold on
+   f_pred = opts.const.f_table.g_2_3P_2.(sprintf('e_%s',fmt_name))/1e6;
+   fmt_name = strrep(e_level,'^','_');
     for cidx =1:ncat
        
        cdata = data.cat{cidx};
        B = opts.Bfield(cidx);
 %        fnum = 7777+cidx;
-       subplot(2,1,cidx)
+%        subplot(2,1,cidx)
        [~,p_cen] = max(cdata.pfits.lor_prms(:,3));
        f_offset = cdata.pfits.lor_prms(p_cen,1);
        X_data=cdata.spec.freq;
        all_fit=zeros(1,100);
        plot(X_data-f_offset,cdata.spec.signal,'.','MarkerSize',15,'Color',[0.8350 0.1780 0.1840])
-       hold on
         for pidx=1:num_pks
             if num_pks ==1
                 e_state = opts.e_state;
@@ -31,7 +37,7 @@ function data = present_plots(data,opts)
             fmt_name = strrep(e_level,'^','_');
             f_pred = opts.const.f_table.g_2_3P_2.(sprintf('e_%s',fmt_name))/1e6; %MHz
             f_shift = cdata.zeeman.shift(pidx);
-            cli_header({1,'\nRESULTS for %s transition:\n',e_state})
+            cli_header({1,'\nRESULTS for %s transition:\n',e_state});
             fprintf('Predicted vacuum freq %.3f MHz\n',f_pred)
 
             peak_df = cdata.zeeman.shift(pidx)-cdata.zeeman.shift(p_cen);
@@ -68,10 +74,7 @@ function data = present_plots(data,opts)
             xlabel(sprintf('Frequency-%.2f (MHz)',f_offset))
             title(sprintf('|B|=%.2f',B))
             legend({'Data','Theoretical value'},'location','NorthWest')
-            set(gca,'FontSize',10,'FontName','cmr10')
-            set(gcf,'color','w');
-
-
+%             set(gca,'FontSize',10,'FontName','cmr10')
 
     end
             suptitle(sprintf('%s transition',e_level))

@@ -49,7 +49,7 @@ function post_ai = transition_post_ai(opts_ai,data_ai)
 
     
 
-    f=sfigure(100);
+    f=stfig('Analog import diagnostics');
     clf;
 
     

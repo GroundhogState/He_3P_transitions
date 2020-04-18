@@ -22,11 +22,11 @@ function data = auto_peak_detect(data,opts)
             data.cat{cat_idx}.spec = spec;
             
         for pidx = 1:length(peaks.vals)
-            cli_header({1,'Peak %u data from findpeaks:',pidx})
+            cli_header(1,'Peak %u data from findpeaks:',pidx);
             fprintf('Centre frequency           %.3f\n',peaks.freqs(pidx));
             fprintf('FWHM                       %.3f\n',peaks.widths(pidx));
             fprintf('Relative strength          %.2f\n',peaks.vals(pidx));
-%         end
+        end
     end
     
 
