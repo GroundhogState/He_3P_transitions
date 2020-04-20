@@ -155,7 +155,7 @@ for i=1:num_shots
                 cli_header(2,'Plotting...');
                 stfig('Pulse data');
                 clf
-                subplot(1,2,1)
+                subplot(2,2,1)
                 hold on
                 plot(v_x,x_mean_flux,'k')
                 plot(v_x(x_mask),x_mean_flux(x_mask),'b.')
@@ -166,15 +166,20 @@ for i=1:num_shots
                 set(gca,'Yscale','log')
                 title('Mean X profile')
 
-                subplot(1,2,2)
+                subplot(2,2,2)
                 hold on
                 plot(v_y,y_mean_flux,'k')
                 plot(v_y(y_mask),y_mean_flux(y_mask),'b.')
-                plot(v_y,n_p(x_coef,abs(v_y)),'r:')
+%                 plot(v_y,n_p(x_coef,abs(v_y)),'r:')
                 plot(v_y,n_p(y_coef,abs(v_y)),'r')
-
                 set(gca,'Yscale','log')
                 title('Mean Y profile')
+                
+                subplot(2,2,3)
+                plot(v_x(x_mask),n_p(x_coef,abs(v_x(x_mask)))-x_mean_flux(x_mask),'k.')
+                
+                subplot(2,2,4)
+                plot(v_y(y_mask),n_p(y_coef,abs(v_y(y_mask)))-y_mean_flux(y_mask),'r.')
 
                 suptitle(sprintf('Single shot fit %u',i));
             end % single shot plot
@@ -193,8 +198,8 @@ for i=1:num_shots
 %     end %try shot
 %     cli_header(3,'Done.');
     
-    pulse_data.x_residual = x_mean_flux-gfun(x_fit,X);
-    pulse_data.y_residual = y_mean_flux-gfun(y_fit,Y);
+    pulse_data.x_residual = x_mean_flux-n_p(x_coef,X);
+    pulse_data.y_residual = y_mean_flux-n_p(y_coef,Y);
     shot_data.temp(i,:) = [x_coef(3),y_coef(3)];
     shot_data.temp_unc(i,:) = [x_SE(3),y_SE(3)];
     shot_data.amp(i,:) = [x_coef(1),y_coef(1)];

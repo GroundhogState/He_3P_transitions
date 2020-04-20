@@ -15,8 +15,8 @@ power_dep_dir = 'E:\Data\Spectroscopy\spectroscopy_data\probe_power_dep';
 % data_dir = fullfile(hdd_dir,'\20190429_5^3S_1_qwp_146_both_stage\'); % TDC time offset -7174
 % data_dir = fullfile(hdd_dir,'20190425_5^3D1_both_ITC_1MHz_step'); % TDC time offset -7176
 % data_dir = fullfile(hdd_dir,'20190429_5^3D_2_3_qwp_142_tight_scan_centre_peak'); %offset -7177
-data_dir = fullfile(hdd_dir,'20190429_5^3D_2_3_qwp_142'); %offset -7177
-% data_dir = fullfile(hdd_dir,'\20190417_5^1D2_mj_1_itc_both_qwp_146_overnight\');% no AI !!! offset -7176
+% data_dir = fullfile(hdd_dir,'20190429_5^3D_2_3_qwp_142'); %offset -7177
+data_dir = fullfile(hdd_dir,'\20190417_5^1D2_mj_1_itc_both_qwp_146_overnight\');% no AI !!! offset -7176
 tdc_offset = 7200;
 
 % % Power dependency checks
@@ -101,62 +101,77 @@ end
 % opts.shots_chosen = 430:450;
 % opts.shots_chosen = 1;
 % opts.shots_chosen = 448;
-psd_opts.single_plot = false;
-psd_opts.shots_chosen = nan;
-data.psd = measure_psd(data.tdc,psd_opts);
+% psd_opts.single_plot = false;
+% psd_opts.shots_chosen = nan;
+% data.psd = measure_psd(data.tdc,psd_opts);
+% profile on
+% data.psd = thermometry_fits(data,opts);
+% data.temps = thermometry_fits(data,opts);
+opts.temp.cache_opts.force_forc = false;
+opts.temp.cache_opts.force_recalc = false;
+opts.temp.cache_opts.force_cache_load = false;
+opts.temp.shot_nums = nan;
+opts.single_shot_plot = false;
+data.temp = thermometry_fits(data,opts);
+
+%%
+opts.temp.plot.plt_label = '5^1D_2';
+plot_thermo_fits(data,opts.temp.plot)
+% profile off
+% profile viewer
 %% Match the timestamps
-data.sync = match_timestamps(data,opts);
+% data.sync = match_timestamps(data,opts);
 
-%% Temp analysis
-T_all = (abs(data.sync.shots.temp/2)*const.g0).^2 *const.mhe/const.kb;
-T_cal = (abs(data.sync.cal.temp/2)*const.g0).^2 *const.mhe/const.kb;
-lambda_db = const.h./sqrt(2*pi*const.mhe*const.kb*T_all);
-n0 = data.sync.shots.N_atoms.^(2/5); %at least, proportional to this
-
-T_kelvin = (abs(data.sync.msr.temp/2)*const.g0).^2 *const.mhe/const.kb;
-lambda_msr = const.h./sqrt(2*pi*const.mhe*const.kb*T_kelvin);
-n0_msr = data.sync.msr.N_atoms; %at least, proportional to this
-% ah - but the number isn't a good measure any more. The condensed fraction
-% dropped a lot. But we have *total number* and temperature
-% so -> condensed fraction -> condensed number -> peak density
-
-% PSD = peak_density * lambda^3
-
-stfig('temp spectra');
-clf;
-subplot(2,2,1)
-hold on
-plot(T_cal(:,1),'k.')
-plot(T_cal(:,2),'r.')
-title('Calibration shots')
-xlabel('Shot number')
-ylabel('Fit temperature (K)')
-
-subplot(2,2,2)
-hold on
-plot(data.sync.msr.probe_set,T_kelvin(:,1),'k.')
-plot(data.sync.msr.probe_set,T_kelvin(:,2),'r.')
-ylabel('Fit temperature (K)')
-xlabel('Frequency')
-title('Measurement shots')
-
-subplot(2,2,3)
-hold on
-plot(data.sync.shots.N_atoms,T_all(:,1),'k.')
-plot(data.sync.shots.N_atoms,T_all(:,2),'r.')
-xlabel('Number of counts')
-ylabel('Temperature (K)')
-title('Number vs temperature (all shots)')
-
-ignoremask = data.sync.msr.N_atoms < 1e4;
-subplot(2,2,4)
-hold on
-plot(data.sync.msr.probe_set,data.sync.msr.N_atoms,'k.')
-plot(data.sync.msr.probe_set(ignoremask),data.sync.msr.N_atoms(ignoremask),'rx')
-xlabel('Frequency')
-ylabel('Number')
-
-suptitle('Full TXY fit thermometry')
+% % % %% Temp analysis
+% % % T_all = (abs(data.sync.shots.temp/2)*const.g0).^2 *const.mhe/const.kb;
+% % % T_cal = (abs(data.sync.cal.temp/2)*const.g0).^2 *const.mhe/const.kb;
+% % % lambda_db = const.h./sqrt(2*pi*const.mhe*const.kb*T_all);
+% % % n0 = data.sync.shots.N_atoms.^(2/5); %at least, proportional to this
+% % % 
+% % % T_kelvin = (abs(data.sync.msr.temp/2)*const.g0).^2 *const.mhe/const.kb;
+% % % lambda_msr = const.h./sqrt(2*pi*const.mhe*const.kb*T_kelvin);
+% % % n0_msr = data.sync.msr.N_atoms; %at least, proportional to this
+% % % % ah - but the number isn't a good measure any more. The condensed fraction
+% % % % dropped a lot. But we have *total number* and temperature
+% % % % so -> condensed fraction -> condensed number -> peak density
+% % % 
+% % % % PSD = peak_density * lambda^3
+% % % 
+% % % stfig('temp spectra');
+% % % clf;
+% % % subplot(2,2,1)
+% % % hold on
+% % % plot(T_cal(:,1),'k.')
+% % % plot(T_cal(:,2),'r.')
+% % % title('Calibration shots')
+% % % xlabel('Shot number')
+% % % ylabel('Fit temperature (K)')
+% % % 
+% % % subplot(2,2,2)
+% % % hold on
+% % % plot(data.sync.msr.probe_set,T_kelvin(:,1),'k.')
+% % % plot(data.sync.msr.probe_set,T_kelvin(:,2),'r.')
+% % % ylabel('Fit temperature (K)')
+% % % xlabel('Frequency')
+% % % title('Measurement shots')
+% % % 
+% % % subplot(2,2,3)
+% % % hold on
+% % % plot(data.sync.shots.N_atoms,T_all(:,1),'k.')
+% % % plot(data.sync.shots.N_atoms,T_all(:,2),'r.')
+% % % xlabel('Number of counts')
+% % % ylabel('Temperature (K)')
+% % % title('Number vs temperature (all shots)')
+% % % 
+% % % ignoremask = data.sync.msr.N_atoms < 1e4;
+% % % subplot(2,2,4)
+% % % hold on
+% % % plot(data.sync.msr.probe_set,data.sync.msr.N_atoms,'k.')
+% % % plot(data.sync.msr.probe_set(ignoremask),data.sync.msr.N_atoms(ignoremask),'rx')
+% % % xlabel('Frequency')
+% % % ylabel('Number')
+% % % 
+% % % suptitle('Full TXY fit thermometry')
 
 % %% Create a calibration model
 % data.cal = make_calibration_model(data,opts);

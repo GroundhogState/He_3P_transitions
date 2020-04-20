@@ -112,7 +112,6 @@ for i=1:num_shots
             y_mask = abs(Y) > y_spatial_min & Y < y_spatial_max;
 
             gfun = @(b,x) b(1).*exp(-((x-b(2)).^2)./(2*b(3).^2))+b(4); 
-            coeff_names={'amp','mu','sig','offset'};
             x_guess=[mean(x_mean_flux),0,2*width_guess(2),0];
             x_mdlfit = fitnlm(X(x_mask),x_mean_flux(x_mask),gfun,x_guess);
             x_fit = x_mdlfit.Coefficients.Estimate;
